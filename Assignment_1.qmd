@@ -16,6 +16,16 @@ library(tidyverse)
 
 ## Data Acquistion
 
+```{r}
+gdp_data <- read_csv("~/Downloads/nama_10r_3gdp__custom_7667248_linear.csv")
+View(gdp_data)
+```
+
+```{r}
+population_data <- read_csv("~/Downloads/demo_r_pjanaggr3__custom_7667383_linear.csv")
+View(population_data)
+```
+
 ## GDP per Capita Calculation
 
 ## Descriptive Analysis
