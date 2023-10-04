@@ -1,0 +1,23 @@
+---
+title: "Assignment_1"
+format: html
+editor: visual
+---
+
+# Part A: Sub-national GDP and GDP per Capita
+
+## Data Acquistion
+
+## GDP per Capita Calculation
+
+## Descriptive Analysis
+
+# Part B: Regional Inequity
+
+## Literature Review
+
+## Gini Coefficient Calculation
+
+## Data Presentation
+
+## Discussion
