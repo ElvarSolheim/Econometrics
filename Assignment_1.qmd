@@ -4,6 +4,14 @@ format: html
 editor: visual
 ---
 
+```{r}
+#| label: setup
+#| echo: false
+#| output: false
+#| message: false
+library(tidyverse)
+```
+
 # Part A: Sub-national GDP and GDP per Capita
 
 ## Data Acquistion
