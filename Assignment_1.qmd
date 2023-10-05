@@ -10,6 +10,7 @@ editor: visual
 #| output: false
 #| message: false
 library(tidyverse)
+library(readxl)
 ```
 
 # Part A: Sub-national GDP and GDP per Capita
@@ -24,6 +25,18 @@ View(gdp_data)
 ```{r}
 population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv")
 View(population_data)
+```
+
+```{r}
+GDP_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 5", skip = 1)
+View(GDP_UK)
+```
+
+```{r}
+Population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 6", skip = 1)
+View(Population_UK)
 ```
 
 ## GDP per Capita Calculation
