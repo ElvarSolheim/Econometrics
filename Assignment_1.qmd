@@ -14,51 +14,78 @@ library(readxl)
 library(magrittr)
 ```
 
-# Part A: Sub-national GDP and GDP per Capita
+# Assignment 1: Data and Descriptive 
 
-## Data Acquistion
+This assignment aims to obtain, process, and analyze sub-national GDP and population data for a subset of European countries.
+The selected subset comprises the UK, Czech Republic, Turkey, and Finland.
+The objective is to calculate GDP per capita and explore regional inequity using a range of descriptive statistics and visualizations.
+
+## Part A: Sub-national GDP and GDP per Capita
+
+In the first part, we will dive into sub-national GDP for the selected European countries.
+Firstly, a brief overview of the data acquisition will be given.
+Furthermore, we will calculate GDP per capita for each sub-region.
+Lastly, we will provide a descriptive analysis that provides insights into the central tendencies of the data.
+
+### Data Acquisition
+
+The datasets used in this assignment include sub-regional data on GDP and population for each of the European countries in the subset.
+The NUTS classification is a hierarchical system that enables cross-border statistical comparisons at various regional levels within the EU and UK.
+In this assignment we will use NUTS 3 data.
+
+We obtained data for Czech Republic, Turkey and Finland from Eurostat.
+We downloaded two sub-regional datasets, one providing GDP data (nama_10r_3gdp) and the other one providing population data (demo_r_pjanaggr3).
+The datasets contains data from year 2000 to 2020.
 
 ```{r}
+# GDP data for Czech Republic, Turkey and Finland
 gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") 
 ```
 
 ```{r}
+# Population data for Czech Republic, Turkey and Finland
 population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv")
 ```
 
-```{r}
-GDP_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
-    sheet = "Table 5", skip = 1)
-```
+We only needed a few of the variables included in the two datasets.
+We used the select()-function to pick the variables we wanted; time_period, geo and obs_value.
+When selecting the variables, we also gave "time-period" and "obs_value" more appropriate names.
+We ended up with the three variables "year", "geo" and "gdp" for the GDP dataset, and the three variables "year", "geo" and "pop" for the population dataset.
 
 ```{r}
-Population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
-    sheet = "Table 6", skip = 1)
-```
-
-```{r}
+# Selecting and renaming needed variables
 gdp_data <- gdp_data |>
-  select(TIME_PERIOD, geo, OBS_VALUE)
+  select(year = TIME_PERIOD, geo, gdp = OBS_VALUE)
 ```
 
 ```{r}
+# Selecting and renaming needed variables
 population_data <- population_data |>
-  select(TIME_PERIOD, geo, OBS_VALUE)
+  select(year = TIME_PERIOD, geo, pop = OBS_VALUE)
 ```
 
+The UK was not included in the two datasets obtained from Eurostat, since the country is no longer a part of the EU.
+We got sub-regional GDP and population data for the UK through ...
+
 ```{r}
-GDP_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+# GDP data for UK
+gdp_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
     sheet = "Table 5", skip = 1)
 ```
 
 ```{r}
-Population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+# Population data for UK
+population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
     sheet = "Table 6", skip = 1)
 ```
 
+To get the UK datasets in the same format as the datasets from Eurostat, we used the gather()-function to convert from wide to long format.
+With filter() and mutate() we created a "geo" variable, describing the sub-regions (NUTS 3).
+We used the select()-function to pick the same variables as we have in the datasets for the EU countries.
+
 ```{r}
-# Read the entire data from Excel
-GDP_UK <- GDP_UK %>%
+# Reforming gdp_UK
+gdp_UK <- gdp_UK %>%
   gather(year, gdp, -ITL, -`ITL code`, -`Region name`) %>%
   filter(ITL == "ITL3") %>%
   mutate(geo = `ITL code`) %>%
@@ -66,14 +93,14 @@ GDP_UK <- GDP_UK %>%
 ```
 
 ```{r}
-Population_UK <- Population_UK %>%
+# Reforming population_UK
+population_UK <- population_UK %>%
   gather(year, pop, -ITL, -`ITL code`, -`Region name`) %>%
   filter(ITL == "ITL3") %>%
   mutate(geo =`ITL code`) %>%
   select(year, geo, pop)
 ```
 
-\
 GDP_data_UK_pop \<- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx",\
 sheet = "Table 6", skip = 1) %\>%\
 gather(year, pop, -ITL, -\`ITL code\`, -\`Region name\`) %\>%\
@@ -81,16 +108,33 @@ filter(ITL=="ITL3") %\>%\
 mutate(geo=\`ITL code\`) %\>%\
 select(geo,year,pop)
 
-## GDP per Capita Calculation
+We merged the two datasets for Czech Republic, Turkey and Finland with the two datasets for the UK.
+We named the dataset containing sub-regional GDP and population data for all the countries for "...".
 
-## Descriptive Analysis
+```{r}
+# Merging the datasets together 
 
-# Part B: Regional Inequity
+```
 
-## Literature Review
+### GDP per Capita Calculation
 
-## Gini Coefficient Calculation
+To compute GDP per capita for each sub-region we used the formula:
 
-## Data Presentation
+$y_{i} = \frac{GDP_{i}}{Population_{i}}$
 
-## Discussion
+### Descriptive Analysis
+
+## Part B: Regional Inequity
+
+The second part focuses on regional inequality.
+We will start with a literate review of the subject, then compute population-weighted GDP Gini coefficients for the regions within our subset of European countries.
+This includes data presentation through descriptive statistics and visuals.
+In the end, we will discuss the computed Gini coefficients and reflect on the implications of our findings in the context of regional inequity.
+
+### Literature Review
+
+### Gini Coefficient Calculation
+
+### Data Presentation
+
+### Discussion
