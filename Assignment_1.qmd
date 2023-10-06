@@ -11,6 +11,7 @@ editor: visual
 #| message: false
 library(tidyverse)
 library(readxl)
+library(magrittr)
 ```
 
 # Part A: Sub-national GDP and GDP per Capita
@@ -44,6 +45,41 @@ gdp_data <- gdp_data |>
 population_data <- population_data |>
   select(TIME_PERIOD, geo, OBS_VALUE)
 ```
+
+```{r}
+GDP_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 5", skip = 1)
+```
+
+```{r}
+Population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 6", skip = 1)
+```
+
+```{r}
+# Read the entire data from Excel
+GDP_UK <- GDP_UK %>%
+  gather(year, gdp, -ITL, -`ITL code`, -`Region name`) %>%
+  filter(ITL == "ITL3") %>%
+  mutate(geo = `ITL code`) %>%
+  select(year, geo, gdp)
+```
+
+```{r}
+Population_UK <- Population_UK %>%
+  gather(year, pop, -ITL, -`ITL code`, -`Region name`) %>%
+  filter(ITL == "ITL3") %>%
+  mutate(geo =`ITL code`) %>%
+  select(year, geo, pop)
+```
+
+\
+GDP_data_UK_pop \<- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx",\
+sheet = "Table 6", skip = 1) %\>%\
+gather(year, pop, -ITL, -\`ITL code\`, -\`Region name\`) %\>%\
+filter(ITL=="ITL3") %\>%\
+mutate(geo=\`ITL code\`) %\>%\
+select(geo,year,pop)
 
 ## GDP per Capita Calculation
 
