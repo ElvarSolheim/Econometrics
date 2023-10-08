@@ -14,7 +14,7 @@ library(readxl)
 library(magrittr)
 ```
 
-# Assignment 1: Data and Descriptive 
+# Assignment 1: Data and Descriptive
 
 This assignment aims to obtain, process, and analyze sub-national GDP and population data for a subset of European countries.
 The selected subset comprises the UK, Czech Republic, Turkey, and Finland.
@@ -113,7 +113,19 @@ We named the dataset containing sub-regional GDP and population data for all the
 
 ```{r}
 # Merging the datasets together 
+merged_data <- gdp_data %>%
+  left_join(population_data, by = "geo")
+```
 
+```{r}
+# Merging the datasets together UK
+merged_data_UK <- gdp_UK %>%
+  left_join(population_UK, by = "geo")
+```
+
+```{r}
+# Merging the UK with the primary dataset
+combined_merged_data <- rbind(merged_data, merged_data_UK)
 ```
 
 ### GDP per Capita Calculation
