@@ -14,7 +14,7 @@ library(readxl)
 library(magrittr)
 ```
 
-# Assignment 1: Data and Descriptive 
+# Assignment 1: Data and Descriptive
 
 This assignment aims to obtain, process, and analyze sub-national GDP and population data for a subset of European countries.
 The selected subset comprises the UK, Czech Republic, Turkey, and Finland.
