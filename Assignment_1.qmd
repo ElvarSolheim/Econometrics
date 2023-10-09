@@ -54,7 +54,7 @@ population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
 ```
 
 The UK was not included in the two datasets obtained from Eurostat, since the country is no longer a part of the EU.
-We got sub-regional GDP and population data for the UK through ....
+We got sub-regional GDP and population data for the UK through ...
 
 ```{r}
 # GDP data for UK
