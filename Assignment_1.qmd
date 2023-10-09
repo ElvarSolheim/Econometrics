@@ -32,35 +32,24 @@ Lastly, we will provide a descriptive analysis that provides insights into the c
 The datasets used in this assignment include sub-regional data on GDP and population for each of the European countries in the subset.
 The NUTS classification is a hierarchical system that enables cross-border statistical comparisons at various regional levels within the EU and UK.
 In this assignment we will use NUTS 3 data.
+This is the most detailed level of the NUTS classification system, dividing regions into smaller administrative units.
 
 We obtained data for Czech Republic, Turkey and Finland from Eurostat.
 We downloaded two sub-regional datasets, one providing GDP data (nama_10r_3gdp) and the other one providing population data (demo_r_pjanaggr3).
 The datasets contains data from year 2000 to 2020.
+We only needed a few of the variables included in the two datasets.
+We used the select()-function to pick the variables we wanted and gave them some more appropriate names.
+We ended up with three variables in each dataset; "year", "geo", "gdp"/"pop".
 
 ```{r}
 # GDP data for Czech Republic, Turkey and Finland
-gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") 
-```
-
-```{r}
-# Population data for Czech Republic, Turkey and Finland
-population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv")
-```
-
-We only needed a few of the variables included in the two datasets.
-We used the select()-function to pick the variables we wanted; time_period, geo and obs_value.
-When selecting the variables, we also gave "time-period" and "obs_value" more appropriate names.
-We ended up with the three variables "year", "geo" and "gdp" for the GDP dataset, and the three variables "year", "geo" and "pop" for the population dataset.
-
-```{r}
-# Selecting and renaming needed variables
-gdp_data <- gdp_data |>
+gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") |>
   select(year = TIME_PERIOD, geo, gdp = OBS_VALUE)
 ```
 
 ```{r}
-# Selecting and renaming needed variables
-population_data <- population_data |>
+# Population data for Czech Republic, Turkey and Finland
+population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
   select(year = TIME_PERIOD, geo, pop = OBS_VALUE)
 ```
 
@@ -79,9 +68,10 @@ population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx",
     sheet = "Table 6", skip = 1)
 ```
 
-To get the UK datasets in the same format as the datasets from Eurostat, we used the gather()-function to convert from wide to long format.
-With filter() and mutate() we created a "geo" variable, describing the sub-regions (NUTS 3).
-We used the select()-function to pick the same variables as we have in the datasets for the EU countries.
+To get the two UK datasets in the same format as the datasets from Eurostat, we used the gather()-function to convert the dataset from wide to long format.
+With filter() and mutate() we created a "geo" variable, describing the sub-regions.
+We used the select()-function to pick the same variables as we have in the datasets for the EU countries; "year", "geo", "gdp" and "pop".
+Lastly, we sorted the datasets by "geo".
 
 ```{r}
 # Reforming gdp_UK
@@ -89,7 +79,8 @@ gdp_UK <- gdp_UK %>%
   gather(year, gdp, -ITL, -`ITL code`, -`Region name`) %>%
   filter(ITL == "ITL3") %>%
   mutate(geo = `ITL code`) %>%
-  select(year, geo, gdp)
+  select(year, geo, gdp) %>%
+  arrange(geo)
 ```
 
 ```{r}
@@ -98,22 +89,41 @@ population_UK <- population_UK %>%
   gather(year, pop, -ITL, -`ITL code`, -`Region name`) %>%
   filter(ITL == "ITL3") %>%
   mutate(geo =`ITL code`) %>%
-  select(year, geo, pop)
+  select(year, geo, pop) %>%
+  arrange(geo)
 ```
 
-GDP_data_UK_pop \<- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx",\
-sheet = "Table 6", skip = 1) %\>%\
-gather(year, pop, -ITL, -\`ITL code\`, -\`Region name\`) %\>%\
-filter(ITL=="ITL3") %\>%\
-mutate(geo=\`ITL code\`) %\>%\
-select(geo,year,pop)
-
-We merged the two datasets for Czech Republic, Turkey and Finland with the two datasets for the UK.
-We named the dataset containing sub-regional GDP and population data for all the countries for "...".
+We merged the gdp dataset and the population dataset for Czech Republic, Turkey and Finland together.
+We did the same thing with the two datasets for UK.
+Finally, we merged the dataset for Czech Republic, Turkey and Finland with the dataset for the UK.
+We named the dataset containing sub-regional GDP and population data for all the countries for "main_dataset".
 
 ```{r}
-# Merging the datasets together 
+# Merging gdp dataset and population dataset for Czech Republic, Turkey and Finland
+merged_data <- gdp_data |>
+  left_join(population_data, join_by(year,geo))
+```
 
+```{r}
+# Merging gdp dataset and population dataset for UK
+merged_UK <- gdp_UK |>
+  left_join(population_UK, join_by(year,geo))
+```
+
+```{r}
+# Converting year to a charachter
+merged_data$year <- as.character(merged_data$year)
+merged_UK$year <- as.character(merged_UK$year)
+```
+
+```{r}
+# Merging all datasets to a main dataset
+main_data <- full_join(merged_data, merged_UK)
+```
+
+```{r}
+# Clean up
+rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 ```
 
 ### GDP per Capita Calculation
