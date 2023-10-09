@@ -143,7 +143,19 @@ In the end, we will discuss the computed Gini coefficients and reflect on the im
 
 ### Literature Review
 
+Regional inequality refers to the disparities in economic development, income, and other socio-economic indicators among different geographical regions within a country or across countries.
+
+We should care about regional inequality because it is essential for sustainable and inclusive development in the future.
+Regional inequality can have significant social, economic, and political implications.
+High levels can lead to issues like unequal distribution of resources, limited social mobility, and even political instability.
+Addressing regional inequality is important for ensuring that the benefits of economic growth are shared more equitably among all citizens.
+It is all about creating a more balanced and fair society.
+
 ### Gini Coefficient Calculation
+
+To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the NUTS 3 level GDP per capita data and the formula below:
+
+$GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
 
 ### Data Presentation
 
