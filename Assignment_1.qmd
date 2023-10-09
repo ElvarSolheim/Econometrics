@@ -111,7 +111,7 @@ merged_UK <- gdp_UK |>
 ```
 
 ```{r}
-# Converting year to a charachter
+# Converting "year" to characters
 merged_data$year <- as.character(merged_data$year)
 merged_UK$year <- as.character(merged_UK$year)
 ```
