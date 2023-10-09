@@ -128,9 +128,16 @@ rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 
 ### GDP per Capita Calculation
 
-To compute GDP per capita for each sub-region we used the formula:
+Now that our datasets are joined, we can createt a new variable for GDP per capita by dividing "GDP" column by the "pop" column.
+We do this by taking our main_data and using the mutate() - function, and the formula:\
 
 $y_{i} = \frac{GDP_{i}}{Population_{i}}$
+
+```{r}
+# adding GDP per capita in the main_data
+main_data <- main_data %>%
+  mutate(gdp_per_capita = gdp / pop)
+```
 
 ### Descriptive Analysis
 
