@@ -56,8 +56,7 @@ population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
 ```
 
 The UK was not included in the datasets obtained from Eurostat, since the country is no longer a part of the EU.
-We got sub-regional GDP and population data for the UK through Office for National Statistics.
-\
+We got sub-regional GDP and population data for the UK through Office for National Statistics.\
 UK use another classification system than EU, instead of NUTS they use ITL regions.
 These two classification systems match and we will further in the assignment refer to the regions in UK as NUTS.
 
