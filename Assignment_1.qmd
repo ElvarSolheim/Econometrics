@@ -12,6 +12,8 @@ editor: visual
 library(tidyverse)
 library(readxl)
 library(magrittr)
+library(dineq)
+library(ineq)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -166,9 +168,27 @@ It is all about creating a more balanced and fair society.
 
 ### Gini Coefficient Calculation
 
+```{r}
+main_data_2 <- main_data |>
+  mutate(id_nuts3 = geo,
+         id_nuts2 = substr(geo, 1,4),
+         id_nuts0 = substr(geo, 1, 2)
+         )
+```
+
 To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the NUTS 3 level GDP per capita data and the formula below:
 
 $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
+
+```{r}
+main_data_2 <- main_data_2 |>
+  filter(pop != "NA") |>
+  filter(pop != 0) |>
+  filter(gdp_per_capita != "NA") |>
+  group_by(id_nuts2, year) |>
+  mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop)) |>
+  ungroup()
+```
 
 ### Data Presentation
 
