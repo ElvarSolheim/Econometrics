@@ -32,16 +32,15 @@ Lastly, we will provide a descriptive analysis that provides insights into the c
 ### Data Acquisition
 
 The datasets used in this assignment include sub-regional data on GDP and population for each of the European countries in the subset.
-The NUTS classification is a hierarchical system that enables cross-border statistical comparisons at various regional levels within the EU and UK.
-In this assignment we will use NUTS 3 data.
-This is the most detailed level of the NUTS classification system, dividing regions into smaller administrative units.
+The NUTS classification is a hierarchical system that enables cross-border statistical comparisons at various regional levels within the EU.
+In this assignment we will download data at a NUTS 3 level.
 
 We obtained data for Czech Republic, Turkey and Finland from Eurostat.
 We downloaded two sub-regional datasets, one providing GDP data (nama_10r_3gdp) and the other one providing population data (demo_r_pjanaggr3).
 The datasets contains data from year 2000 to 2020.
 We only needed a few of the variables included in the two datasets.
 We used the select()-function to pick the variables we wanted and gave them some more appropriate names.
-We ended up with three variables in each dataset; "year", "geo", "gdp"/"pop".
+We ended up with three variables in each dataset; "year", "geo", and "gdp"/"pop".
 
 ```{r}
 # GDP data for Czech Republic, Turkey and Finland
@@ -56,8 +55,11 @@ population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
   select(year = TIME_PERIOD, geo, pop = OBS_VALUE)
 ```
 
-The UK was not included in the two datasets obtained from Eurostat, since the country is no longer a part of the EU.
-We got sub-regional GDP and population data for the UK through ....
+The UK was not included in the datasets obtained from Eurostat, since the country is no longer a part of the EU.
+We got sub-regional GDP and population data for the UK through Office for National Statistics.
+\
+UK use another classification system than EU, instead of NUTS they use ITL regions.
+These two classification systems match and we will further in the assignment refer to the regions in UK as NUTS.
 
 ```{r}
 # GDP data for UK
@@ -102,13 +104,13 @@ Finally, we merged the dataset for Czech Republic, Turkey and Finland with the d
 We named the dataset containing sub-regional GDP and population data for all the countries for "main_dataset".
 
 ```{r}
-# Merging gdp dataset and population dataset for Czech Republic, Turkey and Finland
+# Merging gdp_dataset with population_dataset 
 merged_data <- gdp_data |>
   left_join(population_data, join_by(year,geo))
 ```
 
 ```{r}
-# Merging gdp dataset and population dataset for UK
+# Merging gdp_UK with population_UK 
 merged_UK <- gdp_UK |>
   left_join(population_UK, join_by(year,geo))
 merged_UK$geo <- gsub("TL", "UK", merged_UK$geo)
@@ -121,34 +123,61 @@ merged_UK$year <- as.character(merged_UK$year)
 ```
 
 ```{r}
-# Merging all datasets to a main dataset
-main_data <- full_join(merged_data, merged_UK)
+# Merging merged_data with merged_UK to a main dataset
+main_data <- full_join(merged_data, merged_UK) 
 ```
 
 ```{r}
+# We only want data from year 2000 - 2020 for the UK dataset
 main_data <- main_data %>%
   subset(main_data$year >= 2000 & main_data$year <= 2020)
 ```
 
 ```{r}
-# clean up
+# Clean up
 rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 ```
 
 ### GDP per Capita Calculation
 
-Now that our datasets are joined, we can createt a new variable for GDP per capita by dividing "GDP" column by the "pop" column.
-We do this by taking our main_data and using the mutate() - function, and the formula:\
+Now that our datasets are joined, we can create a new variable for GDP per capita by dividing "GDP" column by the "pop" column.
+We do this by taking our main_data and using the mutate() - function, and the formula:
 
 $y_{i} = \frac{GDP_{i}}{Population_{i}}$
 
 ```{r}
-# adding GDP per capita in the main_data
+# Adding GDP per capita in the main_data
 main_data <- main_data %>%
   mutate(gdp_per_capita = gdp / pop)
 ```
 
 ### Descriptive Analysis
+
+GDP per capita gives an average representation of the economic well-being of individuals in a country, indicating the amount of economic output generated, by each person.
+it is often used as an indicator of the standard living and economic development within a country.
+
+We will take a closer look at the components of GDP per capita.
+According to the metadata for the population dataset downloaded form Eurostat, the population in the dataset is given at the end of the calendar year and includes statistics on live births and deaths during the year.
+At a NUTS 3 level population is broken down by sex and three age groups (0-14, 15-64 and 65+).
+The metadata for the gdp dataset from Eurostat ...++ metadata for the UK datasets gdp and population... ++
+
+Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
+We use the summary() function to get a summary of each variable in the dataset.
+The summary contains minimum value, median, mean, quartiles and maximum value, as well as numbers of NA\`s.
+
+```{r}
+# minimum, mean, maximum
+summary(main_data)
+```
+
+We will take a closer look at minimum and maximum value, as well as the mean.
+The summary function shows a big difference between minimum and maximum for both gdp and population, which indicates big variation between the different regions.
+
+Standard deviation tells us the amount of variation.
+
+```{r}
+# standard deviation
+```
 
 ## Part B: Regional Inequity
 
@@ -169,6 +198,12 @@ It is all about creating a more balanced and fair society.
 
 ### Gini Coefficient Calculation
 
+To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the formula below:
+
+$GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
+
+To get the NUTS 2 level using our main dataset with NUTS 3 level we ...
+
 ```{r}
 main_data_2 <- main_data |>
   mutate(id_nuts3 = geo,
@@ -176,10 +211,6 @@ main_data_2 <- main_data |>
          id_nuts0 = substr(geo, 1, 2)
          )
 ```
-
-To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the NUTS 3 level GDP per capita data and the formula below:
-
-$GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
 
 ```{r}
 main_data_2 <- main_data_2 |>
