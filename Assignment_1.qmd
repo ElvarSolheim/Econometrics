@@ -108,6 +108,7 @@ merged_data <- gdp_data |>
 # Merging gdp dataset and population dataset for UK
 merged_UK <- gdp_UK |>
   left_join(population_UK, join_by(year,geo))
+merged_UK$geo <- gsub("TL", "uk", merged_UK$geo)
 ```
 
 ```{r}
@@ -122,7 +123,12 @@ main_data <- full_join(merged_data, merged_UK)
 ```
 
 ```{r}
-# Clean up
+main_data <- main_data %>%
+  subset(main_data$year >= 2000 & main_data$year <= 2020)
+```
+
+```{r}
+# clean up
 rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 ```
 
