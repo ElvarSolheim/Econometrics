@@ -108,7 +108,7 @@ merged_data <- gdp_data |>
 # Merging gdp dataset and population dataset for UK
 merged_UK <- gdp_UK |>
   left_join(population_UK, join_by(year,geo))
-merged_UK$geo <- gsub("TL", "uk", merged_UK$geo)
+merged_UK$geo <- gsub("TL", "UK", merged_UK$geo)
 ```
 
 ```{r}
