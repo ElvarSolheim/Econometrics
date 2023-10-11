@@ -56,8 +56,7 @@ population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
 ```
 
 The UK was not included in the datasets obtained from Eurostat, since the country is no longer a part of the EU.
-We got sub-regional GDP and population data for the UK through Office for National Statistics.
-\
+We got sub-regional GDP and population data for the UK through Office for National Statistics.\
 UK use another classification system than EU, instead of NUTS they use ITL regions.
 These two classification systems match and we will further in the assignment refer to the regions in UK as NUTS.
 
@@ -177,7 +176,24 @@ Standard deviation tells us the amount of variation.
 
 ```{r}
 # standard deviation
+# the column names for which we want to calculate the sd
+columns_of_interest <- c("gdp", "pop", "gdp_per_capita")
+# Store it in a empty vector
+std_deviations <- numeric(length(columns_of_interest))
+# Calculating the standard deviation
+for (i in 1:length(columns_of_interest)) {
+  col_name <- columns_of_interest[i]
+  std_deviations[i] <- sd(main_data[[col_name]], na.rm = TRUE)
+}
+# Print the standard deviations
+std_deviations
 ```
+
+gdp = 13428.01
+
+pop = 830187
+
+gdp_per_capita = 0,02497901
 
 ## Part B: Regional Inequity
 
