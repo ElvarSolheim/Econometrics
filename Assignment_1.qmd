@@ -227,6 +227,12 @@ main_data_2 <- main_data_2 %>%
   select(year, id_nuts3, id_nuts2, id_nuts0, gdp, pop, gdp_per_capita, gini_n2, -geo)
 ```
 
+```{r}
+main_data_nuts2 <- main_data_2 |>
+ group_by(id_nuts2, year) |>
+  slice(1)
+```
+
 ### Data Presentation
 
 ### Discussion
