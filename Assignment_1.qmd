@@ -14,6 +14,7 @@ library(readxl)
 library(magrittr)
 library(dineq)
 library(ineq)
+library(ggplot2)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -180,7 +181,7 @@ Standard deviation tells us the amount of variation.
 columns_of_interest <- c("gdp", "pop", "gdp_per_capita")
 # Store it in a empty vector
 std_deviations <- numeric(length(columns_of_interest))
-# Calculating the standard deviation
+# Calculating the standard deviation, and removing "NA"
 for (i in 1:length(columns_of_interest)) {
   col_name <- columns_of_interest[i]
   std_deviations[i] <- sd(main_data[[col_name]], na.rm = TRUE)
@@ -250,5 +251,15 @@ main_data_nuts2 <- main_data_2 |>
 ```
 
 ### Data Presentation
+
+```{r}
+# creating a scatterplot
+ggplot(data = main_data, aes(x = gdp, y = pop, label = gdp_per_capita)
+       ) +
+  geom_point(size = 0.1) +
+  labs(x = "gdp", y = "pop", title = "scatterplot of gdp and pop") +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal()
+```
 
 ### Discussion
