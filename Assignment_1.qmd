@@ -46,6 +46,7 @@ We ended up with three variables in each dataset; "year", "geo", "gdp"/"pop".
 ```{r}
 # GDP data for Czech Republic, Turkey and Finland
 gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") |>
+  filter(unit == "MIO_EUR") |>
   select(year = TIME_PERIOD, geo, gdp = OBS_VALUE)
 ```
 
