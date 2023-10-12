@@ -316,6 +316,16 @@ subset_nuts2data <- main_data_nuts2 %>%
   filter(grepl("2018", year))
 ```
 
+Within this subset, we focused on NUTS2 regions in four countries: Czechia, Turkey, the United Kingdom (UK), and Finland.
+Our aim was to explore potential trends in income inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
+
+To visualize these trends more effectively for each region, we employed a scatterplot.
+In this plot, we assigned different colors to represent the Gini coefficients of each region.
+This allowed us to examine and compare how income inequality may vary concerning population size for each of the mentioned countries.
+
+To create these visualizations, we utilized the versatile ggplot2 library in R, enabling us to analyze and depict the data effectively..
+
+
 ```{r}
 # Create the scatterplot
 scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = seq(1:80), color = id_nuts2)) +
