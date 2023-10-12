@@ -325,7 +325,6 @@ This allowed us to examine and compare how income inequality may vary concerning
 
 To create these visualizations, we utilized the versatile ggplot2 library in R, enabling us to analyze and depict the data effectively..
 
-
 ```{r}
 # Create the scatterplot
 scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = seq(1:80), color = id_nuts2)) +
