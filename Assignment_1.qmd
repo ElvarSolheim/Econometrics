@@ -15,6 +15,8 @@ library(magrittr)
 library(dineq)
 library(ineq)
 library(ggplot2)
+library(scales)
+library(cowplot)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -268,11 +270,19 @@ ggplot(data = main_data, aes(x = gdp, y = pop, label = gdp_per_capita)
   theme_minimal()
 ```
 
-Subset UK from main data:
+Subset 2018 from main data:
 
 ```{r}
-subset_data_UK <- main_data %>%
-  filter(grepl("^UK", geo) & year == 2018)
+subset_nuts2data <- main_data_nuts2 %>%
+  filter(grepl("2018", year))
+```
+
+```{r}
+# Create the scatterplot
+scatter_plot <- ggplot(subset_nuts2data, aes(x = seq(1:80), y = pop, color = id_nuts2)) +
+  geom_point() +
+  labs(x = "NUTS2 Region", y = "Population")
+plot_grid(scatter_plot)
 ```
 
 Subset UK from nuts2:
@@ -280,6 +290,14 @@ Subset UK from nuts2:
 ```{r}
 subset_nuts2data_UK <- main_data_nuts2 %>%
   filter(grepl("^UK", id_nuts2) & year == 2018)
+```
+
+```{r}
+# Create the scatterplot
+scatter_plot <- ggplot(subset_nuts2data_UK, aes(x = seq(1:41), y = pop, color = id_nuts2)) +
+  geom_point() +
+  labs(x = "NUTS2 Region", y = "Population")
+plot_grid(scatter_plot)
 ```
 
 ### Discussion
