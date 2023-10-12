@@ -165,12 +165,43 @@ it is often used as an indicator of the standard living and economic development
 
 ### Descriptive Analysis
 
+```{r}
+# Load the knitr library if you haven't already
+library(knitr)
+
+# Create subsets for each country and exclude "year" and "geo" columns
+data_FI <- subset(main_data, grepl("^FI", geo))
+data_UK <- subset(main_data, grepl("^UK", geo))
+data_CZ <- subset(main_data, grepl("^CZ", geo))
+data_TR <- subset(main_data, grepl("^TR", geo))
+
+# Generate summary statistics for each country
+summary_FI <- summary(data_FI[, !(names(data_FI) %in% c("year", "geo"))])
+summary_UK <- summary(data_UK[, !(names(data_UK) %in% c("year", "geo"))])
+summary_CZ <- summary(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))])
+summary_TR <- summary(data_TR[, !(names(data_TR) %in% c("year", "geo"))])
+
+# Create tables using kable
+kable(summary_FI, caption = "Summary Statistics for Finland (FI)")
+kable(summary_UK, caption = "Summary Statistics for United Kingdom (UK)")
+kable(summary_CZ, caption = "Summary Statistics for Czech Republic (CZ)")
+kable(summary_TR, caption = "Summary Statistics for Turkey (TR)")
+
+```
+
 Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
 We use the summary() fnction to get a summary of each variable in the dataset.
 The summary contains minimum value, median, mean, quartiles and maximum value, as well as numbers of NA\`s.
 
 ```{r}
-summary(main_data)
+# Exclude "geo" and "year" columns
+data_subset <- main_data[, !(names(main_data) %in% c("geo", "year"))]
+
+# Generate a summary for the remaining columns
+data_summary <- summary(data_subset)
+
+# Print the summary
+print(data_summary)
 ```
 
 We will take a closer look at minimum and maximum value, as well as the median and mean.
