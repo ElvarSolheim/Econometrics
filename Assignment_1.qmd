@@ -219,7 +219,7 @@ Regional inequality refers to the disparities in economic development, income, a
 We should care about regional inequality because it is essential for sustainable and inclusive development in the future.
 Regional inequality can have significant social, economic, and political implications.
 It is an important topic that raises questions regarding the consequences and how we should deal with it.
-Focusing on regional inequality is important for both the economy and social welfare in general @lessmann2017 .
+Focusing on regional inequality is important for both the economy and social welfare in general [@lessmann2017] .
 Addressing regional inequality is important for ensuring that the benefits of economic growth are shared more equitably among all citizens.
 It is all about creating a more balanced and fair society.
 
@@ -227,7 +227,7 @@ It is all about creating a more balanced and fair society.
 
 Measuring regional inequality is challenging because it is difficult to compare regions of different sizes.
 The number of regions by each country also varies in our dataset.
-To deal with this issue, we can use a population-weighted Gini coefficient that accounts for different sizes of the regions @lessmann2017 .
+To deal with this issue, we can use a population-weighted Gini coefficient that accounts for different sizes of the regions [@lessmann2017] .
 
 To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the formula below:
 
