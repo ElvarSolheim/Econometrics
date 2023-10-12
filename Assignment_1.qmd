@@ -259,7 +259,7 @@ main_data_nuts2 <- main_data_2 |>
 ### Data Presentation
 
 ```{r}
-# creating a scatterplot
+# creating a scatterplot of the main_data to show how gdp per capita relates to the population and gdp in each region
 ggplot(data = main_data, aes(x = gdp, y = pop, label = gdp_per_capita)
        ) +
   geom_point(size = 0.1) +
