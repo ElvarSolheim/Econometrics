@@ -315,7 +315,7 @@ To visualize these trends more effectively for each region, we employed a scatte
 In this plot, we assigned different colors to represent the Gini coefficients of each region.
 This allowed us to examine and compare how income inequality may vary concerning population size for each of the mentioned countries.
 
-To create these visualizations, we utilized the versatile ggplot2 library in R, enabling us to analyze and depict the data effectively.
+To create these visualizations, we utilized the versatile ggplot2 library in R, enabling us to analyze and depict the data effectively..
 
 ```{r}
 # Create the scatterplot
