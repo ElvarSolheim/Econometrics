@@ -334,22 +334,45 @@ scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = seq(1:80), color = id_
 plot_grid(scatter_plot)
 ```
 
-Without outlier from Turkie\
+```{r}
+# Create the scatterplot
+scatter_plot1 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")
+  
+# Add the regression line
+scatter_plot <- scatter_plot +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
+  
+scatter_plot
+```
+
+Without outlier from Turkie and the UK\
 
 ```{r}
-regression_model <- lm(seq(1:80) ~ pop, data = subset_nuts2data)
-
 # Create the scatterplot
-scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = seq(1:80), color = id_nuts2)) +
+scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_abline(intercept = coef(regression_model)[1], slope = coef(regression_model)[2]) +
-  labs(x = "Population", y = "NUTS2 Region") +
-  scale_x_continuous(limits = c(0, 6000000))
-plot_grid(scatter_plot)
+  labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region") +
+  scale_x_continuous(limits = c(0, 6000000)
+                     )
+# Add the regression line with y-axis limits
+scatter_plot <- scatter_plot +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    linetype = "dashed",
+    color = "black",
+    aes(ymax = 0.2)  # Set the y-axis limit for the regression line
+  )
+
+scatter_plot
+  
+scatter_plot
 ```
 
 ```{r}
-summary(regression_model)
+summary(scatter_plot2)
 ```
 
 Subset UK from nuts2:
@@ -360,14 +383,15 @@ subset_nuts2data_UK <- main_data_nuts2 %>%
 ```
 
 ```{r}
-
-regression_model_UK <- lm(seq(1:41) ~ pop, data = subset_nuts2data_UK)
 # Create the scatterplot
-scatter_plot <- ggplot(subset_nuts2data_UK, aes(x = pop, y = seq(1:41), color = id_nuts2)) +
+scatter_plot3 <- ggplot(subset_nuts2data_UK, aes(x = pop, y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_abline(intercept = coef(regression_model_UK)[1], slope = coef(regression_model_UK)[2]) +
-  labs(x = "Population", y = "NUTS2 Region")
-plot_grid(scatter_plot)
+  labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")  
+# Add the regression line
+scatter_plot <- scatter_plot +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
+  
+scatter_plot
 ```
 
 ```{r}
