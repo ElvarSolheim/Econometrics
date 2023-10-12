@@ -328,15 +328,7 @@ To create these visualizations, we utilized the versatile ggplot2 library in R, 
 
 ```{r}
 # Create the scatterplot
-scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = seq(1:80), color = id_nuts2)) +
-  geom_point() +
-  labs(x = "Population", y = "NUTS2 Region")
-plot_grid(scatter_plot)
-```
-
-```{r}
-# Create the scatterplot
-scatter_plot1 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")
   
@@ -345,6 +337,17 @@ scatter_plot <- scatter_plot +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
   
 scatter_plot
+# Create the scatterplot
+scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")
+  
+# Add the regression line
+scatter_plot <- scatter_plot +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
+  
+scatter_plot
+
 ```
 
 Without outlier from Turkie and the UK\
@@ -354,25 +357,19 @@ Without outlier from Turkie and the UK\
 scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region") +
-  scale_x_continuous(limits = c(0, 6000000)
-                     )
-# Add the regression line with y-axis limits
-scatter_plot <- scatter_plot +
+  scale_x_continuous(limits = c(0, 6000000)) +
+  scale_y_continuous(limits = c(0, 0.3))  # Set the y-axis limits to 0.3
+
+# Add the regression line
+scatter_plot <- scatter_plot2 +
   geom_smooth(
     method = "lm",
     se = FALSE,
     linetype = "dashed",
-    color = "black",
-    aes(ymax = 0.2)  # Set the y-axis limit for the regression line
+    color = "black"
   )
 
 scatter_plot
-  
-scatter_plot
-```
-
-```{r}
-summary(scatter_plot2)
 ```
 
 Subset UK from nuts2:
@@ -392,43 +389,7 @@ scatter_plot <- scatter_plot +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
   
 scatter_plot
+
 ```
-
-```{r}
-summary(regression_model_UK)
-```
-
-1.  **Residuals**: This section provides statistics about the residuals, which are the differences between the observed values and the values predicted by the model.
-    It includes the minimum, 1st quartile (1Q), median, 3rd quartile (3Q), and maximum values of the residuals.
-
-2.  **Coefficients**: This section displays information about the coefficients of the linear regression model:
-
-    -   **Estimate**: This is the estimated value of the intercept and the slope.
-        In your case, the estimated intercept is approximately 23 (2.3e+01) and the estimated slope is approximately -5.436e-06.
-
-    -   **Std. Error**: This represents the standard errors of the coefficients.
-
-    -   **t value**: The t-value measures the number of standard errors the estimated coefficient is away from zero.
-        It is used to test the significance of the coefficient.
-
-    -   **Pr(\>\|t\|)**: This is the p-value associated with the t-statistic.
-        It indicates the probability of observing a t-statistic as extreme as the one computed if the true coefficient were zero.
-
-    -   **Signif. codes**: These symbols (**, *, .) indicate the level of significance of the coefficients. In this case, '***' indicates high significance for the intercept, while ' ' (a space) suggests that the 'pop' coefficient is not statistically significant.
-
-3.  **Residual standard error**: This is the standard deviation of the residuals, which measures the spread of the residuals around the regression line.
-
-4.  **Multiple R-squared**: This is a measure of the goodness of fit.
-    It tells you how well the independent variable(s) explain the variation in the dependent variable.
-    In your case, the adjusted R-squared is very close to zero, which means that 'pop' explains very little of the variation in 'seq(1:41)'.
-
-5.  **F-statistic**: This is a test for overall significance of the model.
-    It assesses whether your model, with all its coefficients, is better than a model with no predictors.
-    In this case, the F-statistic is relatively low, indicating that the model as a whole may not be significant.
-
-6.  **p-value**: This is the p-value associated with the F-statistic.
-    In your output, it is relatively high (0.5126), indicating that the model as a whole may not be statistically significant.
-
-In summary, the regression model doesn't seem to provide a strong fit for the data, and the 'pop' variable does not appear to be a significant predictor of 'seq(1:41)' based on the p-values and the low adjusted R-squared value.
 
 ### Discussion
