@@ -275,10 +275,10 @@ subset_data_UK <- main_data %>%
   filter(grepl("^UK", geo) & year == 2018)
 ```
 
-Subset UK form nuts2:
+Subset UK from nuts2:
 
 ```{r}
-subset_data_UK <- main_data_nuts2 %>%
+subset_nuts2data_UK <- main_data_nuts2 %>%
   filter(grepl("^UK", id_nuts2) & year == 2018)
 ```
 
