@@ -173,7 +173,7 @@ The summary contains minimum value, median, mean, quartiles and maximum value, a
 
 ```{r}
 # minimum, mean, maximum
-vt(main_data)
+summary(main_data)
 ```
 
 We will take a closer look at minimum and maximum value, as well as the mean.
