@@ -159,10 +159,13 @@ main_data <- main_data %>%
 GDP per capita gives an average representation of the economic well-being of individuals in a country, indicating the amount of economic output generated, by each person.
 it is often used as an indicator of the standard living and economic development within a country.
 
-According to the metadata for the population dataset downloaded form Eurostat, the population in the dataset is given at the end of the calendar year and includes statistics on live births and deaths during the year.
-At a NUTS 3 level population is broken down by sex and three age groups (0-14, 15-64 and 65+).
-The metadata for the gdp dataset from Eurostat ...++ \
-metadata for the UK datasets gdp and population... ++
+According to the metadata for the population dataset downloaded form Eurostat, the population includes the number of vital events (live births and deaths) in a region each year.
+The population is broken down by sex, three age groups (0-14, 15-64 and 65+), and NUTS 3 regions.
+
+The GDP datset from Eurostat contain GDP at current market prices by NUTS 3 regions.
+The metadata ...
+
+The metadata for the UK dataset ...
 
 Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
 We use the summary() function to get a summary of each variable in the dataset.
@@ -170,7 +173,7 @@ The summary contains minimum value, median, mean, quartiles and maximum value, a
 
 ```{r}
 # minimum, mean, maximum
-summary(main_data)
+vt(main_data)
 ```
 
 We will take a closer look at minimum and maximum value, as well as the mean.
