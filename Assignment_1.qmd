@@ -290,41 +290,21 @@ gini_nuts0 |>
   kable()
 ```
 
-```{r}
-# creating a scatterplot of the main_data to show how gdp per capita relates to the population and gdp in each region
-ggplot(data = main_data, aes(x = gdp, y = pop, label = gdp_per_capita)
-       ) +
-  geom_point(size = 0.1) +
-  labs(x = "gdp", y = "pop", title = "scatterplot of gdp and pop") +
-  scale_color_brewer(palette = "Set1") +
-  theme_minimal()
-```
+Subset 2018 from main_data_nuts2:
 
-```{r}
-# creating a scatterplot of the main_data to show how gdp per capita relates to the population and gdp in each region
-ggplot(data = main_data, aes(x = gdp, y = pop, label = gdp_per_capita)
-       ) +
-  geom_point(size = 0.1) +
-  labs(x = "gdp", y = "pop", title = "scatterplot of gdp and pop") +
-  scale_color_brewer(palette = "Set1") +
-  theme_minimal()
-```
-
-Subset 2018 from main data:
+Within this subset, we focused on NUTS2 regions in four countries: Czechia, Turkey, the United Kingdom (UK), and Finland.
+Our aim was to explore potential trends in income inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
 
 ```{r}
 subset_nuts2data <- main_data_nuts2 %>%
   filter(grepl("2018", year))
 ```
 
-Within this subset, we focused on NUTS2 regions in four countries: Czechia, Turkey, the United Kingdom (UK), and Finland.
-Our aim was to explore potential trends in income inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
-
 To visualize these trends more effectively for each region, we employed a scatterplot.
 In this plot, we assigned different colors to represent the Gini coefficients of each region.
 This allowed us to examine and compare how income inequality may vary concerning population size for each of the mentioned countries.
 
-To create these visualizations, we utilized the versatile ggplot2 library in R, enabling us to analyze and depict the data effectively..
+To create these visualizations, we utilized the ggplot2 library in R, enabling us to analyze and depict the data effectively.
 
 ```{r}
 # Create the scatterplot
@@ -335,22 +315,12 @@ scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nu
 # Add the regression line
 scatter_plot <- scatter_plot +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
-  
-scatter_plot
-# Create the scatterplot
-scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
-  geom_point() +
-  labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")
-  
-# Add the regression line
-scatter_plot <- scatter_plot +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
-  
-scatter_plot
 
 ```
 
-Without outlier from Turkie and the UK\
+We opted to exclude a specific NUTS2 region within the UK, located in London, due to its unusually high level of inequality, which deviated significantly from the patterns observed in other regions.
+This decision was made to ensure a more accurate and representative analysis.
+Additionally, we omitted Istanbul from the dataset, primarily because it is significantly larger than any other city in the dataset, and its unique characteristics could potentially skew the overall analysis:\
 
 ```{r}
 # Create the scatterplot
@@ -361,7 +331,7 @@ scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_n
   scale_y_continuous(limits = c(0, 0.3))  # Set the y-axis limits to 0.3
 
 # Add the regression line
-scatter_plot <- scatter_plot2 +
+scatter_plot2 <- scatter_plot2 +
   geom_smooth(
     method = "lm",
     se = FALSE,
@@ -369,15 +339,19 @@ scatter_plot <- scatter_plot2 +
     color = "black"
   )
 
-scatter_plot
+scatter_plot2
 ```
 
-Subset UK from nuts2:
+Subset UK from nuts2:\
+We also created a subset of the 'main_data_nuts2' specifically for the United Kingdom (UK) due to its extensive dataset.
+Our objective was to closely examine whether the trend in the Gini coefficient was consistent within the UK, as it was for all the NUTS2 regions across various countries.
 
 ```{r}
 subset_nuts2data_UK <- main_data_nuts2 %>%
   filter(grepl("^UK", id_nuts2) & year == 2018)
 ```
+
+To achieve this, we generated a new scatterplot using the 'ggplot()' function.
 
 ```{r}
 # Create the scatterplot
@@ -385,11 +359,23 @@ scatter_plot3 <- ggplot(subset_nuts2data_UK, aes(x = pop, y = gini_n2, color = i
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")  
 # Add the regression line
-scatter_plot <- scatter_plot +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
+scatter_plot3 <- scatter_plot3 +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    linetype = "dashed",
+    color = "black"
+  )
   
-scatter_plot
+scatter_plot3
 
 ```
 
 ### Discussion
+
+Scatterplott\
+Upon reviewing the scatterplot, a noticeable trend emerges: the regions in Finland and the Czech Republic exhibit notably lower levels of inequality compared to those in the UK and Turkey.
+Furthermore, a key observation is the inverse relationship between population and inequality within each country, with this trend being particularly pronounced in Turkey.\
+In the scatterplot for the UK, a unique trend emerged.
+Unlike the data for all other countries, we observed a slightly higher level of inequality in larger regions.
+This intriguing finding might be attributed to the fact that larger cities in the UK tend to exhibit a wider income gap between the affluent and the less fortunate.
