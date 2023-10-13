@@ -165,10 +165,11 @@ it is often used as an indicator of the standard living and economic development
 
 ### Descriptive Analysis
 
-```{r}
-# Load the knitr library if you haven't already
-library(knitr)
+Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
+First, we will summarize the descriptive statistics for each country.
+The summary contains minimum value, median, mean, quartiles and maximum value for each country.
 
+```{r}
 # Create subsets for each country and exclude "year" and "geo" columns
 data_FI <- subset(main_data, grepl("^FI", geo))
 data_UK <- subset(main_data, grepl("^UK", geo))
@@ -210,34 +211,6 @@ This suggests significant disparities in economic well-being and population size
 The GDP ranges from 1,702 to 61,602, demonstrating moderate variability.
 The population size also varies, with a minimum of 294,896 and a maximum of 1,369,332.
 The average GDP per capita is 0.0130, indicating a moderate level of economic well-being on average.
-
-Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
-We use the summary() fnction to get a summary of each variable in the dataset.
-The summary contains minimum value, median, mean, quartiles and maximum value, as well as numbers of NA\`s.
-
-```{r}
-# Exclude "geo" and "year" columns
-data_subset <- main_data[, !(names(main_data) %in% c("geo", "year"))]
-
-# Generate a summary for the remaining columns
-data_summary <- summary(data_subset)
-
-# Print the summary
-print(data_summary)
-```
-
-We will take a closer look at minimum and maximum value, as well as the median and mean.
-For the GDP variable, we have a big difference between the minimum (57.56) and maximum (242729.95) value.
-This indicates great variation in the GDP among the regions.
-We have both regions with very small GDP and regions with very high GDP.
-We see that the mean is greater than the median (8820.94\>5979.00).
-This suggest that there is some quite rich regions pulling the average up.
-There is also a big difference between minimum (19220) and maximum (15067724) value for the population variable, which indicates great variation in the size of the regions.
-The mean is also greater than the median for the population (493610\> 331108) .
-Some big regions pulling the average up.
-The variation in both GDP and population means that is also a great spread in the GDP per capita.
-The minimum value is 0.00160 and the maximum value 0.41360, with a mean at 0.02130.
-To summarize, there is great variation in the dataset.
 
 We use standard deviation to measure the spread in GDP, population and GDP per capita.
 The standard deviation is 13428.01 for the GDP variable and 830187 for the population variable.
@@ -370,27 +343,7 @@ However, there is no recorded minimum (0), highlighting the absence of perfect i
 **United Kingdom (UK):** The United Kingdom experiences the highest income inequality among the studied countries, with a mean Gini coefficient of 0.0917.
 The variance is substantial (0.0067), signifying a wide range of income disparities.
 The maximum Gini coefficient observed is 0.4925, while there is no recorded minimum (0).
-The UK's income distribution is characterized by a significant degree of inequality.**Czech Republic (CZ):** Czech Republic exhibits relatively low income inequality, with a mean Gini coefficient of 0.0131.
-The data has low variance (0.0002), suggesting a relatively stable income distribution.
-The maximum Gini coefficient observed is 0.0353, while there is no recorded minimum (0).
-This indicates a fairly equitable income distribution within the country.
-
-**Finland (FI):** In Finland, the Gini coefficient has a higher mean value of 0.0282, indicating slightly more income inequality compared to the Czech Republic.
-The variance is also higher (0.0006), suggesting more variability in income distribution.
-The maximum Gini coefficient observed is 0.0708, and there is no recorded minimum (0).
-Finland's income distribution is relatively equitable but slightly more diverse than that of the Czech Republic.
-
-**Turkey (TR):** Turkey displays a higher level of income inequality, with a mean Gini coefficient of 0.0544.
-The data exhibits greater variance (0.0015), indicating significant income disparities.
-The maximum Gini coefficient observed is 0.1642, emphasizing the presence of considerable income inequality within the country.
-However, there is no recorded minimum (0), highlighting the absence of perfect income equality.
-
-**United Kingdom (UK):** The United Kingdom experiences the highest income inequality among the studied countries, with a mean Gini coefficient of 0.0917.
-The variance is substantial (0.0067), signifying a wide range of income disparities.
-The maximum Gini coefficient observed is 0.4925, while there is no recorded minimum (0).
 The UK's income distribution is characterized by a significant degree of inequality.
-
-**Subset 2018 from main_data_nuts2:**
 
 #### Subset 2018 from main_data_nuts2:
 
@@ -445,7 +398,8 @@ scatter_plot2 <- scatter_plot2 +
 scatter_plot2
 ```
 
-Subset UK from nuts2:\
+#### Subset UK from nuts2:
+
 We also created a subset of the 'main_data_nuts2' specifically for the United Kingdom (UK) due to its extensive dataset.
 Our objective was to closely examine whether the trend in the Gini coefficient was consistent within the UK, as it was for all the NUTS2 regions across various countries.
 
