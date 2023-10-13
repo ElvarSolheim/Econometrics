@@ -190,31 +190,31 @@ kable(summary_TR, caption = "Summary Statistics for Turkey (TR)")
 
 ```
 
-**Turkey (TR):** Turkey exhibits a broad range of economic performance.
+Turkey (TR) exhibits a broad range of economic performance.
 The country's GDP varies significantly, with a minimum GDP of 196.8 and a maximum GDP of 242,730.0.
 The population size is also diverse, with a minimum population of 74,412 and a maximum population of 15,067,724.
 The average GDP per capita is relatively low, at 0.0061.
 This suggests that there is substantial diversity in economic well-being and population size in Turkey.
 
-**Finland (FI):** In contrast, Finland showcases a more homogenous economic landscape.
+In contrast, Finland (FI) showcases a more homogenous economic landscape.
 The country's GDP is less variable, ranging from 57.56 to 95,458.36.
 The population size, although not as extensive as Turkey, still exhibits diversity, with a minimum of 25,706 and a maximum of 1,671,024.
 The average GDP per capita is 0.0312, reflecting a relatively higher economic well-being on average.
 
-**United Kingdom (UK):** The United Kingdom presents a diverse economic environment.
+The United Kingdom (UK) presents a diverse economic environment.
 While the minimum GDP is 320, it reaches a high of 117,051.
 Population size varies from 19,220 to 1,195,672.
 The UK exhibits the highest average GDP per capita among the studied countries, standing at 0.0261.
 This suggests significant disparities in economic well-being and population size within the United Kingdom.
 
-**Czech Republic (CZ):** Czech Republic's economic landscape falls between Turkey and Finland.
+The Czech Republic's (CZ) economic landscape falls between Turkey and Finland.
 The GDP ranges from 1,702 to 61,602, demonstrating moderate variability.
 The population size also varies, with a minimum of 294,896 and a maximum of 1,369,332.
 The average GDP per capita is 0.0130, indicating a moderate level of economic well-being on average.
 
 **Standard deviation**
 
-the standard deviations help us understand the degree of variability in GDP, population, and GDP per capita across the dataset, we use the std_deviation() - function to calculate this.
+The standard deviations help us understand the degree of variability in GDP, population, and GDP per capita across the dataset, we use the std_deviation() - function to calculate this.
 
 ```{r}
 # standard deviation
@@ -231,18 +231,16 @@ for (i in 1:length(columns_of_interest)) {
 std_deviations
 ```
 
-the standard deviations for these variables tell us:
-
-**GDP (Gross Domestic Product):** The standard deviation for GDP is approximately 13,428.01.
+The standard deviation for GDP is approximately 13,428.01.
 This indicates a significant amount of variation in GDP values across the dataset.
 A high standard deviation suggests that GDP values are dispersed or spread out from the mean.
 In this context, it means that the GDP values for regions within the dataset vary considerably, with some regions having very high GDPs and others having lower GDPs.
 
-**Population (Pop):** The standard deviation for population is approximately 830,187.
+The standard deviation for population (pop) is approximately 830,187.
 This suggests a substantial degree of variation in population sizes among the regions within the dataset.
 The large standard deviation indicates that some regions have significantly larger populations than others.
 
-**GDP per Capita:** The standard deviation for GDP per capita is approximately 0.02497833.
+The standard deviation for GDP per capita is approximately 0.02497833.
 It is a relatively low value compared to the other variables.
 This implies that the GDP per capita values across the regions are less dispersed and closer to the mean.
 In this context, it indicates that there is less variation in economic well-being among regions in terms of GDP per capita.
@@ -335,28 +333,24 @@ gini_nuts0 |>
   kable()
 ```
 
-From the table we see that the Czech Republic has the lowest mean, indicating lowest regional inequality on average.
-Finland follows with slightly higher mean and maximum value, suggesting higher but still moderate regional inequality.
-Turkey has higher mean, indicating a higher level of average regional inequality, but the maximum value is lower than for the Czech Republic and Finland.
-The UK has the highest mean and highest maximum value.
-This suggest that the UK experience higher regional inequality than the other countries.
-
-**Czech Republic (CZ):** Czech Republic exhibits relatively low income inequality, with a mean Gini coefficient of 0.0131.
-The data has low variance (0.0002), suggesting a relatively stable income distribution.
-The maximum Gini coefficient observed is 0.0353, while there is no recorded minimum (0).
+From the table we see that the Czech Republic exhibits relatively low regional inequality.
+It has a mean of 0.0131, indicating lowest regional inequality on average among the countries.
+The data has low variance (0.0002), suggesting a relatively stable distribution.
+The maximum Gini coefficient observed is 0.0353, while the minimum is 0.
 This indicates a fairly equitable income distribution within the country.
 
-**Finland (FI):** In Finland, the Gini coefficient has a higher mean value of 0.0282, indicating slightly more income inequality compared to the Czech Republic.
+Finland follows with slightly higher mean and maximum value.
+The Gini coefficient has a higher mean value of 0.0282, indicating slightly more regional inequality compared to the Czech Republic.
 The variance is also higher (0.0006), suggesting more variability in income distribution.
-The maximum Gini coefficient observed is 0.0708, and there is no recorded minimum (0).
+The maximum Gini coefficient observed is 0.0708, and the minimum is 0.
 Finland's income distribution is relatively equitable but slightly more diverse than that of the Czech Republic.
 
-**Turkey (TR):** Turkey displays a higher level of income inequality, with a mean Gini coefficient of 0.0544.
+Turkey displays a higher level of regional inequality, with a mean Gini coefficient of 0.0544.
 The data exhibits greater variance (0.0015), indicating significant income disparities.
-The maximum Gini coefficient observed is 0.1642, emphasizing the presence of considerable income inequality within the country.
-However, there is no recorded minimum (0), highlighting the absence of perfect income equality.
+The maximum Gini coefficient observed is 0.1642, emphasizing the presence of considerable regional inequality within the country.
+However, the minimum is 0, highlighting the absence of perfectregional equality.
 
-**United Kingdom (UK):** The United Kingdom experiences the highest income inequality among the studied countries, with a mean Gini coefficient of 0.0917.
+The United Kingdom experiences the highest regional inequality among the studied countries, with a mean Gini coefficient of 0.0917.
 The variance is substantial (0.0067), signifying a wide range of income disparities.
 The maximum Gini coefficient observed is 0.4925, while there is no recorded minimum (0).
 The UK's income distribution is characterized by a significant degree of inequality.
@@ -374,7 +368,7 @@ subset_nuts2data <- main_data_nuts2 %>%
 
 To visualize these trends more effectively for each region, we employed a scatterplot.
 In this plot, we assigned different colors to represent the Gini coefficients of each region.
-This allowed us to examine and compare how income inequality may vary concerning population size for each of the mentioned countries.
+This allowed us to examine and compare how regional inequality may vary concerning population size for each of the mentioned countries.
 
 To create these visualizations, we utilized the ggplot2 library in R, enabling us to analyze and depict the data effectively.
 
@@ -388,6 +382,7 @@ scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nu
 scatter_plot <- scatter_plot +
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
 
+scatter_plot
 ```
 
 We opted to exclude a specific NUTS2 region within the UK, located in London, due to its unusually high level of inequality, which deviated significantly from the patterns observed in other regions.
@@ -446,21 +441,24 @@ scatter_plot3
 
 ### Discussion
 
-**Economic Performance and GDP per Capita:** The study uncovers noteworthy variations in economic performance, population diversity, and GDP per capita among the four countries.
+**Economic Performance and GDP per Capita\
+**The study uncovers noteworthy variations in economic performance, population diversity, and GDP per capita among the four countries.
 Turkey stands out with the most significant economic disparities, indicating a diverse economic landscape.
 In contrast, Finland appears to have a relatively stable and more uniform economy.
 The United Kingdom boasts a high average GDP per capita; however, it experiences substantial internal variations.
 The Czech Republic falls in between, showing moderate economic diversity.
 These findings underscore the significance of acknowledging regional disparities and economic heterogeneity within these nations.
 
-**Income Inequality (Gini Coefficient):** The Gini coefficient statistics provide valuable insights into the levels of income inequality across the four countries.
-The Czech Republic exhibits the lowest income inequality, reflecting a relatively equitable income distribution.
-Finland follows closely, indicating slightly more income inequality but maintaining a reasonably balanced income structure.
-Turkey experiences a higher degree of income inequality, suggesting significant income disparities among its population.
-The United Kingdom displays the highest income inequality among the countries, characterized by a substantial income gap.
+**Regional Inequality and Gini Coefficient\
+**The Gini coefficient statistics provide valuable insights into the levels of regional inequality across the four countries.
+The Czech Republic exhibits the lowest income inequality, reflecting a relatively equitable distribution.
+Finland follows closely, indicating slightly more regional inequality but maintaining a reasonably balanced income structure.
+Turkey experiences a higher degree of regional inequality, suggesting significant income disparities among its population.
+The United Kingdom displays the highest regional inequality among the countries, characterized by a substantial income gap.
 These findings shed light on the distribution of wealth and income disparities within these nations.
 
-**Scatterplot Analysis:** A visual examination of the scatterplots reinforces the observed trends.
+**Scatterplot Analysis\
+**A visual examination of the scatterplots reinforces the observed trends.
 Notably, regions within Finland and the Czech Republic demonstrate lower levels of income inequality compared to those in the UK and Turkey.
 This suggests a more equitable income distribution in the former countries.
 Additionally, a discernible trend is the inverse relationship between population size and income inequality within each nation.
@@ -471,4 +469,4 @@ In contrast to the collective data for all countries, a slightly higher level of
 This phenomenon might be attributed to the fact that larger cities in the UK often display a wider income gap between affluent and less fortunate residents.
 This nuanced observation emphasizes the complexity of income distribution within the United Kingdom.
 
-Overall, this study contributes to a deeper understanding of economic diversity and income inequality within these four countries, emphasizing the significance of accounting for regional variations and population dynamics in economic analyses.
+Overall, this study contributes to a deeper understanding of economic diversity and regional inequality within these four countries, emphasizing the significance of accounting for regional variations and population dynamics in economic analyses.
