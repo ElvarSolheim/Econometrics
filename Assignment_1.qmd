@@ -229,7 +229,7 @@ Measuring regional inequality is challenging because it is difficult to compare 
 The number of regions by each country also varies in our dataset.
 To deal with this issue, we can use a population-weighted Gini coefficient that accounts for different sizes of the regions [@lessmann2017] .
 
-To compute the population-weighted GDP Gini coefficient for each Europ\<ean NUTS 2 level region within the subset of countries, we used the formula below:
+To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the formula below:
 
 $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
 
