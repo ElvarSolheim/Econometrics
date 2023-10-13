@@ -212,9 +212,9 @@ The GDP ranges from 1,702 to 61,602, demonstrating moderate variability.
 The population size also varies, with a minimum of 294,896 and a maximum of 1,369,332.
 The average GDP per capita is 0.0130, indicating a moderate level of economic well-being on average.
 
-We use standard deviation to measure the spread in GDP, population and GDP per capita.
-The standard deviation is 13428.01 for the GDP variable and 830187 for the population variable.
-The GDP per capita have a standard deviation of 0.02497901
+**Standard deviation**
+
+the standard deviations help us understand the degree of variability in GDP, population, and GDP per capita across the dataset, we use the std_deviation() - function to calculate this.
 
 ```{r}
 # standard deviation
@@ -230,6 +230,22 @@ for (i in 1:length(columns_of_interest)) {
 # Print the standard deviations
 std_deviations
 ```
+
+the standard deviations for these variables tell us:
+
+**GDP (Gross Domestic Product):** The standard deviation for GDP is approximately 13,428.01.
+This indicates a significant amount of variation in GDP values across the dataset.
+A high standard deviation suggests that GDP values are dispersed or spread out from the mean.
+In this context, it means that the GDP values for regions within the dataset vary considerably, with some regions having very high GDPs and others having lower GDPs.
+
+**Population (Pop):** The standard deviation for population is approximately 830,187.
+This suggests a substantial degree of variation in population sizes among the regions within the dataset.
+The large standard deviation indicates that some regions have significantly larger populations than others.
+
+**GDP per Capita:** The standard deviation for GDP per capita is approximately 0.02497833.
+It is a relatively low value compared to the other variables.
+This implies that the GDP per capita values across the regions are less dispersed and closer to the mean.
+In this context, it indicates that there is less variation in economic well-being among regions in terms of GDP per capita.
 
 ## Part B: Regional Inequity
 
