@@ -272,8 +272,10 @@ main_data_nuts2 <- main_data_2 |>
 
 ### Data Presentation
 
+We created a table to get a overview of the population-weighted GDP gini coefficient for each country (NUTS 0 regions).
+
 ```{r}
-# Gini for all countries
+# Calculating Gini Coefficient at a NUTS 0 level
 gini_nuts0 <- main_data_nuts2 |>
   filter(!is.na(gini_n2)) |>
   group_by(id_nuts0) |>
@@ -286,14 +288,22 @@ gini_nuts0 <- main_data_nuts2 |>
 ```
 
 ```{r}
+# Table
 gini_nuts0 |>
   kable()
 ```
 
-Subset 2018 from main_data_nuts2:
+From the table we see that the Czech Republic has the lowest mean, indicating lowest regional inequality on average.
+Finland follows with slightly higher mean and maximum value, suggesting higher but still moderate regional inequality.
+Turkey has higher mean, indicating a higher level of average regional inequality, but the maximum value is lower than for the Czech Republic and Finland.
+The UK has the highest mean and highest maximum value.
+This suggest that the UK experience higher regional inequality than the other countries.
 
-Within this subset, we focused on NUTS2 regions in four countries: Czechia, Turkey, the United Kingdom (UK), and Finland.
-Our aim was to explore potential trends in income inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
+#### Subset 2018 from main_data_nuts2:
+
+We chose to look further at data from year 2018.
+Within this subset, we focused on NUTS2 regions in the four countries: Czechia, Turkey, the United Kingdom (UK), and Finland.
+Our aim was to explore potential trends in regional inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
 
 ```{r}
 subset_nuts2data <- main_data_nuts2 %>%
