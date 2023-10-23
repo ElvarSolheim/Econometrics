@@ -1,6 +1,6 @@
 ---
 title: "Assignment_1"
-format: html
+format: pdf
 editor: visual
 bibliography: MSB104.bib
 ---
