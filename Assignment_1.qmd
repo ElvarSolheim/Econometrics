@@ -278,7 +278,7 @@ Further, they calculated inequality measures, for example population-weighted Gi
 We should care about regional inequality because it is essential for both the economy and social welfare in general.
 The potential consequences of regional inequality are many.
 @lessmann2017 highlights a correlation between regional inequality and personal income inequality, ethnic inequality, and political stability in their study.
-Addressing regional imbalances within countries is cruical, as they may independently contribute to economic outcomes and exacerbate issues like income inequality, ethnic tensions, and segregation.
+Addressing regional imbalances within countries is crucial, as they may independently contribute to economic outcomes and exacerbate issues like income inequality, ethnic tensions, and segregation.
 
 ### Gini Coefficient Calculation
 
