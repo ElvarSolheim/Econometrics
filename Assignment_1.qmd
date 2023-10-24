@@ -266,15 +266,19 @@ In the end, we will discuss the computed Gini coefficients and reflect on the im
 ### Literature Review
 
 Regional inequality refers to the disparities in economic development, income, and other socio-economic indicators among different geographical regions within a country or across countries.
+According to @lessmann2017, regional inequality within countries has attracted considerable interest among academics and policy makers in the last decades.
+Research on regional inequality is particulary important for the economy.
+When certain regions experience higher levels of economic development and prosperity compared to others, it can have far-reaching consequences.
+However, in general are the empirical studies on regional inequality limited to a specific country sample with a general bias towards medium and high income economies.
+The biggest challenge is obtaining data from the less developed regions in the world.
+The poorest regions appear as blank spots on the map.
+@lessmann2017 fill this gap by predicting regional incomes using night light data.
+Further, they calculated inequality measures, for example population-weighted Gini coefficient, based on these predicted incomes.
 
-We should care about regional inequality because it is essential for sustainable and inclusive development in the future.
-Regional inequality can have significant social, economic, and political implications.
-It is an important topic that raises questions regarding the consequences and how we should deal with it.
-Focusing on regional inequality is important for both the economy and social welfare in general [@lessmann2017] .
-Addressing regional inequality is important for ensuring that the benefits of economic growth are shared more equitably among all citizens.
-It is all about creating a more balanced and fair society.
-
-**More about the significance of regional inequality from an economic perspective. Provide a more detailed and explicit discussion on the topic +++**
+We should care about regional inequality because it is essential for both the economy and social welfare in general.
+The potential consequences of regional inequality are many.
+@lessmann2017 highlights a correlation between regional inequality and personal income inequality, ethnic inequality, and political stability in their study.
+Addressing regional imbalances within countries is cruical, as they may independently contribute to economic outcomes and exacerbate issues like income inequality, ethnic tensions, and segregation.
 
 ### Gini Coefficient Calculation
 
