@@ -1,6 +1,6 @@
 ---
 title: "Assignment_1"
-format: pdf
+format: html
 editor: visual
 bibliography: MSB104.bib
 ---
@@ -149,7 +149,7 @@ rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 
 ### GDP per Capita Calculation
 
-Now that our datasets are joined, we can create a new variable for GDP per capita in our main dataset by dividing the "gdp" column by the "pop" column.
+Now that our datasets are joined, we create a new variable for GDP per capita in our main dataset by dividing the "gdp" column by the "pop" column.
 We do this by taking our main_data and using the mutate() - function, and the formula:
 
 $y_{i} = \frac{GDP_{i}}{Population_{i}}$
@@ -157,93 +157,104 @@ $y_{i} = \frac{GDP_{i}}{Population_{i}}$
 ```{r}
 # Adding GDP per capita in the main_data
 main_data <- main_data %>%
-  mutate(gdp_per_capita = round(gdp / pop, digits = 4))
+  mutate(gdp_per_capita = gdp / pop)
 ```
 
-GDP per capita gives an average representation of the economic well-being of individuals in a country, indicating the amount of economic output generated, by each person.
-it is often used as an indicator of the standard living and economic development within a country.
+The GDP per capita gives an average representation of the economic well-being of the individuals in the regions, indicating the amount of economic output generated, by each person.
+It is often used as an indicator of the standard of living and economic development within a region or country.
 
 ### Descriptive Analysis
 
+The GDP in the dataset is measured at current market prices by NUTS3 regions in millions of Euros for Czech Republic, Turkey and Finland, and in millions of Pounds for the United Kingdom.
+The population variable shows total annual population within each NUTS 3 region.
+The GDP per capita therefore indicates GDP in millions of Euros/Pounds per capita in each NUTS 3 region.
+
 Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
-First, we will summarize the descriptive statistics for each country.
-The summary contains minimum value, median, mean, quartiles and maximum value for each country.
+We will present a summary of the descriptive statistics for each country.
+The summary contains minimum and maximum value, median, mean, quartiles, variance and standard deviation for gdp, population and gdp per capita.
 
 ```{r}
 # Create subsets for each country and exclude "year" and "geo" columns
-data_FI <- subset(main_data, grepl("^FI", geo))
-data_UK <- subset(main_data, grepl("^UK", geo))
 data_CZ <- subset(main_data, grepl("^CZ", geo))
 data_TR <- subset(main_data, grepl("^TR", geo))
+data_FI <- subset(main_data, grepl("^FI", geo))
+data_UK <- subset(main_data, grepl("^UK", geo))
 
 # Generate summary statistics for each country
-summary_FI <- summary(data_FI[, !(names(data_FI) %in% c("year", "geo"))])
-summary_UK <- summary(data_UK[, !(names(data_UK) %in% c("year", "geo"))])
 summary_CZ <- summary(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))])
 summary_TR <- summary(data_TR[, !(names(data_TR) %in% c("year", "geo"))])
+summary_FI <- summary(data_FI[, !(names(data_FI) %in% c("year", "geo"))])
+summary_UK <- summary(data_UK[, !(names(data_UK) %in% c("year", "geo"))])
+
+# Calculate variance and standard deviation for each variable (excluding NA values)
+var_CZ <- sapply(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))], var, na.rm = TRUE)
+sd_CZ <- sapply(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))], sd, na.rm = TRUE)
+
+var_TR <- sapply(data_TR[, !(names(data_TR) %in% c("year", "geo"))], var, na.rm = TRUE)
+sd_TR <- sapply(data_TR[, !(names(data_TR) %in% c("year", "geo"))], sd, na.rm = TRUE)
+
+var_FI <- sapply(data_FI[, !(names(data_FI) %in% c("year", "geo"))], var, na.rm = TRUE)
+sd_FI <- sapply(data_FI[, !(names(data_FI) %in% c("year", "geo"))], sd, na.rm = TRUE)
+
+var_UK <- sapply(data_UK[, !(names(data_UK) %in% c("year", "geo"))], var, na.rm = TRUE)
+sd_UK <- sapply(data_UK[, !(names(data_UK) %in% c("year", "geo"))], sd, na.rm = TRUE)
+
+# Add variance and standard deviation to the summary tables
+summary_CZ <- rbind(summary_CZ, var = var_CZ, sd = sd_CZ)
+summary_TR <- rbind(summary_TR, var = var_TR, sd = sd_TR)
+summary_FI <- rbind(summary_FI, var = var_FI, sd = sd_FI)
+summary_UK <- rbind(summary_UK, var = var_UK, sd = sd_UK)
 
 # Create tables using kable
-kable(summary_FI, caption = "Summary Statistics for Finland (FI)")
-kable(summary_UK, caption = "Summary Statistics for United Kingdom (UK)")
-kable(summary_CZ, caption = "Summary Statistics for Czech Republic (CZ)")
-kable(summary_TR, caption = "Summary Statistics for Turkey (TR)")
-
+kable(summary_CZ, caption = "Figure 1: Summary Statistics for Czech Republic (CZ)")
+kable(summary_TR, caption = "Figure 2: Summary Statistics for Turkey (TR)")
+kable(summary_FI, caption = "Figure 3: Summary Statistics for Finland (FI)")
+kable(summary_UK, caption = "Figure 4: Summary Statistics for United Kingdom (UK)")
 ```
 
-Turkey (TR) exhibits a broad range of economic performance.
-The country's GDP varies significantly, with a minimum GDP of 196.8 and a maximum GDP of 242,730.0.
-The population size is also diverse, with a minimum population of 74,412 and a maximum population of 15,067,724.
-The average GDP per capita is relatively low, at 0.0061.
-This suggests that there is substantial diversity in economic well-being and population size in Turkey.
+The Czech Republic's (CZ) regional GDP ranges from a minimum value of 1702 million Euros to a maximum value of 61602 million Euros.
+The mean GDP is 10291 million Euros and the standard deviation 9504.78 million euros.
+This indicates a moderate overall economic output for the country.
+The mean of the population in the NUTS 3 regions within Czech Republic is 748,180 people, with a standard deviation of 320,076.68.
+The average GDP per capita is 0.0130 million euros, indicating a moderate level of economic well-being on average among the regions.
+The range of GDP per capita in the Czech Republic is from 0.005030 million euros to 0.047073 million euros.
+This signifies the variability in the standard of living among the regions.
+The standard deviation is 0.006364, confirming some spread in the GDP per capita among the regions.
+However, there are 11 missing values, which might impact the accuracy of the analysis.
 
-In contrast, Finland (FI) showcases a more homogenous economic landscape.
-The country's GDP is less variable, ranging from 57.56 to 95,458.36.
-The population size, although not as extensive as Turkey, still exhibits diversity, with a minimum of 25,706 and a maximum of 1,671,024.
-The average GDP per capita is 0.0312, reflecting a relatively higher economic well-being on average.
+Turkey (TR) has a wide range in GDP, reflecting a significant economic diversity between the regions.
+GDP varies from a minimum value of 196.8 million Euros to a maximum value of 242,730.0 million Euros, with a mean of 7421 million euros.
+The standard variation is large, 21841 million euros.
+The median value (2513.5) is lower than the mean, which may indicate that the high maximum GDP might be influenced by outliers.
+The population in Turkey varies from 74,412 to 15,067,724 people, indicating a wide spectrum among the regions.
+The GDP per capita in Turkey varies widely ranging from a minimum of 0.001581 million euros to a maximum of 0.016721 million euros, with a relatively low mean of 0.0061 million euros.
+The standard deviation of 0.002523 million euros is notable, indicating substantial variability in the economic well-being between regions in Turkey.
 
-The United Kingdom (UK) presents a diverse economic environment.
-While the minimum GDP is 320, it reaches a high of 117,051.
-Population size varies from 19,220 to 1,195,672.
-The UK exhibits the highest average GDP per capita among the studied countries, standing at 0.0261.
-This suggests significant disparities in economic well-being and population size within the United Kingdom.
+Finland (FI) have a relatively high regional GDP mean of 9419.13 million euros, with a standard deviation of 15210.64 million euros.
+The regions have a population ranging from 25706 to 1671024 people.
+Finland have regions with relatively small in population size.
+The mean GDP per capita is 0.0312 million euros, reflecting a relatively high average standard of living.
+Finland's GDP per capita is notably higher than the other countries, suggesting a high standard of living.
+The low standard deviation (0.00708) indicate that, on average, the GDP per capita values do not deviate significantly from the mean.
+It is important to note that the country has 20 missing values.
 
-The Czech Republic's (CZ) economic landscape falls between Turkey and Finland.
-The GDP ranges from 1,702 to 61,602, demonstrating moderate variability.
-The population size also varies, with a minimum of 294,896 and a maximum of 1,369,332.
-The average GDP per capita is 0.0130, indicating a moderate level of economic well-being on average.
+The United Kingdom (UK) mean GDP of 9130 million pounds, suggests a robust overall economic output in the regions.
+The minimum value is 320 million ponds and the maximum value is 117,051 million ponds.
+The UK have the highest GDP range among the four countries, indicating a large and varied economy.
+The population size of the regions varies from 19,220 to 1,195,672 people.
+The UK exhibits the highest mean GDP per capita among the studied countries, standing at 0.0261 million pounds.
+The standard deviation of 0.0286 indicates a moderate level of variability in GDP per capita.
+There might be some significant outliers, as suggested bu the large difference between the maximum value (0.413616) and the 3rd quartile (0.026761).
 
-**Standard deviation**
-
-The standard deviations help us understand the degree of variability in GDP, population, and GDP per capita across the dataset, we use the std_deviation() - function to calculate this.
-
-```{r}
-# standard deviation
-# the column names for which we want to calculate the sd
-columns_of_interest <- c("gdp", "pop", "gdp_per_capita")
-# Store it in a empty vector
-std_deviations <- numeric(length(columns_of_interest))
-# Calculating the standard deviation, and removing "NA"
-for (i in 1:length(columns_of_interest)) {
-  col_name <- columns_of_interest[i]
-  std_deviations[i] <- sd(main_data[[col_name]], na.rm = TRUE)
-}
-# Print the standard deviations
-std_deviations
-```
-
-The standard deviation for GDP is approximately 13,428.01.
-This indicates a significant amount of variation in GDP values across the dataset.
-A high standard deviation suggests that GDP values are dispersed or spread out from the mean.
-In this context, it means that the GDP values for regions within the dataset vary considerably, with some regions having very high GDPs and others having lower GDPs.
-
-The standard deviation for population (pop) is approximately 830,187.
-This suggests a substantial degree of variation in population sizes among the regions within the dataset.
-The large standard deviation indicates that some regions have significantly larger populations than others.
-
-The standard deviation for GDP per capita is approximately 0.02497833.
-It is a relatively low value compared to the other variables.
-This implies that the GDP per capita values across the regions are less dispersed and closer to the mean.
-In this context, it indicates that there is less variation in economic well-being among regions in terms of GDP per capita.
+We will give a short summary of the GDP per capita for the regions within the four countries, because GDP per capita accounts for differences arising from regions of varying sizes.
+The United Kingdom stands out with the highest maximum GDP per capita, indicating some regions with very high economic output.
+The UK also exhibits the widest range of GDP per capita among regions.
+Finland follows the UK with a relatively high overall economic well-being.
+The distribution suggest that the standard of living is generally favorable across regions.
+The Czech Republic falls in the middle, with a moderate range of GDP per capita, suggesting different levels of economic well-being across regions.
+Turkey has the lowest range of GDP per capita.
+There is less variation among the regions in Turkey, compared to the other countries.
+Turkey have the lowest economic well-being on a person basis.
 
 ## Part B: Regional Inequity
 
@@ -262,6 +273,8 @@ It is an important topic that raises questions regarding the consequences and ho
 Focusing on regional inequality is important for both the economy and social welfare in general [@lessmann2017] .
 Addressing regional inequality is important for ensuring that the benefits of economic growth are shared more equitably among all citizens.
 It is all about creating a more balanced and fair society.
+
+**More about the significance of regional inequality from an economic perspective. Provide a more detailed and explicit discussion on the topic +++**
 
 ### Gini Coefficient Calculation
 
@@ -292,7 +305,7 @@ main_data_2 <- main_data_2 |>
   filter(pop != 0) |>
   filter(gdp_per_capita != "NA") |>
   group_by(id_nuts2, year) |>
-  mutate(gini_n2 = round(gini.wtd(gdp_per_capita, weights = pop), digits = 4)) |>
+  mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop)) |>
   ungroup()
 ```
 
@@ -330,7 +343,7 @@ gini_nuts0 <- main_data_nuts2 |>
 ```{r}
 # Table
 gini_nuts0 |>
-  kable()
+  kable(caption = "Figure 5: Gini Coefficient for the countries")
 ```
 
 From the table we see that the Czech Republic exhibits relatively low regional inequality.
