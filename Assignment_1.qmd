@@ -19,6 +19,7 @@ library(ineq)
 library(ggplot2)
 library(scales)
 library(cowplot)
+library(dplyr)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -309,14 +310,17 @@ main_data_2 <- main_data_2 |>
   filter(pop != 0) |>
   filter(gdp_per_capita != "NA") |>
   group_by(id_nuts2, year) |>
-  mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop)) |>
+  mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop), 
+         gdp_per_capita_n2 = mean(gdp_per_capita),
+         pop_n2 = sum(pop)
+         ) |>
   ungroup()
 ```
 
 ```{r}
 # Cleaning the dataset
 main_data_2 <- main_data_2 %>%
-  select(year, id_nuts3, id_nuts2, id_nuts0, gdp, pop, gdp_per_capita, gini_n2, -geo)
+   select(year, id_nuts0, -geo, id_nuts3, pop_n3 = pop, gdp_n3 = gdp, gdp_per_capita_n3 = gdp_per_capita, id_nuts2, pop_n2, gdp_per_capita_n2, gdp_per_capita_n2, gini_n2 )
 ```
 
 Further, we created main_data_nuts2 that contains only the first row of each group defined by the combination of "id_nuts_2" and "year" from the dataset "main_data 2".
