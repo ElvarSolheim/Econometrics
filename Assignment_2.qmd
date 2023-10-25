@@ -4,6 +4,23 @@ format: html
 editor: visual
 ---
 
+```{r}
+#| label: setup
+#| echo: false
+#| output: false
+#| message: false
+library(tidyverse)
+library(readxl)
+library(magrittr)
+library(knitr)
+library(dineq)
+library(ineq)
+library(ggplot2)
+library(scales)
+library(cowplot)
+library(dplyr)
+```
+
 # Assignment 2: Cross-Sectional Estimates
 
 The objective of this assignment is to explore the relationship between regional development and inequality by utilizing cross-sectional estimation techniques, focusing on data from the year 2010.
@@ -18,6 +35,27 @@ We will discuss the reliability and validity of the estimated model and discuss 
 Lastly, we will visualize our model in a plot with a fitted regression line.
 
 ### Model Estimation
+
+To see how regional development affects regional inequality we estimate a smiple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
+We estimate the regression model by using a subset of our nuts 2 dataset.
+The subset contain only observations from the year 2010.
+Below is the equation for the regression model:
+
+$\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$
+
+We expect the relationship between regional development and regional inequality to be ...
+
+```{r}
+# Subset including nuts2 regions in 2010
+# subset_nuts2_2010 <- main_data_nuts2 |>
+# filter(grepl("2010", year))
+```
+
+```{r}
+# Estimate simple linear regression model
+# lm <- lm(gini_n2 ~ gdp_per_capita_n2, data = subset_nuts2_2010)
+# summary(lm)
+```
 
 ### Model Diagnostics
 
