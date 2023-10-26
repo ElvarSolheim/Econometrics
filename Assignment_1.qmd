@@ -381,7 +381,7 @@ To create these visualizations, we utilized the ggplot2 library in R, enabling u
 
 ```{r}
 # Create the scatterplot
-scatter_plot <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+scatter_plot <- ggplot(subset_nuts2data, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")
   
@@ -398,7 +398,7 @@ Additionally, we omitted Istanbul from the dataset, primarily because it is sign
 
 ```{r}
 # Create the scatterplot
-scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region") +
   scale_x_continuous(limits = c(0, 6000000)) +
@@ -430,7 +430,7 @@ To achieve this, we generated a new scatterplot using the 'ggplot()' function.
 
 ```{r}
 # Create the scatterplot
-scatter_plot3 <- ggplot(subset_nuts2data_UK, aes(x = pop, y = gini_n2, color = id_nuts2)) +
+scatter_plot3 <- ggplot(subset_nuts2data_UK, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
   labs(x = "Population", y = "Gini Coefficient", color = "NUTS2 Region")  
 # Add the regression line
