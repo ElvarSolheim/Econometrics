@@ -534,3 +534,5 @@ Lastly, we will interpret the estimated coefficients, reflect on the overall fit
 ### Multiple Linear Regression Model
 
 ### Model Interpretation
+
+## References
