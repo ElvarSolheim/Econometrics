@@ -311,6 +311,7 @@ main_data_2 <- main_data_2 |>
   filter(gdp_per_capita != "NA") |>
   group_by(id_nuts2, year) |>
   mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop), 
+         gdp_n2 = mean(gdp),
          gdp_per_capita_n2 = mean(gdp_per_capita),
          pop_n2 = sum(pop)
          ) |>
@@ -320,7 +321,7 @@ main_data_2 <- main_data_2 |>
 ```{r}
 # Cleaning the dataset
 main_data_2 <- main_data_2 %>%
-   select(year, id_nuts0, -geo, id_nuts3, pop_n3 = pop, gdp_n3 = gdp, gdp_per_capita_n3 = gdp_per_capita, id_nuts2, pop_n2, gdp_per_capita_n2, gdp_per_capita_n2, gini_n2 )
+   select(year, id_nuts0, -geo, id_nuts3, pop_n3 = pop, gdp_n3 = gdp, gdp_per_capita_n3 = gdp_per_capita, id_nuts2, pop_n2, gdp_n2, gdp_per_capita_n2, gdp_per_capita_n2, gini_n2 )
 ```
 
 Further, we created main_data_nuts2 that contains only the first row of each group defined by the combination of "id_nuts_2" and "year" from the dataset "main_data 2".
@@ -491,3 +492,58 @@ This phenomenon might be attributed to the fact that larger cities in the UK oft
 This nuanced observation emphasizes the complexity of income distribution within the United Kingdom.
 
 Overall, this study contributes to a deeper understanding of economic diversity and regional inequality within these four countries, emphasizing the significance of accounting for regional variations and population dynamics in economic analyses.
+
+# Assignment 2: Cross-Sectional Estimates
+
+The objective of this assignment is to explore the relationship between regional development and inequality by utilizing cross-sectional estimation techniques, focusing on data from the year 2010.
+
+## Part A: Growth and Inequity
+
+In the first part, we will dive into growth and inequity.
+First, we will estimate a simple linear regression model looking at the relationship between regional development and regional inequality.
+Further, we will define our model specifications, justify variable selection, and explain the expected relationship.
+Then, we will assess the goodness of fit of our model through different statistical measures.
+We will discuss the reliability and validity of the estimated model and discuss if the classical OLS assumptions hold.
+Lastly, we will visualize our model in a plot with a fitted regression line.
+
+### Model Estimation
+
+To see how regional development affects regional inequality we estimate a smiple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
+We estimate the regression model by using a subset of our nuts 2 dataset.
+The subset contain only observations from the year 2010.
+Below is the equation for the regression model:
+
+$\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$
+
+We expect the relationship between regional development and regional inequality to be ...
+
+```{r}
+# Subset including nuts2 regions in 2010
+subset_nuts2_2010 <- main_data_nuts2 |>
+filter(grepl("2010", year))
+```
+
+```{r}
+# Estimate simple linear regression model
+lm <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
+lm2 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 == "UK") %>%
+lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+huxreg(lm, lm2)
+```
+
+### Model Diagnostics
+
+### Visualization
+
+## Part B: Exploring Other Determinants of Inequity
+
+In the second part, we will explore three other potential determinants that we hypothesize may influence regional inequity.
+First, an explanation of the data acquisition will be given.
+Further, we will estimate a multiple linear regression model incorporating the newly selected variables alongside regional development, with regional inequality.
+Then, we will define our model specifications and clarify why we expect the selected variables to influence regional inequality.
+Lastly, we will interpret the estimated coefficients, reflect on the overall fit of the model, and discuss the contribution of each variable to explaining variations in regional inequality.
+
+### Multiple Linear Regression Model
+
+### Model Interpretation
