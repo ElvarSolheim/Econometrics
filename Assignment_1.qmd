@@ -20,6 +20,7 @@ library(ggplot2)
 library(scales)
 library(cowplot)
 library(dplyr)
+library(huxtable)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -42,13 +43,9 @@ We had to obtain data for the UK in a different way than for the rest of the cou
 We will now take you through the data acquisition.
 
 We obtained data for the EU countries (Czech Republic, Turkey and Finland) from Eurostat.
-We downloaded two datasets, one providing GDP data (nama_10r_3gdp) and the other one providing population data (demo_r_pjanaggr3).
+We downloaded two datasets, one providing GDP data and the other one providing population data.
 The NUTS classification is a hierarchical system that enables cross-border statistical comparisons at various regional levels within the EU.
 The datasets we downloaded from Eurostat are at a NUTS 3 level.
-
-We needed just a few of the variables included in the two datasets from Eurostat.
-After importing the two datasets, we used the select()-function to pick the variables we wanted and gave them some more appropriate names.
-We ended up with three variables in each dataset; "year", "geo", and "gdp"/"pop".
 
 ```{r}
 # GDP data for Czech Republic, Turkey and Finland
@@ -65,7 +62,6 @@ population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
 
 The UK is not included in the datasets from Eurostat, since the country is no longer a part of the EU.
 We got sub-regional GDP and population data for the UK from the Office for National Statistics.
-The dataset we downloaded is called "Regional gross domestic product; all ITL regions".
 The UK uses another classification system than the EU.
 Instead of NUTS regions, they use ITL regions.
 These two classification systems work on the same principle and we will from now on, refer to all regions as NUTS.
@@ -81,10 +77,6 @@ gdp_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx",
 population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
     sheet = "Table 6", skip = 1)
 ```
-
-To get the two UK datasets in the same format as the datasets from Eurostat, we used the gather()-function to convert the dataset from wide to long format.
-With filter() and mutate() we made a "geo" variable showing regions at a NUTS 3 level.
-We used the select()-function to pick the same variables we have in the datasets for the EU countries.
 
 ```{r}
 # Reforming gdp_UK
@@ -106,12 +98,8 @@ population_UK <- population_UK %>%
   arrange(geo)
 ```
 
-When sub-regional GDP and population data for both the EU countries and the UK were in place, we could start merging the datasets.
-First, we merged the gdp dataset and the population dataset for the EU countries.
-Then, we merged the two datasets for the UK.
-When merging the UK datasets, we replaced "TL" with "UK" in the NUTS 3 code.
-Finally, we merged the EU dataset with the UK dataset to get one dataset containing sub-regional GDP and population for all the countries.
-We named the final dataset for "main_dataset".
+When sub-regional GDP and population data for both the EU countries and the UK were downloaded, we merged the EU datasets with the UK datasets to get one main dataset containing sub-regional GDP and population for all the countries.
+We named the final dataset for "main_data".
 
 ```{r}
 # Merging gdp dataset with population dataset for the EU countries
@@ -134,13 +122,14 @@ merged_UK$year <- as.character(merged_UK$year)
 
 ```{r}
 # Merging EU dataset with UK dataset
-main_data <- full_join(merged_data, merged_UK) 
+main_data <- full_join(merged_data, merged_UK)
 ```
 
 ```{r}
 # We only want data from year 2000 to 2020
 main_data <- main_data %>%
-  subset(main_data$year >= 2000 & main_data$year <= 2020)
+  subset(main_data$year >= 2000 & main_data$year <= 2020) %>%
+  select(year, geo, pop, gdp)
 ```
 
 ```{r}
@@ -150,8 +139,9 @@ rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 
 ### GDP per Capita Calculation
 
-Now that our datasets are joined, we create a new variable for GDP per capita in our main dataset by dividing the "gdp" column by the "pop" column.
-We do this by taking our main_data and using the mutate() - function, and the formula:
+The GDP per capita gives an average representation of the economic well-being of the individuals in the regions, indicating the amount of economic output generated, by each person.
+
+We add a new variable measuring GDP per capita to our main dataset by using the formula:
 
 $y_{i} = \frac{GDP_{i}}{Population_{i}}$
 
@@ -161,21 +151,19 @@ main_data <- main_data %>%
   mutate(gdp_per_capita = gdp / pop)
 ```
 
-The GDP per capita gives an average representation of the economic well-being of the individuals in the regions, indicating the amount of economic output generated, by each person.
-It is often used as an indicator of the standard of living and economic development within a region or country.
-
 ### Descriptive Analysis
 
-The GDP in the dataset is measured at current market prices by NUTS3 regions in millions of Euros for Czech Republic, Turkey and Finland, and in millions of Pounds for the United Kingdom.
-The population variable shows total annual population within each NUTS 3 region.
-The GDP per capita therefore indicates GDP in millions of Euros/Pounds per capita in each NUTS 3 region.
+Our dataset includes GDP measured at current market prices in millions of euros for Czech Republic, Turkey, and Finland.
+For the United Kingdom, GDP is measured in millions of pounds.
+The population variable represents the total annual population within each NUTS 3 region.
+Consequently, the GDP per capita variable expresses GDP in millions of euros/pounds per capita in each NUTS 3 region.
 
 Through descriptive statistic we will summarize and describe the main features and key characteristics of the dataset.
 We will present a summary of the descriptive statistics for each country.
 The summary contains minimum and maximum value, median, mean, quartiles, variance and standard deviation for gdp, population and gdp per capita.
 
 ```{r}
-# Create subsets for each country and exclude "year" and "geo" columns
+# Create subsets for each country 
 data_CZ <- subset(main_data, grepl("^CZ", geo))
 data_TR <- subset(main_data, grepl("^TR", geo))
 data_FI <- subset(main_data, grepl("^FI", geo))
@@ -187,7 +175,7 @@ summary_TR <- summary(data_TR[, !(names(data_TR) %in% c("year", "geo"))])
 summary_FI <- summary(data_FI[, !(names(data_FI) %in% c("year", "geo"))])
 summary_UK <- summary(data_UK[, !(names(data_UK) %in% c("year", "geo"))])
 
-# Calculate variance and standard deviation for each variable (excluding NA values)
+# Calculate variance and standard deviation for each country (excluding NA values)
 var_CZ <- sapply(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))], var, na.rm = TRUE)
 sd_CZ <- sapply(data_CZ[, !(names(data_CZ) %in% c("year", "geo"))], sd, na.rm = TRUE)
 
@@ -200,17 +188,17 @@ sd_FI <- sapply(data_FI[, !(names(data_FI) %in% c("year", "geo"))], sd, na.rm = 
 var_UK <- sapply(data_UK[, !(names(data_UK) %in% c("year", "geo"))], var, na.rm = TRUE)
 sd_UK <- sapply(data_UK[, !(names(data_UK) %in% c("year", "geo"))], sd, na.rm = TRUE)
 
-# Add variance and standard deviation to the summary tables
+# Add variance and standard deviation to the summary statistics
 summary_CZ <- rbind(summary_CZ, var = var_CZ, sd = sd_CZ)
 summary_TR <- rbind(summary_TR, var = var_TR, sd = sd_TR)
 summary_FI <- rbind(summary_FI, var = var_FI, sd = sd_FI)
 summary_UK <- rbind(summary_UK, var = var_UK, sd = sd_UK)
 
-# Create tables using kable
-kable(summary_CZ, caption = "Figure 1: Summary Statistics for Czech Republic (CZ)")
-kable(summary_TR, caption = "Figure 2: Summary Statistics for Turkey (TR)")
-kable(summary_FI, caption = "Figure 3: Summary Statistics for Finland (FI)")
-kable(summary_UK, caption = "Figure 4: Summary Statistics for United Kingdom (UK)")
+# Create summary tables for each country
+kable(summary_CZ, caption = "Table 1: Summary Statistics for Czech Republic (CZ)")
+kable(summary_TR, caption = "Table 2: Summary Statistics for Turkey (TR)")
+kable(summary_FI, caption = "Table 3: Summary Statistics for Finland (FI)")
+kable(summary_UK, caption = "Table 4: Summary Statistics for United Kingdom (UK)")
 ```
 
 The Czech Republic's (CZ) regional GDP ranges from a minimum value of 1702 million Euros to a maximum value of 61602 million Euros.
@@ -251,7 +239,7 @@ We will give a short summary of the GDP per capita for the regions within the fo
 The United Kingdom stands out with the highest maximum GDP per capita, indicating some regions with very high economic output.
 The UK also exhibits the widest range of GDP per capita among regions.
 Finland follows the UK with a relatively high overall economic well-being.
-The distribution suggest that the standard of living is generally favorable across regions.
+The distribution suggest that the standard of living is generally favourable across regions.
 The Czech Republic falls in the middle, with a moderate range of GDP per capita, suggesting different levels of economic well-being across regions.
 Turkey has the lowest range of GDP per capita.
 There is less variation among the regions in Turkey, compared to the other countries.
@@ -260,7 +248,7 @@ Turkey have the lowest economic well-being on a person basis.
 ## Part B: Regional Inequity
 
 The second part focuses on regional inequality.
-We will start with a literate review of the subject, then compute population-weighted GDP Gini coefficients for the regions within our subset of European countries.
+We will start with a literate review of the subject, then compute population-weighted GDP Gini coefficients for the NUTS 2 regions within our subset of European countries.
 This includes data presentation through descriptive statistics and visuals.
 In the end, we will discuss the computed Gini coefficients and reflect on the implications of our findings in the context of regional inequity.
 
@@ -268,7 +256,7 @@ In the end, we will discuss the computed Gini coefficients and reflect on the im
 
 Regional inequality refers to the disparities in economic development, income, and other socio-economic indicators among different geographical regions within a country or across countries.
 According to @lessmann2017, regional inequality within countries has attracted considerable interest among academics and policy makers in the last decades.
-Research on regional inequality is particulary important for the economy.
+Research on regional inequality is particularly important for the economy.
 When certain regions experience higher levels of economic development and prosperity compared to others, it can have far-reaching consequences.
 However, in general are the empirical studies on regional inequality limited to a specific country sample with a general bias towards medium and high income economies.
 The biggest challenge is obtaining data from the less developed regions in the world.
@@ -284,19 +272,16 @@ Addressing regional imbalances within countries is crucial, as they may independ
 ### Gini Coefficient Calculation
 
 Measuring regional inequality is challenging because it is difficult to compare regions of different sizes.
-The number of regions by each country also varies in our dataset.
 To deal with this issue, we can use a population-weighted Gini coefficient that accounts for different sizes of the regions [@lessmann2017] .
 
-To compute the population-weighted GDP Gini coefficient for each European NUTS 2 level region within the subset of countries, we used the formula below:
+We wanted to compute the population-weighted Gini coefficient for the NUTS 2 level regions in the Czech Republic, Turkey, Finland and the UK.
+We created a new dataset containing the NUTS 2 regions and added a variable measuring the population-weighted GDP Gini coefficient for each NUTS 2 region by using the formula:
 
 $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
 
-First, we created a new dataset (main_data_2) that includes three new variables with NUTS 0, NUTS 2 and NUTS 3 regions.
-Then, we calculated the population-weighted GDP gini coefficient for each NUTS 2 level region.
-
 ```{r}
-# Creating NUTS 2 and NUTS 0 level
-main_data_2 <- main_data |>
+# Creating a NUTS 0, NUTS 2 and NUTS 3 level
+main_data_nuts2 <- main_data |>
   mutate(id_nuts3 = geo,
          id_nuts2 = substr(geo, 1,4),
          id_nuts0 = substr(geo, 1, 2)
@@ -304,37 +289,37 @@ main_data_2 <- main_data |>
 ```
 
 ```{r}
-# Calculating the population-weighted GDP Gini coefficient for each NUTS 2 level region
-main_data_2 <- main_data_2 |>
+main_data_nuts2 <- main_data_nuts2 |>
+  # Removing NA`s 
   filter(pop != "NA") |>
   filter(pop != 0) |>
   filter(gdp_per_capita != "NA") |>
   group_by(id_nuts2, year) |>
+  # Adding Gini coefficient, population, GDP and GDP per capita for the NUTS 2 regions
   mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop), 
+         pop_n2 = sum(pop),
          gdp_n2 = mean(gdp),
-         gdp_per_capita_n2 = mean(gdp_per_capita),
-         pop_n2 = sum(pop)
+         gdp_per_capita_n2 = mean(gdp_per_capita)
          ) |>
   ungroup()
 ```
 
 ```{r}
-# Cleaning the dataset
-main_data_2 <- main_data_2 %>%
-   select(year, id_nuts0, -geo, id_nuts3, pop_n3 = pop, gdp_n3 = gdp, gdp_per_capita_n3 = gdp_per_capita, id_nuts2, pop_n2, gdp_n2, gdp_per_capita_n2, gdp_per_capita_n2, gini_n2 )
+# Selecting only the NUTS 2 variables
+main_data_nuts2 <- main_data_nuts2 %>%
+   select(year, -geo, -gdp, -pop, -gdp_per_capita, -id_nuts3, id_nuts0, id_nuts2, pop_n2, gdp_n2, gdp_per_capita_n2, gini_n2)
 ```
 
-Further, we created main_data_nuts2 that contains only the first row of each group defined by the combination of "id_nuts_2" and "year" from the dataset "main_data 2".
-
 ```{r}
-main_data_nuts2 <- main_data_2 |>
+# Selecting only the first row of each group 
+main_data_nuts2 <- main_data_nuts2 |>
  group_by(id_nuts2, year) |>
-  slice(1)
+  slice(1) 
 ```
 
 ### Data Presentation
 
-We created a table to get a overview of the population-weighted GDP gini coefficient for each country (NUTS 0 regions).
+We created a table to get a overview of the population-weighted GDP Gini coefficient for each country (NUTS 0 regions).
 
 ```{r}
 # Calculating Gini Coefficient at a NUTS 0 level
@@ -346,13 +331,13 @@ gini_nuts0 <- main_data_nuts2 |>
     Variance = var(gini_n2),
     Max = max(gini_n2),
     Min = min(gini_n2)
-  )
+  ) 
 ```
 
 ```{r}
 # Table
 gini_nuts0 |>
-  kable(caption = "Figure 5: Gini Coefficient for the countries")
+  kable(caption = "Table 5: Gini Coefficient for the countries")
 ```
 
 From the table we see that the Czech Republic exhibits relatively low regional inequality.
@@ -508,7 +493,7 @@ Lastly, we will visualize our model in a plot with a fitted regression line.
 
 ### Model Estimation
 
-To see how regional development affects regional inequality we estimate a smiple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
+To see how regional development affects regional inequality we estimate a simple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
 We estimate the regression model by using a subset of our nuts 2 dataset.
 The subset contain only observations from the year 2010.
 Below is the equation for the regression model:
@@ -526,9 +511,11 @@ filter(grepl("2010", year))
 ```{r}
 # Estimate simple linear regression model
 lm <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
+
 lm2 <- subset_nuts2_2010 %>% 
-  filter(id_nuts0 == "UK") %>%
-lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+  filter(id_nuts0 == "UK") %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+
 huxreg(lm, lm2)
 ```
 
