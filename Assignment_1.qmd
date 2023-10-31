@@ -494,13 +494,17 @@ Lastly, we will visualize our model in a plot with a fitted regression line.
 ### Model Estimation
 
 To see how regional development affects regional inequality we estimate a simple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
-We estimate the regression model by using a subset of our nuts 2 dataset.
-The subset contain only observations from the year 2010.
+We estimate the regression model by using a subset containing only observations from the year 2010 for all the nuts 2 regions.
 Below is the equation for the regression model:
 
 $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$
 
-We expect the relationship between regional development and regional inequality to be ...
+We expect the relationship between regional development and regional inequality to be ... \
+According to @lessmann2017 the relationship between regional development and regional inequality follow a pattern similar to a N-shape.
+By examinating changes in inequality over time, they found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
+However, some poor and lower-middle-income countries, along with some rich economies, show divergence.
+Very poor countries exhibit increasing inequalities, while most middle- and high-income countries show decreasing or stabilizing inequalities.
+It is also noted that regional inequalities increase again in the richest countries.
 
 ```{r}
 # Subset including nuts2 regions in 2010
@@ -509,14 +513,20 @@ filter(grepl("2010", year))
 ```
 
 ```{r}
-# Estimate simple linear regression model
+# Estimate for all the countries
 lm <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
 
+# Estimate for the UK
 lm2 <- subset_nuts2_2010 %>% 
   filter(id_nuts0 == "UK") %>% 
   lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
 
-huxreg(lm, lm2)
+# Estimate for the EU countries
+lm3 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+
+huxreg(lm, lm2, lm3)
 ```
 
 ### Model Diagnostics
