@@ -493,18 +493,21 @@ Lastly, we will visualize our model in a plot with a fitted regression line.
 
 ### Model Estimation
 
-To see how regional development affects regional inequality we estimate a simple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
-We estimate the regression model by using a subset containing only observations from the year 2010 for all the nuts 2 regions.
-Below is the equation for the regression model:
+To see how regional development affects regional inequality we will estimate three simple linear regression models with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
+The population-weighted GDP Gini coefficient is chosen for measuring regional inequality, because it gives a nuanced view of regional inequality considering both GDP disparities and the population size in each region.
+GDP per capita is a good measure for assessing regional development, because it provides an indicator of the overall living standard in a region.
+For the estimation we will use a subset including observations on nuts 2 regions from the year 2010.
+We will estimate three models.
+The first model include data from all our countries, the second model focuses only on EU countries, while the third model is all about the UK, our largest country with the most nuts 2 regions.
+Below is the equation for our simple linear regression models:
 
 $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$
 
-We expect the relationship between regional development and regional inequality to be ... \
-According to @lessmann2017 the relationship between regional development and regional inequality follow a pattern similar to a N-shape.
-By examinating changes in inequality over time, they found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
-However, some poor and lower-middle-income countries, along with some rich economies, show divergence.
-Very poor countries exhibit increasing inequalities, while most middle- and high-income countries show decreasing or stabilizing inequalities.
-It is also noted that regional inequalities increase again in the richest countries.
+Based on @lessmann2017 study, we expect the relationship between regional development and regional inequality to follow a pattern similar to a N-shape.
+By examining changes in inequality over time, @lessmann2017 found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
+However, they found that some poor and lower-middle-income countries, along with some rich economies, show divergence.
+This shows that very poor countries exhibit increasing inequalities, while most middle- and high-income countries show decreasing or stabilizing inequalities.
+Interestingly, regional inequalities increase again in the richest countries, forming the right side of the N-shaped pattern [@lessmann2017].\
 
 ```{r}
 # Subset including nuts2 regions in 2010
@@ -514,7 +517,7 @@ filter(grepl("2010", year))
 
 ```{r}
 # Estimate for all the countries
-lm <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
+lm1 <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
 
 # Estimate for the UK
 lm2 <- subset_nuts2_2010 %>% 
@@ -526,12 +529,85 @@ lm3 <- subset_nuts2_2010 %>%
   filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>% 
   lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
 
-huxreg(lm, lm2, lm3)
+# Generate regression table
+huxreg(
+  list("Model 1" = lm1, "Model 2" = lm2, "Model 3" = lm3),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
+  )
 ```
 
 ### Model Diagnostics
 
+We will take a look at how well the regression models fit the observed data.
+We examine the goodness of fit by looking at the R-squared.
+The R-squared values indicate the propotion of variation in regional inequality that can be explained by the GDP per capita in each model.
+The closer R-squared is to 1, the better the model is at explaining the variability.
+The first model have a R-squared of 0.418, indicating that about 41.8% of the variability in the population-weighted Gini coefficient can be explained by the variation in GDP per capita.
+In the second model, a higher R-squared of 0.602 suggest that the GDP per capita variable in this model does a better job of explaining the variability in regional inequality.
+The third model has the lowest R-squared among the three models.
+In the third model, the R-squared is 0.131, indicating that only 13.1% of the variability is explained.
+This model seems to be less effective in capturing the relationship between regional development and regional inequality compared to the other models.
+
+Reliability of the models
+
+Validity of the models
+
+Discuss if the classical OLS assumptions is hold.\
+
+\
+Classical OLS assumptions:
+
+1.  **Linearity:** The population relationship is linear in parameters with an additive error term.
+2.  SLR: **Sample Variation:** There is variation in X vs.\
+    MLR: **No perfect collinearity:** No X variable is a perfect linear combination of the others.
+3.  **Random Sampling:** We have a random sample from the population of interest.
+4.  **Exogeneity:** The X variable is exogenous.
+5.  **Homoskedasticity**: The error term has the same variance for each value of the independent variable.
+6.  **Normality:** The population error term is normally distributed with mean zero and variance ...
+
 ### Visualization
+
+```{r}
+# Plot for all countries
+plot_all <- subset_nuts2_2010 %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Regression Model for All Countries",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient")
+
+plot_all
+```
+
+```{r}
+# Plot for the UK
+plot_UK <- subset_nuts2_2010 %>%
+  filter(id_nuts0 == "UK") %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Regression Model for the UK",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient") 
+
+plot_UK
+```
+
+```{r}
+# Plot for the EU countries
+plot_EU <- subset_nuts2_2010 %>%
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Regression Model for EU Countries",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient")
+
+plot_EU
+```
 
 ## Part B: Exploring Other Determinants of Inequity
 
@@ -540,6 +616,10 @@ First, an explanation of the data acquisition will be given.
 Further, we will estimate a multiple linear regression model incorporating the newly selected variables alongside regional development, with regional inequality.
 Then, we will define our model specifications and clarify why we expect the selected variables to influence regional inequality.
 Lastly, we will interpret the estimated coefficients, reflect on the overall fit of the model, and discuss the contribution of each variable to explaining variations in regional inequality.
+
+### Data Acquisition
+
+Turkey
 
 ### Multiple Linear Regression Model
 
