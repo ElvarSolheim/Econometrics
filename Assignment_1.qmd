@@ -495,7 +495,7 @@ Lastly, we will visualize our model in a plot with a fitted regression line.
 
 To see how regional development affects regional inequality we will estimate three simple linear regression models with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
 The population-weighted GDP Gini coefficient is chosen for measuring regional inequality, because it gives a nuanced view of regional inequality considering both GDP disparities and the population size in each region.
-GDP per capita is a good measure for assessing regional development, because it provides an indicator of the overall living standard in a region.
+GDP per capita is a good measure for assessing regional development, because it provides an indicator of the overall living standard in each region.
 For the estimation we will use a subset including observations on nuts 2 regions from the year 2010.
 We will estimate three models.
 The first model include data from all our countries, the second model focuses only on EU countries, while the third model is all about the UK, our largest country with the most nuts 2 regions.
@@ -539,9 +539,12 @@ huxreg(
 
 ### Model Diagnostics
 
-We will take a look at how well the regression models fit the observed data.
+We will take a look at how well the regression models fit the observed data by assessing the goodness of fit examining the R-squared.
+\
+
+**Goodness of fit and the R-squared**\
 We examine the goodness of fit by looking at the R-squared.
-The R-squared values indicate the propotion of variation in regional inequality that can be explained by the GDP per capita in each model.
+The R-squared values indicate the proportion of variation in regional inequality that can be explained by the GDP per capita in each model.
 The closer R-squared is to 1, the better the model is at explaining the variability.
 The first model have a R-squared of 0.418, indicating that about 41.8% of the variability in the population-weighted Gini coefficient can be explained by the variation in GDP per capita.
 In the second model, a higher R-squared of 0.602 suggest that the GDP per capita variable in this model does a better job of explaining the variability in regional inequality.
@@ -549,22 +552,40 @@ The third model has the lowest R-squared among the three models.
 In the third model, the R-squared is 0.131, indicating that only 13.1% of the variability is explained.
 This model seems to be less effective in capturing the relationship between regional development and regional inequality compared to the other models.
 
-Reliability of the models
-
-Validity of the models
-
-Discuss if the classical OLS assumptions is hold.\
-
+**Reliability and validity** \
+Reliability is reflected in the precision of coefficient estimates.
+Smaller standard errors indicate more reliable estimates.
+All three models show relatively small standard errors, suggesting reasonable reliability in estimating the coefficients.
 \
-Classical OLS assumptions:
+Higher R-squared values suggest a better reliability in explaining variance.
+Model 2 has the highest R-squared, indicating that it explains a larger proportion of the variance compared to the other models.
+\
+\
+Statistical significance, given by the star symbols and p-values, say something about the validity of the models.
+A low P-value suggests that the corresponding predictor variable is likely to be a valid predictor of the response variable.
+In our regression table, all the coefficients are statistically significant, indicating validity.
 
-1.  **Linearity:** The population relationship is linear in parameters with an additive error term.
-2.  SLR: **Sample Variation:** There is variation in X vs.\
-    MLR: **No perfect collinearity:** No X variable is a perfect linear combination of the others.
-3.  **Random Sampling:** We have a random sample from the population of interest.
-4.  **Exogeneity:** The X variable is exogenous.
-5.  **Homoskedasticity**: The error term has the same variance for each value of the independent variable.
-6.  **Normality:** The population error term is normally distributed with mean zero and variance ...
+**OLS assumptions**\
+The classical Ordinary Least Squares (OLS) assumptions are crucial for the validity of the regression results.
+Lets see if these assumptions hold.
+
+1.  **Linearity:** *The population relationship is linear in parameters with an additive error term.*
+
+    The regression model $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$have a linear structure between the dependent variable and the independent variable. \
+
+2.  *SLR:* **Sample Variation:** *There is variation in X vs.*\
+    *MLR:* **No perfect collinearity:** *No X variable is a perfect linear combination of the others.*\
+
+3.  **Random Sampling:** *We have a random sample from the population of interest.*
+
+    The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics. This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.\
+    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases. \
+
+4.  **Exogeneity:** *The X variable is exogenous (i.e.,* E(*u*\|X) = 0)\
+
+5.  **Homoskedasticity**: *The error term has the same variance for each value of the independent variable (i.e.,* Var(*u*\|X) = $\sigma^2$)\
+
+6.  **Normality:** *The population error term is normally distributed with mean zero and variance* $\sigma^2$ (*i.e.*, *u* \~ *N*(0,$\sigma^2$ ))
 
 ### Visualization
 
