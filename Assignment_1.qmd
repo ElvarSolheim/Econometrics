@@ -539,12 +539,11 @@ huxreg(
 
 ### Model Diagnostics
 
-We will take a look at how well the regression models fit the observed data by assessing the goodness of fit examining the R-squared.
-\
+We will take a look at how well the regression models fit the observed data by assessing the goodness of fit, discuss the reliability and validity of the models and see if the classic OLS-assumptions hold.
 
-**Goodness of fit and the R-squared**\
+**Goodness of fit** \
 We examine the goodness of fit by looking at the R-squared.
-The R-squared values indicate the proportion of variation in regional inequality that can be explained by the GDP per capita in each model.
+The R-squared values indicate the proportion of variation in regional inequality (Gini coefficient) that can be explained by regional develompent (GDP per capita) in each model.
 The closer R-squared is to 1, the better the model is at explaining the variability.
 The first model have a R-squared of 0.418, indicating that about 41.8% of the variability in the population-weighted Gini coefficient can be explained by the variation in GDP per capita.
 In the second model, a higher R-squared of 0.602 suggest that the GDP per capita variable in this model does a better job of explaining the variability in regional inequality.
@@ -552,18 +551,29 @@ The third model has the lowest R-squared among the three models.
 In the third model, the R-squared is 0.131, indicating that only 13.1% of the variability is explained.
 This model seems to be less effective in capturing the relationship between regional development and regional inequality compared to the other models.
 
-**Reliability and validity** \
+**Reliability and validity**\
 Reliability is reflected in the precision of coefficient estimates.
 Smaller standard errors indicate more reliable estimates.
 All three models show relatively small standard errors, suggesting reasonable reliability in estimating the coefficients.
-\
+In Model 1 the standard error for the coefficient of GDP per capita is 0.003.
+The standard error is 0.004 for model 2 and 0.005 for model 3.
+Larger standard errors suggest less precision in the estimates, meaning there's more uncertainty about the true population values of the coefficients in those models.
+We should also look at the R-squared values when assessing reliability.
 Higher R-squared values suggest a better reliability in explaining variance.
 Model 2 has the highest R-squared, indicating that it explains a larger proportion of the variance compared to the other models.
-\
-\
+A lower R-squared suggests that Model 3 has less explanatory power compared to Models 1 and 2.
+Only 13.1% of the variation in the dependent variable is captured by the variables included in this model.
+It indicates that there might be other factors influencing the dependent variable that are not accounted for in Model 3.
+
 Statistical significance, given by the star symbols and p-values, say something about the validity of the models.
 A low P-value suggests that the corresponding predictor variable is likely to be a valid predictor of the response variable.
-In our regression table, all the coefficients are statistically significant, indicating validity.
+In our regression table, all the coefficients are statistically significant, supporting the validity of the models.
+The fact that all three models show statistically significant coefficients for "GDP_per_capita" also indicates a certain level of reliability in the findings.
+The coefficients for "GDP_per_capita" in model 1 and model 2 have p-value less than 0.001, indicating high significance at a 0.1% significance level.
+Model 3 have a p-value less than 0.05, indicating a 5% significance level.
+In terms of the constants, model 3 is highly statistically significant (p \< 0.001).
+In summary, Model 2, with highest R-squared value and statistically significant coefficient, seems to be the best among the three in terms of both reliability and validity.Model 3 has the lowest R-squared value indicating a weaker fit to the data.
+While all three models show statistically significant coefficients for "GDP_per_capita," the p-value for the constant term in Model 3 is the highest (p \< 0.001), and the only costant term with stars.
 
 **OLS assumptions**\
 The classical Ordinary Least Squares (OLS) assumptions are crucial for the validity of the regression results.
@@ -571,15 +581,16 @@ Lets see if these assumptions hold.
 
 1.  **Linearity:** *The population relationship is linear in parameters with an additive error term.*
 
-    The regression model $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$have a linear structure between the dependent variable and the independent variable. \
+    The regression model $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$have a linear structure between the dependent variable and the independent variable.\
 
 2.  *SLR:* **Sample Variation:** *There is variation in X vs.*\
     *MLR:* **No perfect collinearity:** *No X variable is a perfect linear combination of the others.*\
 
 3.  **Random Sampling:** *We have a random sample from the population of interest.*
 
-    The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics. This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.\
-    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases. \
+    The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics.
+    This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.\
+    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases.\
 
 4.  **Exogeneity:** *The X variable is exogenous (i.e.,* E(*u*\|X) = 0)\
 
@@ -588,6 +599,8 @@ Lets see if these assumptions hold.
 6.  **Normality:** *The population error term is normally distributed with mean zero and variance* $\sigma^2$ (*i.e.*, *u* \~ *N*(0,$\sigma^2$ ))
 
 ### Visualization
+
+We will visualize the relationship between regional development and regional inequality, incorporating the fitted regression line in three different plots, one for each estimation.
 
 ```{r}
 # Plot for all countries
@@ -640,7 +653,26 @@ Lastly, we will interpret the estimated coefficients, reflect on the overall fit
 
 ### Data Acquisition
 
-Turkey
+We will take a look at three potential determinants of regional inequality for the year 2010 for the nuts 2 regions in Tureky.
+We hypothesize ....
+to may influence regional inequality in Turkey.
+We believe these three can have an impact on regional inequality because... JUSTIFY!
+We retrieved data for these potential determinants from Eurostat.
+
+Unemployment per thousand persons:
+
+```{r}
+# Data acquistion
+unemployment_data <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
+  select(id_nuts2 = geo, year = TIME_PERIOD, unemployment = OBS_VALUE)
+```
+
+infrastructure: road,rail and inland waterways - km per thousand square
+
+```{r}
+infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
+  select(id_nuts2 = geo, year = TIME_PERIOD, infrastructure = OBS_VALUE)
+```
 
 ### Multiple Linear Regression Model
 
