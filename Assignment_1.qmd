@@ -541,7 +541,7 @@ huxreg(
 
 We will take a look at how well the regression models fit the observed data by assessing the goodness of fit, discuss the reliability and validity of the models and see if the classic OLS-assumptions hold.
 
-**Goodness of fit** \
+**Goodness of fit**\
 We examine the goodness of fit by looking at the R-squared.
 The R-squared values indicate the proportion of variation in regional inequality (Gini coefficient) that can be explained by regional develompent (GDP per capita) in each model.
 The closer R-squared is to 1, the better the model is at explaining the variability.
@@ -605,12 +605,13 @@ We will visualize the relationship between regional development and regional ine
 ```{r}
 # Plot for all countries
 plot_all <- subset_nuts2_2010 %>%
-  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
   labs(title = "Regression Model for All Countries",
        x = "GDP per Capita",
-       y = "GDP Gini Coefficient")
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 region")
 
 plot_all
 ```
@@ -619,12 +620,13 @@ plot_all
 # Plot for the UK
 plot_UK <- subset_nuts2_2010 %>%
   filter(id_nuts0 == "UK") %>%
-  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
   labs(title = "Regression Model for the UK",
        x = "GDP per Capita",
-       y = "GDP Gini Coefficient") 
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions") 
 
 plot_UK
 ```
@@ -633,12 +635,13 @@ plot_UK
 # Plot for the EU countries
 plot_EU <- subset_nuts2_2010 %>%
   filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
-  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2)) +
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
   labs(title = "Regression Model for EU Countries",
        x = "GDP per Capita",
-       y = "GDP Gini Coefficient")
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions")
 
 plot_EU
 ```
