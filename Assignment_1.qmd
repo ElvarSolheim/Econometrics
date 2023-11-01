@@ -667,7 +667,7 @@ unemployment_data <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, unemployment = OBS_VALUE)
 ```
 
-infrastructure: road,rail and inland waterways - km per thousand square
+Infrastructure: road,rail and inland waterways - km per thousand square
 
 ```{r}
 infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
