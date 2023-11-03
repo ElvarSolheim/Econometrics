@@ -514,12 +514,14 @@ This shows that very poor countries exhibit increasing inequalities, while most 
 Interestingly, regional inequalities increase again in the richest countries, forming the right side of the N-shaped pattern [@lessmann2017].\
 
 ```{r}
+#| echo: false
 # Subset including nuts2 regions in 2010
 subset_nuts2_2010 <- main_data_nuts2 |>
 filter(grepl("2010", year))
 ```
 
 ```{r}
+#| echo: false
 # Estimate for all the countries
 lm1 <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
 
@@ -590,7 +592,7 @@ Lets see if these assumptions hold.
     You can observe that our independent variable "GDP_per_capita" indeed exhibits variation as evident from its coefficients in all three models.
 
 3.  **Random Sampling:** The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics.
-    This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.\
+    This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.
     We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases.
 
 4.  **Exogeneity:** The exogeneity assumption suggests that the independent variables are exogenous, this is the case in our model and they are not influenced by the error term ($E(u|X) = 0$).
@@ -607,6 +609,7 @@ Lets see if these assumptions hold.
 We will visualize the relationship between regional development and regional inequality, incorporating the fitted regression line in three different plots, one for each estimation.
 
 ```{r}
+#| echo: false
 # Plot for all countries
 plot_all <- subset_nuts2_2010 %>%
   ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
@@ -621,6 +624,7 @@ plot_all
 ```
 
 ```{r}
+#| echo: false
 # Plot for the UK
 plot_UK <- subset_nuts2_2010 %>%
   filter(id_nuts0 == "UK") %>%
@@ -636,6 +640,7 @@ plot_UK
 ```
 
 ```{r}
+#| echo: false
 # Plot for the EU countries
 plot_EU <- subset_nuts2_2010 %>%
   filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
@@ -662,40 +667,41 @@ Lastly, we will interpret the estimated coefficients, reflect on the overall fit
 
 We will take a look at three potential determinants of regional inequality for the year 2010 for the nuts 2 regions in Tureky.
 We hypothesize that unemployment, infrastructure and life expectancy to influence regional inequality in Turkey.
-We believe these three can have an impact on regional inequality because:\
+We believe these three can have an impact on regional inequality because:
 
 High unemployment rates can contribute to regional inequality.
 We include unemployment as a variable to assess its impact on inequality.
 Higher unemployment rates might lead to increased inequality due to income disparities.
-
-Adequate infrastructure, such as transportation and communication networks, is essential for economic development and reducing regional inequality.
+Infrastructure, such as transportation and communication networks, is essential for economic development and reducing regional inequality.
 Regions with better infrastructure may experience lower levels of inequality.
-
 Life expectancy can be an indicator of the overall well-being of a region.
 Regions with higher life expectancies may have better healthcare and social support systems, potentially reducing inequality.
 
-\
 We retrieved data for these potential determinants from Eurostat.
 
 ```{r}
+#| echo: false
 # Data aquisition: Unemployment (per thousand persons) for Turkey
 unemployment <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, unemployment = OBS_VALUE)
 ```
 
 ```{r}
+#| echo: false
 # Data aquisition: Road, rail and inland waterways (km pr thousand square) for Turkey
 infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, infrastructure = OBS_VALUE)
 ```
 
 ```{r}
+#| echo: false
 # Data aquisition: Life expenctancy (years) for Turkey
 life_expectancy <- read_csv("demo_r_mlifexp__custom_8282936_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, life_expectancy = OBS_VALUE)
 ```
 
 ```{r}
+#| echo: false
 # Join unemployment, infrastructure and life expenctancy datasets
 determinants_1 <- unemployment |>
   left_join(infrastructure, join_by(year, id_nuts2))
@@ -706,6 +712,7 @@ determinants_2 <- determinants_1 |>
 ```
 
 ```{r}
+#| echo: false
 # Converting the "year" variable into a character
 subset_nuts2_2010$year <- as.character(subset_nuts2_2010$year)
 determinants_2$year <- as.character(determinants_2$year)
@@ -725,24 +732,18 @@ With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent v
 $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2010} +\hat{\beta}_3 X_{2010} + \hat{\beta}_4 X_{2010}$
 
 ```{r}
-# Multiple Linear Regression Model
-```
-
-```{r}
-# Load your dataset, assuming you have your data loaded or imported
-# Replace 'your_dataset' with the name of your dataset
+#| echo: false
 
 ML_regressionmodel <- TR_nuts2_2010
 
-# Defining the multiple linear regression model
-# using unemployment, infrastructure, and life expectancy as independent variables
+# Multiple linear regression model
 
 model <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + I(unemployment * 100) + I(infrastructure * 100) + I(life_expectancy * 100), data = ML_regressionmodel)
 
-# Get the R-squared (R²) value
+# R-squared (R²) value
 r_squared <- summary(model)$r.squared
 
-# Get the number of observations (nobs)
+# Number of observations (nobs)
 num_observations <- summary(model)$nobs
 
 # View the summary of the regression
@@ -751,68 +752,50 @@ summary(model)
 
 ### Model Interpretation
 
-**Residuals**:
-The residuals represent the differences between the observed values of **`gini_n2`** and the predicted values from the regression model.
-The statistics describe the distribution of these residuals:
+**Residuals**\
+The residuals represent the differences between the observed values of gini_n2 and the predicted values from the regression model.
+The statistics provide insights into how well the model fits the data.
 
--   **Min**: The minimum residual is approximately -0.04744, indicating the smallest underprediction by the model.
+The minimum residual is approximately -0.04744, indicating the smallest underprediction by the model.When it comes to the first Quartile, about 25% of the residuals fall below -0.02787, suggesting that the model typically underpredicts by this amount.The median residual is -0.00551, indicating that half of the residuals are above and half are below this value.The third Quartile shows that about 75% of the residuals are below 0.02146, showing that the model generally underpredicts.The maximum residual is approximately 0.09078, representing the largest overprediction by the model.
 
--   **1Q (First Quartile)**: About 25% of the residuals fall below -0.02787, suggesting that the model typically underpredicts by this amount.
-
--   **Median**: The median residual is -0.00551, indicating that half of the residuals are above and half are below this value.
-
--   **3Q (Third Quartile)**: About 75% of the residuals are below 0.02146, showing that the model generally underpredicts.
-
--   **Max**: The maximum residual is approximately 0.09078, representing the largest overprediction by the model.
-
-These statistics provide insights into how well the model fits the data.
-
-**Coefficients**:
+**Coefficients**\
 This section provides the estimated coefficients for each independent variable and the intercept (constant term).
-The coefficients represent the relationships between the independent variables and the dependent variable **`gini_n2`**.
+The coefficients represent the relationships between the independent variables and the dependent variable gini_n2.
 Here's an explanation of each coefficient:
 
--   **Intercept**: The intercept, approximately 0.3101, is the estimated value of **`gini_n2`** when all independent variables are zero.
+The intercept, approximately 0.3101, is the estimated value of gini_n2 when all independent variables are zero.
+The coefficient for gdp_per_capita_n2, approximately 0.003383, indicates that for every 1% increase in gdp_per_capita_n2, gini_n2 is expected to increase by this amount.The coefficient for unemplyment approximately -7.72e-07, suggests that a 1% increase in unemployment is associated with a decrease in gini_n2 by this amount.
+The coefficient for infrastructure, approximately -6.002e-06, indicates that a 1% increase in infrastructure is associated with a decrease in gini_n2 by this amount.
+The coefficient for life_expectancy, approximately -3.253e-05, suggests that a 1% increase in life expectancy is linked to a decrease in gini_n2 by this amount.
 
--   **I(gdp_per_capita_n2 \* 100)**: The coefficient for **`gdp_per_capita_n2`**, approximately 0.003383, indicates that for every 1% increase in **`gdp_per_capita_n2`**, **`gini_n2`** is expected to increase by this amount.
-
--   **I(unemployment \* 100)**: The coefficient for **`unemployment`**, approximately -7.72e-07, suggests that a 1% increase in unemployment is associated with a decrease in **`gini_n2`** by this amount.
-
--   **I(infrastructure \* 100)**: The coefficient for **`infrastructure`**, approximately -6.002e-06, indicates that a 1% increase in infrastructure is associated with a decrease in **`gini_n2`** by this amount.
-
--   **I(life_expectancy \* 100)**: The coefficient for **`life_expectancy`**, approximately -3.253e-05, suggests that a 1% increase in life expectancy is linked to a decrease in **`gini_n2`** by this amount.
-
-The **Std. Error** associated with each coefficient measures the precision of the estimate.
+**Standard error\
+**The standard error associated with each coefficient measures the precision of the estimate.
 Smaller standard errors indicate more precise estimates.
-
-The **t-value** is the ratio of the estimate to the standard error.
+The t-value is the ratio of the estimate to the standard error.
 It's used to test the significance of each coefficient.
 A t-value close to zero suggests that the variable may not be statistically significant.
-The **Pr(\>\|t\|)** (p-value) indicates the probability of observing such a t-statistic, assuming the null hypothesis that the coefficient is zero.
+The Pr(\>\|t\|) (p-value) indicates the probability of observing such a t-statistic, assuming the null hypothesis that the coefficient is zero.
 Smaller p-values (typically below 0.05) suggest that the coefficients are statistically significant.
-
-**Residual standard error**:
-This value, approximately 0.03516, represents the standard deviation of the residuals.
+The resiudual standard error, approximately 0.03516, represents the standard deviation of the residuals.
 It measures the average magnitude of the prediction errors.
 
-**Multiple R-squared**:
-The multiple R-squared value of 0.1497 represents the proportion of the variation in **`gini_n2`** that can be explained by the independent variables in the model.
-In this case, about 14.97% of the variability in **`gini_n2`** is explained by the model, while the rest remains unexplained.
+**Multiple R-squared\
+**The multiple R-squared value of 0.1497 represents the proportion of the variation in gini_n2 that can be explained by the independent variables in the model.
+In this case, about 14.97% of the variability in gini_n2 is explained by the model, while the rest remains unexplained.
 
-**Adjusted R-squared**:
+**Adjusted R-squared**\
 The adjusted R-squared adjusts the multiple R-squared for the number of independent variables in the model.
 In this case, it's approximately 0.0773, indicating the proportion of the variation that the model explains while accounting for the complexity of the model.
 
-**F-statistic**:
-The F-statistic tests the overall significance of the model.
+**F-statistic and p-value\
+**The F-statistic tests the overall significance of the model.
 A higher F-statistic indicates a more significant model.
 In this case, the F-statistic is 2.068, and it is tested with 4 and 47 degrees of freedom.
 
-**p-value**:
 The p-value associated with the F-statistic (0.1001) indicates the probability of observing an F-statistic as extreme as the one you have under the null hypothesis, which is that the model has no explanatory power.
 In this case, the p-value is relatively high, suggesting that the model may not be statistically significant at conventional significance levels (e.g., 0.05).
 
-In summary, our regression model attempts to explain regional inequality (**`gini_n2`**) using several economic and social indicators.
+In summary, our regression model attempts to explain regional inequality using several economic and social indicators.
 The low R-squared and relatively high p-value for the F-statistic suggest that the model may not be a good fit for the data, and the individual coefficients provide insights into how each independent variable affects regional inequality.
 
 ## References
