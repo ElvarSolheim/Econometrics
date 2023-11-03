@@ -22,6 +22,8 @@ library(cowplot)
 library(dplyr)
 library(huxtable)
 library(vtable)
+library(future)
+library(furrr)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -581,25 +583,24 @@ While all three models show statistically significant coefficients for "GDP_per_
 The classical Ordinary Least Squares (OLS) assumptions are crucial for the validity of the regression results.
 Lets see if these assumptions hold.
 
-1.  **Linearity:** *The population relationship is linear in parameters with an additive error term.*
+1.  **Linearity:** The linearity assumption posits that the relationship between the dependent variable $\hat{GINIW_{2010}}$ and the independent variables (e.g., GDP per capita, $y_{2010}$) is linear in parameters.This assumption is met because we specify a linear equation for your regression.
+    Our models assumes that the effect of changes in independent variables is additive and proportional.
 
-    The regression model $\hat{GINIW_{2010}} = \hat{\beta}_1 + \hat{\beta}_2 y_{2010}$have a linear structure between the dependent variable and the independent variable.\
+2.  **Sample Variation:** This assumption necessitates that there is variation in the independent variables within our sample.
+    You can observe that our independent variable "GDP_per_capita" indeed exhibits variation as evident from its coefficients in all three models.
 
-2.  *SLR:* **Sample Variation:** *There is variation in X.*
-
-    This assumption is met as we have variation in our variables.\
-
-3.  **Random Sampling:** *We have a random sample from the population of interest.*
-
-    The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics.
+3.  **Random Sampling:** The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics.
     This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.\
-    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases.\
+    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases.
 
-4.  **Exogeneity:** *The X variable is exogenous (i.e.,* E(*u*\|X) = 0)
+4.  **Exogeneity:** The exogeneity assumption suggests that the independent variables are exogenous, this is the case in our model and they are not influenced by the error term ($E(u|X) = 0$).
 
-5.  **Homoskedasticity**: *The error term has the same variance for each value of the independent variable (i.e.,* Var(*u*\|X) = $\sigma^2$)\
+5.  **Homoskedasticity:** Homoskedasticity implies that the error term's variance is constant across different values of the independent variable(s).
+    It ensures that the spread of residuals is consistent.
+    In our models, homoskedasticity appears to be violated in some cases, as indicated by the increasing standard errors ("Constant" term in Model 1 and Model 3).
+    This suggests that the spread of residuals may not be constant across all values of the independent variables.
 
-6.  **Normality:** *The population error term is normally distributed with mean zero and variance* $\sigma^2$ (*i.e.*, *u* \~ *N*(0,$\sigma^2$ ))
+6.  **Normality:** The normality assumption postulates that the error term follows a normal distribution with a mean of zero and a constant variance ($\sigma^2$).
 
 ### Visualization
 
@@ -661,7 +662,19 @@ Lastly, we will interpret the estimated coefficients, reflect on the overall fit
 
 We will take a look at three potential determinants of regional inequality for the year 2010 for the nuts 2 regions in Tureky.
 We hypothesize that unemployment, infrastructure and life expectancy to influence regional inequality in Turkey.
-We believe these three can have an impact on regional inequality because... JUSTIFY!
+We believe these three can have an impact on regional inequality because:\
+
+High unemployment rates can contribute to regional inequality.
+We include unemployment as a variable to assess its impact on inequality.
+Higher unemployment rates might lead to increased inequality due to income disparities.
+
+Adequate infrastructure, such as transportation and communication networks, is essential for economic development and reducing regional inequality.
+Regions with better infrastructure may experience lower levels of inequality.
+
+Life expectancy can be an indicator of the overall well-being of a region.
+Regions with higher life expectancies may have better healthcare and social support systems, potentially reducing inequality.
+
+\
 We retrieved data for these potential determinants from Eurostat.
 
 ```{r}
@@ -687,7 +700,7 @@ life_expectancy <- read_csv("demo_r_mlifexp__custom_8282936_linear.csv") |>
 determinants_1 <- unemployment |>
   left_join(infrastructure, join_by(year, id_nuts2))
 
-determinants_2 <- merge_1 |>
+determinants_2 <- determinants_1 |>
   left_join(life_expectancy, join_by(year, id_nuts2)) |>
   select(year, id_nuts2, unemployment, infrastructure, life_expectancy)
 ```
@@ -707,10 +720,7 @@ TR_nuts2_2010 <- subset_nuts2_2010 |>
 
 We will now estimate a multiple linear regression model incorporating the newly selected variables unemployment, infrastructure and life expectancy alongside regional development, with regional inequality for NUTS 2 regions in Turkey for the year 2010.
 
-With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) ++\[determinants\]++ as the independent variables.
-
-NB!
-Vi må skille determinantene (X_2010) i modellen under på en eller annen måte:
+With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ), unemployment, life expectancy and infrastructure as the independent variables.
 
 $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2010} +\hat{\beta}_3 X_{2010} + \hat{\beta}_4 X_{2010}$
 
@@ -718,12 +728,91 @@ $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2
 # Multiple Linear Regression Model
 ```
 
-*Document and justify your model specification, elaborating on the theoretical or empirical basis for expecting the selected variables to influence regional inequality.*
+```{r}
+# Load your dataset, assuming you have your data loaded or imported
+# Replace 'your_dataset' with the name of your dataset
+
+ML_regressionmodel <- TR_nuts2_2010
+
+# Defining the multiple linear regression model
+# using unemployment, infrastructure, and life expectancy as independent variables
+
+model <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + I(unemployment * 100) + I(infrastructure * 100) + I(life_expectancy * 100), data = ML_regressionmodel)
+
+# Get the R-squared (R²) value
+r_squared <- summary(model)$r.squared
+
+# Get the number of observations (nobs)
+num_observations <- summary(model)$nobs
+
+# View the summary of the regression
+summary(model)
+```
 
 ### Model Interpretation
 
-*Provide an interpretation of the estimated coefficients, discussing their magnitude, direction, and statistical significance.*
+**Residuals**:
+The residuals represent the differences between the observed values of **`gini_n2`** and the predicted values from the regression model.
+The statistics describe the distribution of these residuals:
 
-*Reflect on the overall fit of the model and the contribution of each variable to explaining variations in regional inequality.*
+-   **Min**: The minimum residual is approximately -0.04744, indicating the smallest underprediction by the model.
+
+-   **1Q (First Quartile)**: About 25% of the residuals fall below -0.02787, suggesting that the model typically underpredicts by this amount.
+
+-   **Median**: The median residual is -0.00551, indicating that half of the residuals are above and half are below this value.
+
+-   **3Q (Third Quartile)**: About 75% of the residuals are below 0.02146, showing that the model generally underpredicts.
+
+-   **Max**: The maximum residual is approximately 0.09078, representing the largest overprediction by the model.
+
+These statistics provide insights into how well the model fits the data.
+
+**Coefficients**:
+This section provides the estimated coefficients for each independent variable and the intercept (constant term).
+The coefficients represent the relationships between the independent variables and the dependent variable **`gini_n2`**.
+Here's an explanation of each coefficient:
+
+-   **Intercept**: The intercept, approximately 0.3101, is the estimated value of **`gini_n2`** when all independent variables are zero.
+
+-   **I(gdp_per_capita_n2 \* 100)**: The coefficient for **`gdp_per_capita_n2`**, approximately 0.003383, indicates that for every 1% increase in **`gdp_per_capita_n2`**, **`gini_n2`** is expected to increase by this amount.
+
+-   **I(unemployment \* 100)**: The coefficient for **`unemployment`**, approximately -7.72e-07, suggests that a 1% increase in unemployment is associated with a decrease in **`gini_n2`** by this amount.
+
+-   **I(infrastructure \* 100)**: The coefficient for **`infrastructure`**, approximately -6.002e-06, indicates that a 1% increase in infrastructure is associated with a decrease in **`gini_n2`** by this amount.
+
+-   **I(life_expectancy \* 100)**: The coefficient for **`life_expectancy`**, approximately -3.253e-05, suggests that a 1% increase in life expectancy is linked to a decrease in **`gini_n2`** by this amount.
+
+The **Std. Error** associated with each coefficient measures the precision of the estimate.
+Smaller standard errors indicate more precise estimates.
+
+The **t-value** is the ratio of the estimate to the standard error.
+It's used to test the significance of each coefficient.
+A t-value close to zero suggests that the variable may not be statistically significant.
+The **Pr(\>\|t\|)** (p-value) indicates the probability of observing such a t-statistic, assuming the null hypothesis that the coefficient is zero.
+Smaller p-values (typically below 0.05) suggest that the coefficients are statistically significant.
+
+**Residual standard error**:
+This value, approximately 0.03516, represents the standard deviation of the residuals.
+It measures the average magnitude of the prediction errors.
+
+**Multiple R-squared**:
+The multiple R-squared value of 0.1497 represents the proportion of the variation in **`gini_n2`** that can be explained by the independent variables in the model.
+In this case, about 14.97% of the variability in **`gini_n2`** is explained by the model, while the rest remains unexplained.
+
+**Adjusted R-squared**:
+The adjusted R-squared adjusts the multiple R-squared for the number of independent variables in the model.
+In this case, it's approximately 0.0773, indicating the proportion of the variation that the model explains while accounting for the complexity of the model.
+
+**F-statistic**:
+The F-statistic tests the overall significance of the model.
+A higher F-statistic indicates a more significant model.
+In this case, the F-statistic is 2.068, and it is tested with 4 and 47 degrees of freedom.
+
+**p-value**:
+The p-value associated with the F-statistic (0.1001) indicates the probability of observing an F-statistic as extreme as the one you have under the null hypothesis, which is that the model has no explanatory power.
+In this case, the p-value is relatively high, suggesting that the model may not be statistically significant at conventional significance levels (e.g., 0.05).
+
+In summary, our regression model attempts to explain regional inequality (**`gini_n2`**) using several economic and social indicators.
+The low R-squared and relatively high p-value for the F-statistic suggest that the model may not be a good fit for the data, and the individual coefficients provide insights into how each independent variable affects regional inequality.
 
 ## References
