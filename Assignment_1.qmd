@@ -1,6 +1,6 @@
 ---
 title: "Assignment_1"
-format: pdf
+format: html
 editor: visual
 bibliography: MSB104.bib
 ---
@@ -798,4 +798,52 @@ In this case, the p-value is relatively high, suggesting that the model may not 
 In summary, our regression model attempts to explain regional inequality using several economic and social indicators.
 The low R-squared and relatively high p-value for the F-statistic suggest that the model may not be a good fit for the data, and the individual coefficients provide insights into how each independent variable affects regional inequality.
 
-## References
+# Assignment 3: Alternative Functional Forms and Panel Estimation
+
+In this assignment, we will explore alternative functional forms and implementing panel estimates to analyze the relationship between regional development and inequality.
+
+## Part A: Testing Development Effects Across Subsets
+
+In the first part, we will test development effects across subsets.
+First, we will estimate the effect of regional development on inequality within each subset and test if the effects significantly differ.
+Then, we will interpret and discuss the results, focusing on differences in development effects across subsets.
+
+### Subset Analysis
+
+### Subset Analysis Discussion
+
+## Part B: Exploring Alternative Functional Forms
+
+The second part involves exploring alternative functional forms, where we decided to focus on ... and ... forms.
+An estimation and visualization of the ... and ... models will be given.
+Lastly, we will discuss the results and the fit of the alternative models compared to the original linear model.
+
+### Functional Form Exploration
+
+### Estimation and Visualization
+
+### Results Interpretation
+
+## Part C: Heteroskedasticity Testing and Causality Discussion
+
+In the third part, we will test for heteroskedasticity in the alternative and original models.
+We will also reflect on the causal interpretation of the models and suggest strategies to address any issues identified.
+
+### Heteroskedasticity Testing
+
+### Causality Discussion
+
+## Part D: Panel Estimates
+
+In part D, we conduct panel estimates using the entire dataset, examining the impact of regional development on regional inequality.
+We use various panel estimation techniques, incorporating different fixed effects - both separately and jointly.
+We interpret the panel estimation results and compare the panel estimates with the cross-sectional estimates from earlier, discussing the advantages and limitations of each approach.
+Lastly, we will critically evaluate the panel estimation findings, considering potential biases, inconsistencies, or limitations in the methodology.
+
+### Panel Estimation Task
+
+### Panel Estimation Analysis
+
+### Panel Estimation Discussion
+
+# References
