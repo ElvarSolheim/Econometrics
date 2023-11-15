@@ -24,6 +24,7 @@ library(huxtable)
 library(vtable)
 library(future)
 library(furrr)
+library(lmtest)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -543,7 +544,13 @@ huxreg(
   )
 ```
 
-### Model Diagnostics
+The regression table reveals a positive relationship between regional development and regional inequality in both Model 1 and Model 2.
+In Model 1, including all the countries, a 1% increase in GDP per capita corresponds to an average rise of 0.026 in the Gini coefficient.
+Model 2, focused on the UK, strengthens this association, indicating a slightly higher increase of 0.032 in the Gini coefficient with a rise in GDP per capita.
+However, for the EU countries in Model 3, the relationship between regional development and regional inequality is negative.
+Here, a 1% increase in GDP per capita is linked to a 0.012 decrease in the Gini coefficient, suggesting that higher regional development in these countries is paradoxically associated with lower regional inequality.
+
+###  Model Diagnostics
 
 We will take a look at how well the regression models fit the observed data by assessing the goodness of fit, discuss the reliability and validity of the models and see if the classic OLS-assumptions hold.
 
@@ -571,38 +578,77 @@ A lower R-squared suggests that Model 3 has less explanatory power compared to M
 Only 13.1% of the variation in the dependent variable is captured by the variables included in this model.
 It indicates that there might be other factors influencing the dependent variable that are not accounted for in Model 3.
 
-Statistical significance, given by the star symbols and p-values, say something about the validity of the models.
-A low P-value suggests that the corresponding predictor variable is likely to be a valid predictor of the response variable.
-In our regression table, all the coefficients are statistically significant, supporting the validity of the models.
-The fact that all three models show statistically significant coefficients for "GDP_per_capita" also indicates a certain level of reliability in the findings.
-The coefficients for "GDP_per_capita" in model 1 and model 2 have p-value less than 0.001, indicating high significance at a 0.1% significance level.
-Model 3 have a p-value less than 0.05, indicating a 5% significance level.
-In terms of the constants, model 3 is highly statistically significant (p \< 0.001).
-In summary, Model 2, with highest R-squared value and statistically significant coefficient, seems to be the best among the three in terms of both reliability and validity.Model 3 has the lowest R-squared value indicating a weaker fit to the data.
-While all three models show statistically significant coefficients for "GDP_per_capita," the p-value for the constant term in Model 3 is the highest (p \< 0.001), and the only constant term with stars.
+Statistical significance, as indicated by star symbols and p-values, palys a cruical role in assessing the validity of the models.
+A low P-value suggests that the predictor variable is likely a valid predictor of the response variable.
+In our regression table, all coefficients demonstrate statistical significance, supporting the validity of the models.
+The coefficients for "GDP_per_capita" in model 1 and model 2 exhibit extremely low p-values (\<0.001), signifying high significance at a 1% significance level.
+Model 3, on the other hand, have a p-value of less than 0.05, indicating a significance at a 5% level.
+Regarding the constant terms, model 3 stands out with a significance level of 1% (p \< 0.001).
+This reinforces the reliability of Model 3, even though it has the lowest R-squared value.
+\
+\
+In summary, Model 2, boasting the highest R-squared value and statistically significant coefficient, appears to be the most reliable and valid among the three models.
+Model 3, despite its lower R-squared value, still holds significance, especially with the constant term being the only one with a 1% significance level.
 
 **OLS assumptions**\
 The classical Ordinary Least Squares (OLS) assumptions are crucial for the validity of the regression results.
 Lets see if these assumptions hold.
 
-1.  **Linearity:** The linearity assumption posits that the relationship between the dependent variable $\hat{GINIW_{2010}}$ and the independent variables (e.g., GDP per capita, $y_{2010}$) is linear in parameters.This assumption is met because we specify a linear equation for your regression.
-    Our models assumes that the effect of changes in independent variables is additive and proportional.
+1.  **Linearity:** The linearity assumption posits that the relationship between the dependent variable $\hat{GINIW_{2010}}$ and the independent variable $y_{2010}$ is linear in parameters.This assumption is met because we specify a linear equation for our regression: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010}$.
 
 2.  **Sample Variation:** This assumption necessitates that there is variation in the independent variables within our sample.
-    You can observe that our independent variable "GDP_per_capita" indeed exhibits variation as evident from its coefficients in all three models.
+    Our independent variable "GDP_per_capita" exhibits variation as it evident from its coefficients in all three models.
 
 3.  **Random Sampling:** The data used to estimate the regression models is obtained from Eurostat and the Office for National Statistics.
-    This data are not random samples in the traditional statistical sense, since these organizations collect data from a the entire population rather than a randomly selected sample.
-    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential for biases.
+    This data are not random samples in the traditional statistical sense, since these organizations collect data from the entire population rather than a randomly selected sample.
+    We don\`t have a truly random sample, but it could still be suitable for regression analysis as long as we aware of the potential biases.
 
-4.  **Exogeneity:** The exogeneity assumption suggests that the independent variables are exogenous, this is the case in our model and they are not influenced by the error term ($E(u|X) = 0$).
+4.  **Exogeneity:** The exogeneity assumption suggests that for any value of the independent variable, the mean of the error term is zero ($E(u|X) = 0$).
+    The assumption holds if GDP per capita is not correlated with unobserved factors affecting the Gini coefficient.
+    This may be the case, but we claim that the exogeneity assumption is fulfilled in our estimations.
 
-5.  **Homoskedasticity:** Homoskedasticity implies that the error term's variance is constant across different values of the independent variable(s).
+5.  **Homoskedasticity:** Homoskedasticity implies that the error term's variance is constant across different values of the independent variable.
     It ensures that the spread of residuals is consistent.
-    In our models, homoskedasticity appears to be violated in some cases, as indicated by the increasing standard errors ("Constant" term in Model 1 and Model 3).
+    In our models, homoskedasticity appears to be violated in some cases, as indicated by the increasing standard errors ("constant" term in Model 1 and Model 3).
     This suggests that the spread of residuals may not be constant across all values of the independent variables.
+    We test for homoskedasticity using a Breusch-Pagan test.
 
-6.  **Normality:** The normality assumption postulates that the error term follows a normal distribution with a mean of zero and a constant variance ($\sigma^2$).
+    ```{r}
+    # Breusch-Pagan test for Model 1
+    lm1_test <- lmtest::bptest(lm1)
+    print(lm1_test)
+
+    # Breusch-Pagan test for Model 2
+    lm2_test <- lmtest::bptest(lm2)
+    print(lm2_test)
+
+    # Breusch-Pagan test for Model 3
+    lm3_test <- lmtest::bptest(lm3)
+    print(lm3_test)
+
+    ```
+
+    Model 1 shows evidence of heteroskedasticity, while Model 2 and Model 3 do not exhibit significant departures from homoskedasticity.
+
+6.  **Normality:** The normality assumption states that the error term follows a normal distribution with a mean of zero and a constant variance ($\sigma^2$).
+    We test normality with three Q-Q plots, one for each of the estimation models.
+
+    ```{r}
+    # Q-Q plot for Model 1
+    qqnorm(residuals(lm1))
+    qqline(residuals(lm1))
+
+    # Q-Q plot for Model 2
+    qqnorm(residuals(lm2))
+    qqline(residuals(lm2))
+
+    # Q-Q plot for Model 3
+    qqnorm(residuals(lm3))
+    qqline(residuals(lm3))
+    ```
+
+The points in each plot follow a straight line, suggesting that the residuals are approximately normally distributed.
+Model 1 exhibits the best fit to the line, followed by Model 2 and then Model 3, indicating that the residuals in Model 1 adhere more closely to a normal distribution than those in the other models.
 
 ### Visualization
 
@@ -623,6 +669,11 @@ plot_all <- subset_nuts2_2010 %>%
 plot_all
 ```
 
+The figure visualize the relationship between regional development and regional inequality for NUTS 2 regions in the year 2010 for all the countries.
+The figure have GDP per capita on the x-axis and Gini coefficient on the y-axis.
+The black line represent the estimated relationship.
+The figure shows a positive relationship between regional development and regional inequality.
+
 ```{r}
 #| echo: false
 # Plot for the UK
@@ -639,6 +690,10 @@ plot_UK <- subset_nuts2_2010 %>%
 plot_UK
 ```
 
+This visualization illustrates the connection between regional development and inequality within NUTS 2 regions for the UK in the year 2010.
+Plotted with GDP per capita on the x-axis and the Gini coefficient on the y-axis, the black line signifies the estimated relationship between these two variables.
+The line confirms a positive relationship.
+
 ```{r}
 #| echo: false
 # Plot for the EU countries
@@ -654,6 +709,10 @@ plot_EU <- subset_nuts2_2010 %>%
 
 plot_EU
 ```
+
+The figure visualize the relationship between regional development and regional inequality for NUTS 2 regions in the year 2010 for the EU countries.
+With GDP per capita on the x-axis and Gini coefficient on the y-axis, the black line serves the estimated relationship between these two.
+We can see from the figure that the relationship is negative.
 
 ## Part B: Exploring Other Determinants of Inequity
 
