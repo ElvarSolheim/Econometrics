@@ -869,8 +869,8 @@ Then, we will interpret and discuss the results, focusing on differences in deve
 
 ### Subset Analysis
 
-The subset analysis includes three subsets, each corresponding to one of our EU countries.
-Within these subsets, we will estimate the impact of regional development on inequality within the respective nuts2 regions for each EU country in year 2010.
+The subset analysis includes four subsets, each corresponding to one of our countries.
+Within these subsets, we will estimate the impact of regional development on inequality within the respective nuts2 regions for each country in year 2010.
 
 ```{r}
 #| echo: false
@@ -891,12 +891,17 @@ lm6 <- subset_nuts2_2010 %>%
   filter(id_nuts0 == "TR") %>% 
   lm(gini_n2 ~ I(gdp_per_capita_n2 * 100),
      data = .)
+
+# Estimate for the UK
+lm7 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 == "UK") %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
 ```
 
 ```{r}
 # Regression table
 huxreg(
-  list("Model 1" = lm4, "Model 2" = lm5, "Model 3" = lm6),
+  list("Model 1" = lm4, "Model 2" = lm5, "Model 3" = lm6, "Model 4" = lm7),
   statistics = c(N = "nobs", R2 = "r.squared"),
   coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
   )
@@ -905,29 +910,68 @@ huxreg(
 ### Subset Analysis Discussion
 
 The regression table reveal a consistent negative relationship between regional inequality (Gini coefficient) and regional development (GDP per capita) across Czech Republic, Finland, and Turkey.
-This negative relationship suggests that, in these countries, higher levels of regional development are associated with lower levels of inequality.
-
-Examining the "GDP per capita" coefficients in the three models, we observe that for the Czech Republic, the estimated decrease in regional inequality is 0.008 for a one-unit increase in GDP per capita.
+This negative relationship suggests that, in these EU countries, higher levels of regional development are associated with lower levels of inequality.
+Examining the "GDP per capita" coefficients for the EU contries, we observe that for the Czech Republic, the estimated decrease in regional inequality is 0.008 for a one-unit increase in GDP per capita.
 Finland exhibits a larger effect, with a coefficient of 0.026, indicating a larger reduction in regional inequality for the same increase in regional development.
-Turkey demonstrates the most significant impact, with a coefficient of 0.041.
-The observed variation in the effects of regional development on inequality across the countries may be attributed to several factors like for example economic structure and policy differences.
+Turkey demonstrates the largest impact, with a coefficient of 0.041.
+The coefficient for GDP per capita is negative for all these countries, but not statistically significant.
+
+The UK stands out with a significant positive relationship between regional inequality and regional development compared to the EU countries.
+The coefficient for GDP per capita for the UK is 0.032.
+This implies that as GDP per capita increases, the Gini coefficient also increases, indicating a rise in regional inequality.
+The coefficient for GDP per capita is highly significant at a 1% significance level.
 
 Model 2 has the highest R-squared value (0.757), indicating that it explains a substantial amount of the variation in regional inequality for Finland compared to the other models.
-In contrast, Models 1 and 3, with lower R-squared values, may not capture as much of the variation in regional inequality.
-It is noteworthy that the number of observations differ across the countries, woth the Czech Republic having the smallest sample size (8 observations), followed by Finland ( 5 observations), and Turkey with the largest sample size (26 observations).
+The UK follows with an R-squared value of 0.602, which also is a substantial amount, suggesting a good fit of the model.
+The Czech Republic has a R-squared values of 0.223, indicating that the model explains 22.3% of the variance in the Gini coefficient.
+Turkey has the lowest R-squared Value of 0.077, suggesting that the model may not fit the data as well in Turkey as the other countries.
+\
+\
+It is noteworthy that the number of observations differ across the countries, with the Czech Republic having the smallest sample size (8 observations), followed by Finland ( 5 observations), and Turkey with the largest sample size (26 observations).
 Smaller number of observations in the Czech Republic and Finland might introduce some caution regarding the robustness of the estimates.
 
 ## Part B: Exploring Alternative Functional Forms
 
-The second part involves exploring alternative functional forms, where we decided to focus on logarithmic and quadratic forms.
+The second part involves exploring alternative functional forms, where we decided to focus on logaritmic and quadratic forms.
 An estimation and visualization of the models will be given.
 Lastly, we will discuss the results and the fit of the alternative models compared to the original linear model.
 
 ### Functional Form Exploration
 
-We will explore logarithmic and quadratic forms.
+Since the number of observations for each of the EU-countries are small, we will stick to the model with all the EU countries together.
+We will explore functional forms for both the EU countries and the UK.
+
+The logarithmic form often appears in models where diminishing returns or asymptotic behavior is expected.
+A logarithmic form for the EU countries.
+The quadratic form is used to model situations where there's a curvature relationship between variables.
+The UK data displays a inverted U-shaped pattern, so a quadratic form might be suitable.
+\
 
 ### Estimation and Visualization
+
+We will estimate one logaritmic model for the EU countries and one quadratic model for the UK.
+
+```{r}
+# Logarithmic model for EU countries
+lm_log_EU <- lm(gini_n2 ~ log(gdp_per_capita_n2 * 100), data = subset_nuts2_2010 %>% filter(id_nuts0 %in% c("CZ", "FI", "TR")))
+
+huxreg(
+  list("Model 1" = lm_log_EU),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDP_per_capita = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
+  )
+```
+
+```{r}
+# Quadratic model for the UK
+lm_quad_UK <- lm(gini_n2 ~ I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
+
+huxreg(
+  list("Model 1" = lm_quad_UK),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDP_per_capita = "I((gdp_per_capita_n2 * 100)^2)", Constant = "(Intercept)")
+  )
+```
 
 ### Results Interpretation
 
