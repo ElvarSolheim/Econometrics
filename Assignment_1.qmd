@@ -52,6 +52,8 @@ The NUTS classification is a hierarchical system that enables cross-border stati
 The datasets we downloaded from Eurostat are at a NUTS 3 level.
 
 ```{r}
+#| echo: false
+#| output: false
 # GDP data for Czech Republic, Turkey and Finland
 gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") |>
   filter(unit == "MIO_EUR") |>
@@ -59,6 +61,8 @@ gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") |>
 ```
 
 ```{r}
+#| echo: false
+#| output: false
 # Population data for Czech Republic, Turkey and Finland
 population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
   select(year = TIME_PERIOD, geo, pop = OBS_VALUE)
@@ -71,18 +75,21 @@ Instead of NUTS regions, they use ITL regions.
 These two classification systems work on the same principle and we will from now on, refer to all regions as NUTS.
 
 ```{r}
+#| echo: false
 # GDP data for UK
 gdp_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
     sheet = "Table 5", skip = 1)
 ```
 
 ```{r}
+#| echo: false
 # Population data for UK
 population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
     sheet = "Table 6", skip = 1)
 ```
 
 ```{r}
+#| echo: false
 # Reforming gdp_UK
 gdp_UK <- gdp_UK %>%
   gather(year, gdp, -ITL, -`ITL code`, -`Region name`) %>%
@@ -93,6 +100,7 @@ gdp_UK <- gdp_UK %>%
 ```
 
 ```{r}
+#| echo: false
 # Reforming population_UK
 population_UK <- population_UK %>%
   gather(year, pop, -ITL, -`ITL code`, -`Region name`) %>%
@@ -106,12 +114,14 @@ When sub-regional GDP and population data for both the EU countries and the UK w
 We named the final dataset for "main_data".
 
 ```{r}
+#| echo: false
 # Merging gdp dataset with population dataset for the EU countries
 merged_data <- gdp_data |>
   left_join(population_data, join_by(year,geo))
 ```
 
 ```{r}
+#| echo: false
 # Merging gdp dataset with population dataset for the UK
 merged_UK <- gdp_UK |>
   left_join(population_UK, join_by(year,geo))
@@ -119,17 +129,21 @@ merged_UK$geo <- gsub("TL", "UK", merged_UK$geo)
 ```
 
 ```{r}
+#| echo: false
 # Converting the "year" variable into a character
 merged_data$year <- as.character(merged_data$year)
 merged_UK$year <- as.character(merged_UK$year)
 ```
 
 ```{r}
+#| echo: false
+#| output: false
 # Merging EU dataset with UK dataset
 main_data <- full_join(merged_data, merged_UK)
 ```
 
 ```{r}
+#| echo: false
 # We only want data from year 2000 to 2020
 main_data <- main_data %>%
   subset(main_data$year >= 2000 & main_data$year <= 2020) %>%
@@ -137,6 +151,7 @@ main_data <- main_data %>%
 ```
 
 ```{r}
+#| echo: false
 # Clean up
 rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
 ```
@@ -150,6 +165,7 @@ We add a new variable measuring GDP per capita to our main dataset by using the 
 $y_{i} = \frac{GDP_{i}}{Population_{i}}$
 
 ```{r}
+#| echo: false
 # Adding GDP per capita in the main_data
 main_data <- main_data %>%
   mutate(gdp_per_capita = gdp / pop)
@@ -167,6 +183,7 @@ We will present a summary of the descriptive statistics for each country.
 The summary contains minimum and maximum value, median, mean, quartiles, variance and standard deviation for gdp, population and gdp per capita.
 
 ```{r}
+#| echo: false
 # Create subsets for each country 
 data_CZ <- subset(main_data, grepl("^CZ", geo))
 data_TR <- subset(main_data, grepl("^TR", geo))
@@ -284,6 +301,7 @@ We created a new dataset containing the NUTS 2 regions and added a variable meas
 $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
 
 ```{r}
+#| echo: false
 # Creating a NUTS 0, NUTS 2 and NUTS 3 level
 main_data_nuts2 <- main_data |>
   mutate(id_nuts3 = geo,
@@ -293,6 +311,7 @@ main_data_nuts2 <- main_data |>
 ```
 
 ```{r}
+#| echo: false
 main_data_nuts2 <- main_data_nuts2 |>
   # Removing NA`s 
   filter(pop != "NA") |>
@@ -309,12 +328,14 @@ main_data_nuts2 <- main_data_nuts2 |>
 ```
 
 ```{r}
+#| echo: false
 # Selecting only the NUTS 2 variables
 main_data_nuts2 <- main_data_nuts2 %>%
    select(year, -geo, -gdp, -pop, -gdp_per_capita, -id_nuts3, id_nuts0, id_nuts2, pop_n2, gdp_n2, gdp_per_capita_n2, gini_n2)
 ```
 
 ```{r}
+#| echo: false
 # Selecting only the first row of each group 
 main_data_nuts2 <- main_data_nuts2 |>
  group_by(id_nuts2, year) |>
@@ -326,6 +347,7 @@ main_data_nuts2 <- main_data_nuts2 |>
 We created a table to get a overview of the population-weighted GDP Gini coefficient for each country (NUTS 0 regions).
 
 ```{r}
+#| echo: false
 # Calculating Gini Coefficient at a NUTS 0 level
 gini_nuts0 <- main_data_nuts2 |>
   filter(!is.na(gini_n2)) |>
@@ -339,6 +361,7 @@ gini_nuts0 <- main_data_nuts2 |>
 ```
 
 ```{r}
+#| echo: false
 # Table
 gini_nuts0 |>
   kable(caption = "Table 5: Gini Coefficient for the countries")
@@ -373,6 +396,7 @@ Within this subset, we focused on NUTS2 regions in the four countries: Czechia, 
 Our aim was to explore potential trends in regional inequality, as measured by the Gini coefficient, in relation to the population of these NUTS2 regions.
 
 ```{r}
+#| echo: false
 subset_nuts2data <- main_data_nuts2 %>%
   filter(grepl("2018", year))
 ```
@@ -384,6 +408,7 @@ This allowed us to examine and compare how regional inequality may vary concerni
 To create these visualizations, we utilized the ggplot2 library in R, enabling us to analyze and depict the data effectively.
 
 ```{r}
+#| echo: false
 # Create the scatterplot
 scatter_plot <- ggplot(subset_nuts2data, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
@@ -401,6 +426,7 @@ This decision was made to ensure a more accurate and representative analysis.
 Additionally, we omitted Istanbul from the dataset, primarily because it is significantly larger than any other city in the dataset, and its unique characteristics could potentially skew the overall analysis:\
 
 ```{r}
+#| echo: false
 # Create the scatterplot
 scatter_plot2 <- ggplot(subset_nuts2data, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
@@ -426,6 +452,7 @@ We also created a subset of the 'main_data_nuts2' specifically for the United Ki
 Our objective was to closely examine whether the trend in the Gini coefficient was consistent within the UK, as it was for all the NUTS2 regions across various countries.
 
 ```{r}
+#| echo: false
 subset_nuts2data_UK <- main_data_nuts2 %>%
   filter(grepl("^UK", id_nuts2) & year == 2018)
 ```
@@ -433,6 +460,7 @@ subset_nuts2data_UK <- main_data_nuts2 %>%
 To achieve this, we generated a new scatterplot using the 'ggplot()' function.
 
 ```{r}
+#| echo: false
 # Create the scatterplot
 scatter_plot3 <- ggplot(subset_nuts2data_UK, aes(x = pop_n2, y = gini_n2, color = id_nuts2)) +
   geom_point() +
@@ -518,7 +546,7 @@ Interestingly, regional inequalities increase again in the richest countries, fo
 #| echo: false
 # Subset including nuts2 regions in 2010
 subset_nuts2_2010 <- main_data_nuts2 |>
-filter(grepl("2010", year))
+  filter(grepl("2010", year))
 ```
 
 ```{r}
@@ -538,9 +566,10 @@ lm3 <- subset_nuts2_2010 %>%
 
 # Generate regression table
 huxreg(
-  list("Model 1" = lm1, "Model 2" = lm2, "Model 3" = lm3),
+  list("Model 1 All Countries" = lm1, "Model 2 UK" = lm2, "Model 3 EU" = lm3),
   statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
+  coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
   )
 ```
 
@@ -578,12 +607,12 @@ A lower R-squared suggests that Model 3 has less explanatory power compared to M
 Only 13.1% of the variation in the dependent variable is captured by the variables included in this model.
 It indicates that there might be other factors influencing the dependent variable that are not accounted for in Model 3.
 
-Statistical significance, as indicated by star symbols and p-values, palys a cruical role in assessing the validity of the models.
+Statistical significance, as indicated by star symbols and p-values, plays a cruical role in assessing the validity of the models.
 A low P-value suggests that the predictor variable is likely a valid predictor of the response variable.
 In our regression table, all coefficients demonstrate statistical significance, supporting the validity of the models.
-The coefficients for "GDP_per_capita" in model 1 and model 2 exhibit extremely low p-values (\<0.001), signifying high significance at a 1% significance level.
+The coefficients for "GDP_per_capita" in model 1 and model 2 exhibit extremely low p-values (\<0.01), signifying high significance at a 1% significance level.
 Model 3, on the other hand, have a p-value of less than 0.05, indicating a significance at a 5% level.
-Regarding the constant terms, model 3 stands out with a significance level of 1% (p \< 0.001).
+Regarding the constant terms, model 3 stands out with a significance level of 1% (p \< 0.01).
 This reinforces the reliability of Model 3, even though it has the lowest R-squared value.
 
 \
@@ -614,6 +643,7 @@ Lets see if these assumptions hold.
     We test for homoskedasticity using a Breusch-Pagan test.
 
     ```{r}
+    #| echo: false
     # Breusch-Pagan test for Model 1
     lm1_test <- lmtest::bptest(lm1)
     print(lm1_test)
@@ -634,6 +664,7 @@ Lets see if these assumptions hold.
     We test normality with three Q-Q plots, one for each of the estimation models.
 
     ```{r}
+    #| echo: false
     # Q-Q plot for Model 1
     qqnorm(residuals(lm1))
     qqline(residuals(lm1))
@@ -740,6 +771,7 @@ We retrieved data for these potential determinants from Eurostat.
 
 ```{r}
 #| echo: false
+#| output: false
 # Data aquisition: Unemployment (per thousand persons) for Turkey
 unemployment <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, unemployment = OBS_VALUE)
@@ -747,6 +779,7 @@ unemployment <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
 
 ```{r}
 #| echo: false
+#| output: false
 # Data aquisition: Road, rail and inland waterways (km pr thousand square) for Turkey
 infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, infrastructure = OBS_VALUE)
@@ -754,6 +787,7 @@ infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
 
 ```{r}
 #| echo: false
+#| output: false
 # Data aquisition: Life expenctancy (years) for Turkey
 life_expectancy <- read_csv("demo_r_mlifexp__custom_8282936_linear.csv") |>
   select(id_nuts2 = geo, year = TIME_PERIOD, life_expectancy = OBS_VALUE)
@@ -869,9 +903,9 @@ Then, we will interpret and discuss the results, focusing on differences in deve
 
 ### Subset Analysis
 
-We have already tested the development effects with one estimate for all countries, another for the UK and a seperate estimate for the EU countries.
+We have already tested the development effects using one estimate for all countries, another estimate for the UK and one estimate specifically for the EU countries.
 Now, we will take a closer look at the EU countries.
-This subset analysis includes three subsets, each corresponding to one of our EU countries.
+This subset analysis includes three subsets, each corresponding to one of our EU countries (Czech Republic, Finland and Turkey).
 Within these subsets, we will estimate the impact of regional development on inequality within the respective nuts2 regions for each country in year 2010.
 
 ```{r}
@@ -896,11 +930,13 @@ lm6 <- subset_nuts2_2010 %>%
 ```
 
 ```{r}
+#| echo: false
 # Regression table
 huxreg(
-  list("Model 1" = lm4, "Model 2" = lm5, "Model 3" = lm6),
+  list("Model 1 - CZ" = lm4, "Model 2 - FI" = lm5, "Model 3 - TR" = lm6),
   statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
+  coefs = c(GDP_per_capita = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
   )
 ```
 
@@ -911,21 +947,28 @@ This negative relationship suggests that, in these EU countries, higher levels o
 Examining the "GDP per capita" coefficients for the EU countries, we observe that for the Czech Republic, the estimated decrease in regional inequality is 0.008 for a one-unit increase in GDP per capita.
 Finland exhibits a larger effect, with a coefficient of 0.026, indicating a larger reduction in regional inequality for the same increase in regional development.
 Turkey demonstrates the largest impact, with a coefficient of 0.041.
-The coefficient for GDP per capita is negative for all these countries, but not statistically significant.
+Both Model 1 and Model 2 have relatively small standard error for the coefficient of GDP per capita.
+Model 1 have a standard error of 0.006 and Model 2 have a standard error of 0.009.
+Model 3 have a larger standard error at 0.029, suggesting less precision in the estimate.
+Model 1 and Model 3 for Czech Republic and Turkey does not show a statistically significant relationship for GDP per capita, as the p-value is greater than 0.10.
+Model 2 for Finland reveals a statistically significant relationship for GDP per capita at the 10% significance level (p \< 0.1).
+
+The constant term indicate the estimated value of the Gini coefficient, when GDP per capita is zero.
+However, setting GDP per capita to zero may not have a meaningful interpretation as GDP per capita is typically a positive value.
+All of the constant terms are significant, Model 1 and Model 2 at a 5% significance level, and Model 3 at a 1% significance level.
 
 Model 2 has the highest R-squared value (0.757), indicating that it explains a substantial amount of the variation in regional inequality for Finland compared to the other models.
 The Czech Republic follows with a R-squared values of 0.223, indicating that the model explains 22.3% of the variance in the Gini coefficient.
-Turkey has the lowest R-squared Value of 0.077, suggesting that the model may not fit the data as well in Turkey as the other countries.\
+Turkey has the lowest R-squared Value of 0.077, suggesting that the model may not fit the data as well in Turkey as the other countries.
 
-\
 It is noteworthy that the number of observations differ across the countries, with the Czech Republic having the smallest sample size (8 observations), followed by Finland ( 5 observations), and Turkey with the largest sample size (26 observations).
 Smaller number of observations in the Czech Republic and Finland might introduce some caution regarding the robustness of the estimates.
 
 ## Part B: Exploring Alternative Functional Forms
 
-The second part involves exploring alternative functional forms, where we decided to focus on logarithmic and quadratic forms.
-An estimation and visualization of the models will be given.
-Lastly, we will discuss the results and the fit of the alternative models compared to the original linear model.
+The second part involves exploring alternative functional forms.
+We will estimate alternative models and visualize them.
+Further, we will discuss the results and the fit of the alternative models compared to the original linear model.
 
 ### Functional Form Exploration
 
@@ -942,7 +985,7 @@ Based on this, we think a quadratic from is suitable for the UK.\
 
 ### Estimation and Visualization
 
-We will now estimate one logarithmic model for the EU countries and one quadratic model for the UK.
+We will estimate and visualize one logarithmic model for the EU countries and one quadratic model for the UK.
 
 ```{r}
 #| echo: false
@@ -950,25 +993,21 @@ We will now estimate one logarithmic model for the EU countries and one quadrati
 lm_log_EU <- lm(gini_n2 ~ log(gdp_per_capita_n2 * 100), data = subset_nuts2_2010 %>% filter(id_nuts0 %in% c("CZ", "FI", "TR")))
 
 huxreg(
-  list("Model 1" = lm_log_EU),
+  list("Model 1 - EU" = lm_log_EU),
   statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)")
+  coefs = c(GDP_per_capita = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
   )
 ```
 
-```{r}
-#| echo: false
-# Quadratic model for the UK
-lm_quad_UK <- lm(gini_n2 ~ I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
-
-huxreg(
-  list("Model 1" = lm_quad_UK),
-  statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "I((gdp_per_capita_n2 * 100)^2)", Constant = "(Intercept)")
-  )
-```
-
-Visualization of the models.
+Table X displays the regression table for the logarithimc model for the EU.
+The GDP per capita coefficient is -0.020.
+This negative relationship implies that when the logarithm of GDP per capita increases by one unit, the Gini coefficient decreases by 0.020.
+This coefficient is significant at a 5% significance level with a standard error of 0.008.
+The constant term for the logarithmic model is 0.038, with a standard error of 0.005.
+The constant term is highly significant at a 1% significance level.
+The R-squared value of 0.164 indicates that the model explains about 16.4% of the variance in the Gini coefficient.
+\
 
 ```{r}
 #| echo: false
@@ -985,6 +1024,28 @@ plot_EU_log <- subset_nuts2_2010 %>%
 plot_EU_log
 ```
 
+The logaritmic model for the EU countries is visualizsed in figure X, with the logarithm of GDP per capita on the x-axis and the GDP Gini coefficient on the y-axis.
+
+```{r}
+#| echo: false
+# Quadratic model for the UK
+lm_quad_UK <- lm(gini_n2 ~ I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
+
+huxreg(
+  list("Model 1 - UK" = lm_quad_UK),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDP_per_capita = "I((gdp_per_capita_n2 * 100)^2)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+  )
+```
+
+Table X displays the regression table for the quadratic model for the UK.
+The quadratic model have a positive GDP per capita coefficient of 0.002.
+This positive value suggest an inverted U-curve in the relationship between GDP per capita and the Gini coefficient in the UK, with a turning point where the impact of GDP per capita on regional inequality start to diminish instead of increase.
+This relationship is highly significant at a 1% significance level.
+The quadratic model have a constant of 0.073 which also is significant at a 1% significance level, with a standard error of 0.010.
+The R-squared value of 0.570 indicates that the model explains about 57% of the variance in the Gini coefficient.
+
 ```{r}
 #| echo: false
 # Plot for the UK
@@ -1000,7 +1061,24 @@ plot_UK_quad <- subset_nuts2_2010 %>%
 plot_UK_quad
 ```
 
+The quadratic model is visualized in figure X, with the square of GDP per capita on the x-axis, and the GDP Gini coefficient on the y-axis.
+
 ### Results Interpretation
+
+**The logarithmic model vs. the linear model for the EU countries**\
+Both the logarithmic and linear model of the EU countries show a negative coefficient for GDP per capita, suggesting a negative relationship between regional development and inequality.
+The logarithmic model has a larger negative coefficient for GDP per capita, indicating a steeper decline in the effect of GDP per capita.
+The R-squared value of the logarithmic value is 0.164.
+The linear model have a R-squared value of 0.131.
+The logarihmic model have a slightly better fit compared to the linear model.
+
+**The quadratic model vs. the linear model for the UK** \
+The quadratic model and the linear model shows a positive relationship between regional development and inequality.
+The linear model suggests a stronger positve relationship between GDP per capita and the Gini coefficient in the UK compared to the quadratic model.
+The quadratic model introduces a non-linear term, but the linear model still has a bettet fit based on the R-squared value.
+The R-squared value in the quadratic model is 0.570 and in the linear model it is 0.602.
+The quadratic model captures a potential curvature in the relationship, but the linear model provide a better overall fit for the UK based on the higher R-squared value.
+\
 
 ## Part C: Heteroskedasticity Testing and Causality Discussion
 
@@ -1008,6 +1086,72 @@ In the third part, we will test for heteroskedasticity in the alternative and or
 We will also reflect on the causal interpretation of the models and suggest strategies to address any issues identified.
 
 ### Heteroskedasticity Testing
+
+To test for heteroskedasticity in the alternative and linear models we will use Breusch-Pagan tests.
+The null hypothesis is homoskedasticity and the alternative hypothesis is heteroskedasticity.
+If the p-value is less than the significance level, we will reject the null hypothesis and conclude that there is evidence of heteroskedasticity.
+
+**Linear models**
+
+First, we will test for heteroskedsticity in the linear models.
+
+```{r}
+#| echo: false
+# Estimate for the UK
+lm2 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 == "UK") %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+# Breusch-Pagan test F-Test
+p_UK <- bptest(lm2)
+p_UK
+```
+
+```{r}
+#| echo: false
+# Estimate for the EU Countries
+lm3 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+# Breusch-Pagan test F-Test
+p_EU <- bptest(lm3)
+p_EU
+```
+
+From the Breuch-Pagan test for the linear model for the UK we see that the p-value is 0.7716.
+The p-value is 0.3068 for the linear model of the EU countries.
+The p-values from the Breusch-Pagan test suggest that we do not have enough evidence to reject the null hypothesis of homoskedasticity for both the UK and the EU linear models.
+Since we fail to reject the null hypotesis, the variance of the residuals is reasonably constant across different levels of GDP per capita for both the linear models.
+This gives reliability of our coefficient estimates and the validity of our statistical inferences.
+
+**\
+Alternative models**
+
+We will now test for hetroskedasticity for the alternative models.
+
+```{r}
+#| echo: false
+# Quadratic model for the UK
+lm_quad_UK <- lm(gini_n2 ~ I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
+# Breusch-Pagan test F-Test
+p_UK_2 <- bptest(lm_quad_UK)
+p_UK_2
+```
+
+```{r}
+#| echo: false
+# Logarithmic model for EU countries
+lm_log_EU <- lm(gini_n2 ~ log(gdp_per_capita_n2 * 100), data = subset_nuts2_2010 %>% filter(id_nuts0 %in% c("CZ", "FI", "TR")))
+# Breusch-Pagan test F-Test
+p_EU_2 <- bptest(lm_log_EU)
+p_EU_2
+```
+
+The p-value for the logarithmic model for the EU countries is 0.5477.
+The p-value is 0.8687 for the quadratic model of the UK.
+The p-values from the Breusch-Pagan test for both the quadratic model for the UK and the logarithmic model for the EU are higher than conventional significance levels.
+This suggests that, similar to the linear models, there is not enough evidence to reject the null hypothesis of homoskedsticity for these alternative models.
+The results indicate that the variance of the residuals is reasonably constant across different levels of GDP per capita for both the alternative models.
+This is reassuring for the reliability and validity of the models.\
 
 ### Causality Discussion
 
