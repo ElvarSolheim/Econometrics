@@ -1006,8 +1006,7 @@ This negative relationship implies that when the logarithm of GDP per capita inc
 This coefficient is significant at a 5% significance level with a standard error of 0.008.
 The constant term for the logarithmic model is 0.038, with a standard error of 0.005.
 The constant term is highly significant at a 1% significance level.
-The R-squared value of 0.164 indicates that the model explains about 16.4% of the variance in the Gini coefficient.
-\
+The R-squared value of 0.164 indicates that the model explains about 16.4% of the variance in the Gini coefficient.\
 
 ```{r}
 #| echo: false
@@ -1072,13 +1071,12 @@ The R-squared value of the logarithmic value is 0.164.
 The linear model have a R-squared value of 0.131.
 The logarihmic model have a slightly better fit compared to the linear model.
 
-**The quadratic model vs. the linear model for the UK** \
+**The quadratic model vs. the linear model for the UK**\
 The quadratic model and the linear model shows a positive relationship between regional development and inequality.
 The linear model suggests a stronger positve relationship between GDP per capita and the Gini coefficient in the UK compared to the quadratic model.
 The quadratic model introduces a non-linear term, but the linear model still has a bettet fit based on the R-squared value.
 The R-squared value in the quadratic model is 0.570 and in the linear model it is 0.602.
-The quadratic model captures a potential curvature in the relationship, but the linear model provide a better overall fit for the UK based on the higher R-squared value.
-\
+The quadratic model captures a potential curvature in the relationship, but the linear model provide a better overall fit for the UK based on the higher R-squared value.\
 
 ## Part C: Heteroskedasticity Testing and Causality Discussion
 
