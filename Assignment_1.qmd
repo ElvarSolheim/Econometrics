@@ -1302,35 +1302,27 @@ With 1532 observations, the cross-sectional model attains an R-squared of 38.7%.
 
 **Advantages of Panel Estimation:**
 
--   **Control for Individual and Time Effects:**
-    Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
+-   **Control for Individual and Time Effects:** Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
 
--   **Enhanced R-Squared:**
-    Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
+-   **Enhanced R-Squared:** Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
 
 **Limitations of Panel Estimation:**
 
--   **Non-significant Time Effects:**
-    Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
+-   **Non-significant Time Effects:** Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
 
--   **Large Number of Observations:**
-    Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
+-   **Large Number of Observations:** Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
 
 **Advantages of Cross-Sectional Estimation:**
 
--   **Simplicity:**
-    Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
+-   **Simplicity:** Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
 
--   **Significant Coefficients:**
-    The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
+-   **Significant Coefficients:** The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
 
 **Limitations of Cross-Sectional Estimation:**
 
--   **Omitted Variable Bias:**
-    Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
+-   **Omitted Variable Bias:** Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
 
--   **Static Relationship:**
-    Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.**Panel Estimation vs. Cross-Sectional Estimation: A Comparative Analysis**
+-   **Static Relationship:** Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.**Panel Estimation vs. Cross-Sectional Estimation: A Comparative Analysis**
 
     In exploring the comparative aspects of panel and cross-sectional estimation, the following insights emerge.
 
@@ -1354,35 +1346,27 @@ With 1532 observations, the cross-sectional model attains an R-squared of 38.7%.
 
     **Advantages of Panel Estimation:**
 
-    -   **Control for Individual and Time Effects:**
-        Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
+    -   **Control for Individual and Time Effects:** Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
 
-    -   **Enhanced R-Squared:**
-        Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
+    -   **Enhanced R-Squared:** Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
 
     **Limitations of Panel Estimation:**
 
-    -   **Non-significant Time Effects:**
-        Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
+    -   **Non-significant Time Effects:** Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
 
-    -   **Large Number of Observations:**
-        Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
+    -   **Large Number of Observations:** Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
 
     **Advantages of Cross-Sectional Estimation:**
 
-    -   **Simplicity:**
-        Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
+    -   **Simplicity:** Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
 
-    -   **Significant Coefficients:**
-        The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
+    -   **Significant Coefficients:** The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
 
     **Limitations of Cross-Sectional Estimation:**
 
-    -   **Omitted Variable Bias:**
-        Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
+    -   **Omitted Variable Bias:** Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
 
-    -   **Static Relationship:**
-        Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.
+    -   **Static Relationship:** Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.
 
 ### Panel Estimation Discussion
 
