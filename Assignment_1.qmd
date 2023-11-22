@@ -1154,6 +1154,34 @@ This is reassuring for the reliability and validity of the models.\
 
 ### Causality Discussion
 
+The examination of the Breusch-Pagan test results for both linear and alternative models provides valuable insights into the homoskedasticity assumption and, consequently, the causal interpretation of the models.
+
+For the linear models in both the UK and the EU countries, the non-significant p-values (0.7716 for the UK and 0.3068 for the EU) from the Breusch-Pagan test indicate that there is no substantial evidence to reject the null hypothesis of homoskedasticity.
+This implies that the variance of the residuals remains reasonably constant across different levels of GDP per capita.
+Consequently, the reliability of coefficient estimates and the validity of statistical inferences are affirmed.
+The models appear robust in capturing the relationships without undue influence from varying levels of heteroskedasticity.
+
+Turning attention to the alternative models, specifically the logarithmic model for the EU and the quadratic model for the UK, the higher p-values (0.5477 and 0.8687, respectively) from the Breusch-Pagan test suggest a similar lack of evidence against homoskedasticity.
+This consistency across different model specifications strengthens the confidence in the reliability and validity of the models' predictions.
+
+Reflecting on the causal interpretation of the models, the homoskedasticity results enhance our confidence in the stability of the estimated relationships.
+However, it's essential to acknowledge that homoskedasticity alone does not guarantee the absence of omitted variable bias or endogeneity issues.
+To address potential concerns:
+
+1.  **Omitted Variables:**
+
+    Evaluate the models for omitted variables that might confound the relationships.
+    Consider additional variables that could impact the dependent variable and include them in the analysis if necessary.
+
+2.  **Endogeneity Issues:**
+
+    Assess the models for endogeneity, especially if there are bidirectional causal relationships.
+    Instrumental variable techniques or more advanced econometric methods may be considered to mitigate endogeneity concerns.
+
+3.  **Robustness Checks:**
+
+    Perform robustness checks by applying alternative specifications or model formulations to ensure the stability of results and conclusions.
+
 ## Part D: Panel Estimates
 
 In part D, we conduct panel estimates using the entire dataset, examining the impact of regional development on regional inequality.
