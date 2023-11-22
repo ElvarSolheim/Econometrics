@@ -25,6 +25,7 @@ library(vtable)
 library(future)
 library(furrr)
 library(lmtest)
+library(plm)
 ```
 
 # Assignment 1: Data and Descriptive
@@ -1157,13 +1158,282 @@ This is reassuring for the reliability and validity of the models.\
 
 In part D, we conduct panel estimates using the entire dataset, examining the impact of regional development on regional inequality.
 We use various panel estimation techniques, incorporating different fixed effects - both separately and jointly.
-We interpret the panel estimation results and compare the panel estimates with the cross-sectional estimates from earlier, discussing the advantages and limitations of each approach.
+We interpret the panel estimation results and compare the panel estimates with the cross-sectional estimates, discussing the advantages and limitations of each approach.
 Lastly, we will critically evaluate the panel estimation findings, considering potential biases, inconsistencies, or limitations in the methodology.
 
 ### Panel Estimation Task
 
+```{r}
+#| echo: false
+# Define panal data frame
+# Converting our data to a panel data frame
+pdata <- pdata.frame(main_data_nuts2, index = c("id_nuts0", "id_nuts2", "year") )
+# panel dimensions:
+pdim(pdata)
+```
+
+An unbalanced panel means that not all entities are observed in each time period.
+Some entities might have missing observations for certain years.
+This is in contrast to a balanced panel where all entities are observed in every time period.
+
+Overall, the code is creating a panel data frame and providing information about its dimensions.
+The unbalanced panel nature is indicative of missing observations for some entities in certain years.
+
+#### Pooling Cross Sections across time
+
+This model is estimating the relationship between the dependent variable **`gini_n2`** (regional inequality) and the independent variable **`gdp_per_capita_n2`** (regional development) while pooling cross-sections across time.
+
+```{r}
+#| echo: false
+# Pooling Cross Sections across time model
+model_pooling <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "pooling")
+
+huxreg(
+  list("Pooling Model" = model_pooling),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDP_per_capita = "gdp_per_capita_n2", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+)
+```
+
+The results suggest that there is a statistically significant relationship between GDP per capita and regional inequality (**`gini_n2`**).
+The positive coefficient for **`GDP_per_capita`** indicates that higher GDP per capita is associated with higher regional inequality.
+The model explains approximately 38.7% of the variation in regional inequality, and both the GDP per capita coefficient and the intercept are statistically significant.
+
+#### **Panel Estimation with Different Fixed Effects**
+
+Model with Country Fixed Effects:
+
+```{r}
+#| echo: false
+model_fe_country <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "within", effect = "individual")
+summary(model_fe_country)
+
+```
+
+Model with Year Fixed Effects:
+
+```{r}
+#| echo: false
+model_fe_year <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "within", effect = "time")
+summary(model_fe_year)
+
+```
+
+Model with NUTS 2 Level Fixed Effects:
+
+```{r}
+#| echo: false
+model_fe_nuts2 <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "within", effect = "twoways")
+summary(model_fe_nuts2)
+model_fe_nuts2 <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "within", effect = "twoways")
+summary(model_fe_nuts2)
+
+```
+
+Model with Both Country and Year Fixed Effects:
+
+```{r}
+#| echo: false 
+model_fe_both <- plm(gini_n2 ~ gdp_per_capita_n2, data = pdata, model = "within", effect = "twoways", index = c("id_nuts0", "year"))
+summary(model_fe_both)
+
+```
+
 ### Panel Estimation Analysis
 
+1.  **Individual Fixed Effects (`model_fe_country`):**
+
+    -   **Estimate:** The coefficient for **`gdp_per_capita_n2`** is 2.6176.
+        This implies that, on average, a one-unit increase in **`gdp_per_capita_n2`** is associated with an increase of 2.6176 units in **`gini_n2`**.
+
+    -   **Statistical Significance:** The coefficient is highly statistically significant (p-value \< 2.2e-16), indicating a strong relationship.
+
+    -   **R-Squared:** The model explains about 44.1% of the variation in **`gini_n2`**.
+
+    -   **Fixed Effect Interpretation:** The "Oneway (individual) effect Within Model" indicates that the analysis controls for individual-specific effects (country-specific effects) by subtracting the individual means from the variables.
+        Therefore, the estimate represents the relationship within each country after accounting for country-specific characteristics.
+
+2.  **Time Fixed Effects (`model_fe_year`):**
+
+    -   **Estimate:** The coefficient for **`gdp_per_capita_n2`** is 0.0759.
+        This implies that, on average, a one-unit increase in **`gdp_per_capita_n2`** is associated with an increase of 0.0759 units in **`gini_n2`**.
+
+    -   **Statistical Significance:** The coefficient is not statistically significant at conventional levels (p-value = 0.09589).
+
+    -   **R-Squared:** The model explains a very small proportion (about 0.19%) of the variation in **`gini_n2`**.
+
+    -   **Fixed Effect Interpretation:** The "Oneway (time) effect Within Model" indicates that the analysis controls for time-specific effects by subtracting the time means from the variables.
+        Therefore, the estimate represents the relationship within each time period after accounting for time-specific characteristics.
+
+3.  **Two-Way Fixed Effects (`model_fe_nuts2` and `model_fe_both`):**
+
+    -   **Estimate:** The coefficient for **`gdp_per_capita_n2`** is 0.0759.
+        This implies that, on average, a one-unit increase in **`gdp_per_capita_n2`** is associated with an increase of 0.0759 units in **`gini_n2`**.
+
+    -   **Statistical Significance:** The coefficient is not statistically significant at conventional levels (p-value = 0.09624).
+
+    -   **R-Squared:** The model explains a very small proportion (about 0.19%) of the variation in **`gini_n2`**.
+
+    -   **Fixed Effect Interpretation:** The "Twoways effects Within Model" indicates that the analysis controls for both individual (country) and time effects.
+        The estimate represents the relationship within each country and time period after accounting for country and time-specific characteristics.
+
+**Panel Estimation vs. Cross-Sectional Estimation: A Comparative Analysis**
+
+In exploring the comparative aspects of panel and cross-sectional estimation, the following insights emerge.
+
+**Panel Estimation:**
+
+In the realm of panel estimation, individual fixed effects, denoted by model_fe_country, reveal a substantial estimate of 2.6176.
+This bears high statistical significance, as indicated by a p-value less than 2.2e-16.
+The model boasts an R-squared of 44.1%, suggesting a robust fit.
+A distinctive feature is its capacity to control for individual-specific effects, delineating country-specific nuances.
+
+The incorporation of time fixed effects (model_fe_year) and two-way fixed effects (model_fe_nuts2 and model_fe_both) introduces estimates of 0.0759, both lacking statistical significance at conventional levels (p-values = 0.09589 and 0.09624, respectively).
+While these models control for time-specific and both individual and time effects, the non-significant coefficients hint at potential variations in the relationship over time.
+
+**Cross-Sectional Estimation:**
+
+Shifting to cross-sectional estimation, the model unveils a noteworthy GDP_per_capita coefficient of 2.306, marked by significance at the 0.01 level.
+The intercept, standing at 0.022, is also statistically significant.
+With 1532 observations, the cross-sectional model attains an R-squared of 38.7%.
+
+**Comparative Analysis:**
+
+**Advantages of Panel Estimation:**
+
+-   **Control for Individual and Time Effects:**
+    Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
+
+-   **Enhanced R-Squared:**
+    Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
+
+**Limitations of Panel Estimation:**
+
+-   **Non-significant Time Effects:**
+    Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
+
+-   **Large Number of Observations:**
+    Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
+
+**Advantages of Cross-Sectional Estimation:**
+
+-   **Simplicity:**
+    Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
+
+-   **Significant Coefficients:**
+    The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
+
+**Limitations of Cross-Sectional Estimation:**
+
+-   **Omitted Variable Bias:**
+    Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
+
+-   **Static Relationship:**
+    Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.**Panel Estimation vs. Cross-Sectional Estimation: A Comparative Analysis**
+
+    In exploring the comparative aspects of panel and cross-sectional estimation, the following insights emerge.
+
+    **Panel Estimation:**
+
+    In the realm of panel estimation, individual fixed effects, denoted by model_fe_country, reveal a substantial estimate of 2.6176.
+    This bears high statistical significance, as indicated by a p-value less than 2.2e-16.
+    The model boasts an R-squared of 44.1%, suggesting a robust fit.
+    A distinctive feature is its capacity to control for individual-specific effects, delineating country-specific nuances.
+
+    The incorporation of time fixed effects (model_fe_year) and two-way fixed effects (model_fe_nuts2 and model_fe_both) introduces estimates of 0.0759, both lacking statistical significance at conventional levels (p-values = 0.09589 and 0.09624, respectively).
+    While these models control for time-specific and both individual and time effects, the non-significant coefficients hint at potential variations in the relationship over time.
+
+    **Cross-Sectional Estimation:**
+
+    Shifting to cross-sectional estimation, the model unveils a noteworthy GDP_per_capita coefficient of 2.306, marked by significance at the 0.01 level.
+    The intercept, standing at 0.022, is also statistically significant.
+    With 1532 observations, the cross-sectional model attains an R-squared of 38.7%.
+
+    **Comparative Analysis:**
+
+    **Advantages of Panel Estimation:**
+
+    -   **Control for Individual and Time Effects:**
+        Panel estimation, fortified by fixed effects, adeptly manages both individual (country) and time-specific effects concurrently, enhancing the model's robustness.
+
+    -   **Enhanced R-Squared:**
+        Panel models, particularly those with individual fixed effects, exhibit superior R-squared values, underscoring a better fit compared to cross-sectional models.
+
+    **Limitations of Panel Estimation:**
+
+    -   **Non-significant Time Effects:**
+        Time fixed effects and two-way fixed effects models showcase non-significant coefficients for GDP_per_capita, hinting at potential variations in the relationship over time.
+
+    -   **Large Number of Observations:**
+        Unbalanced panels, characterized by a substantial number of observations, may introduce computational challenges and potential convergence issues.
+
+    **Advantages of Cross-Sectional Estimation:**
+
+    -   **Simplicity:**
+        Cross-sectional models, in their simplicity, offer computational ease and straightforward interpretation, making them accessible for implementation.
+
+    -   **Significant Coefficients:**
+        The cross-sectional model manifests significant coefficients for GDP_per_capita and the intercept, signifying a clear relationship.
+
+    **Limitations of Cross-Sectional Estimation:**
+
+    -   **Omitted Variable Bias:**
+        Cross-sectional models are susceptible to omitted variable bias, lacking control for individual or time-specific effects.
+
+    -   **Static Relationship:**
+        Assuming a static relationship, cross-sectional models overlook potential variations across time and individual units.
+
 ### Panel Estimation Discussion
+
+The panel estimation findings shed light on the intricate relationship between GDP per capita (gdp_per_capita_n2) and regional inequality (gini_n2) under various fixed effects models.
+While these results offer valuable insights, it is crucial to critically evaluate them, considering potential biases, inconsistencies, and limitations in the methodology.
+
+**Individual Fixed Effects (model_fe_country):**
+
+The estimate of 2.6176 reveals a significant positive association between GDP per capita and regional inequality.
+However, the robustness of this relationship is contingent upon the assumption that individual-specific effects are adequately captured.
+Despite the high statistical significance and a commendable R-squared of 44.1%, it is imperative to acknowledge that unobserved individual factors might still introduce bias.
+
+**Time Fixed Effects (model_fe_year):**
+
+The modest estimate of 0.0759, coupled with a lack of statistical significance at conventional levels, raises concerns about the reliability of the relationship over time.
+The minimal explanatory power (0.19%) suggests that time-specific effects, as controlled by the model, contribute only marginally to the overall understanding of regional inequality dynamics.
+
+**Two-Way Fixed Effects (model_fe_nuts2 and model_fe_both):**
+
+While the two-way fixed effects attempt to simultaneously control for individual and time effects, the consistent estimate of 0.0759, coupled with non-significance, prompts a critical examination.
+The limited explanatory power (0.19%) indicates that, even with the inclusion of both sets of fixed effects, a substantial proportion of the variation in regional inequality remains unexplained.
+
+In light of these critical evaluations, it is crucial to recognize the overarching limitations of panel estimation.
+The assumption that fixed effects adequately capture all relevant individual and time-specific factors might be optimistic.
+Unobserved heterogeneity, unaccounted for in the models, could introduce biases, potentially leading to an overestimation or underestimation of the true relationship.
+
+Moreover, the reliance on a large number of observations in unbalanced panels may introduce computational challenges and convergence issues.
+The potential for omitted variable bias, even within the comprehensive fixed effects framework, warrants careful consideration.The panel estimation findings shed light on the intricate relationship between GDP per capita (gdp_per_capita_n2) and regional inequality (gini_n2) under various fixed effects models.
+While these results offer valuable insights, it is crucial to critically evaluate them, considering potential biases, inconsistencies, and limitations in the methodology.
+
+**Individual Fixed Effects (model_fe_country):**
+
+The estimate of 2.6176 reveals a significant positive association between GDP per capita and regional inequality.
+However, the robustness of this relationship is contingent upon the assumption that individual-specific effects are adequately captured.
+Despite the high statistical significance and a commendable R-squared of 44.1%, it is imperative to acknowledge that unobserved individual factors might still introduce bias.
+
+**Time Fixed Effects (model_fe_year):**
+
+The modest estimate of 0.0759, coupled with a lack of statistical significance at conventional levels, raises concerns about the reliability of the relationship over time.
+The minimal explanatory power (0.19%) suggests that time-specific effects, as controlled by the model, contribute only marginally to the overall understanding of regional inequality dynamics.
+
+**Two-Way Fixed Effects (model_fe_nuts2 and model_fe_both):**
+
+While the two-way fixed effects attempt to simultaneously control for individual and time effects, the consistent estimate of 0.0759, coupled with non-significance, prompts a critical examination.
+The limited explanatory power (0.19%) indicates that, even with the inclusion of both sets of fixed effects, a substantial proportion of the variation in regional inequality remains unexplained.
+
+In light of these critical evaluations, it is crucial to recognize the overarching limitations of panel estimation.
+The assumption that fixed effects adequately capture all relevant individual and time-specific factors might be optimistic.
+Unobserved heterogeneity, unaccounted for in the models, could introduce biases, potentially leading to an overestimation or underestimation of the true relationship.
+
+Moreover, the reliance on a large number of observations in unbalanced panels may introduce computational challenges and convergence issues.
+The potential for omitted variable bias, even within the comprehensive fixed effects framework, warrants careful consideration.
 
 # References
