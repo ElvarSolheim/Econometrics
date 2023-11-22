@@ -906,7 +906,7 @@ Then, we will interpret and discuss the results, focusing on differences in deve
 
 We have already tested the development effects using one estimate for all countries, another estimate for the UK and one estimate specifically for the EU countries.
 Now, we will take a closer look at the EU countries.
-This subset analysis includes three subsets, each corresponding to one of our EU countries (Czech Republic, Finland and Turkey).
+This subset analysis includes three subsets, each corresponding to one of our EU countries (Czech Republic, Finland, Turkey).
 Within these subsets, we will estimate the impact of regional development on inequality within the respective nuts2 regions for each country in year 2010.
 
 ```{r}
