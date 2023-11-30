@@ -1,90 +1,117 @@
 ---
-title: "term_portfolio"
-format: html
+title: "Regional development and inequality"
+format: pdf
 editor: visual
+bibliography: MSB104.bib
 ---
-
-# Regional development and inequality
 
 Western Norway University of Applied Sciences\
 MSB104 Econometrics\
-Hanna Sundal Bjerkreim & Elvar Solheim
+Group 5: Hanna Sundal Bjerkreim & Elvar Solheim
 
 ```{r}
 #| label: setup
 #| echo: false
 #| output: false
 #| message: false
+library(tidyverse)
+library(readxl)
+library(magrittr)
+library(knitr)
+library(dineq)
+library(ineq)
+library(ggplot2)
+library(scales)
+library(cowplot)
+library(dplyr)
+library(huxtable)
+library(vtable)
+library(future)
+library(furrr)
+library(lmtest)
+library(plm)
 ```
 
 ## I. Introduction
 
 ### Background
 
-Provide a brief background on the topics of regional development and inequality.
+*Provide a brief background on the topics of regional development and inequality.*
 
 ### Objectives
 
-Outline the main objectives and research questions addressed in Assignments 1, 2, and 3.
+*Outline the main objectives and research questions addressed in Assignments 1, 2, and 3.*
+
+Throughout the semester in our econometrics course, we completed three distinct assignments, each contributing to a comprehensive understanding of regional development and inequality within the Czech Republic, Turkey, Finland and the United Kingdom.
+
+The primary objective of the first assignment was to acquire, process, and analyze sub-national GDP and population data.
+This involved calculating GDP per capita and the population-weighted GDP Gini coefficient, followed by an exploration of regional inequality through descriptive statistics and visualizations.
+
+The second assignment focused on examining the relationship between regional development and inequality specifically for the year 2010, utilizing cross-sectional estimation techniques.
+We used simple linear regression to explore the initial relationship and then enhanced our analysis by incorporating potential determinants of regional inequality through a multiple linear regression.
+
+In the third assignment, we delved into exploring alternative function forms, namely logarithmic and quadratic, and implemented panel estimates to analyze the relationship between regional development and inequality.
+
+This academic paper aims to synthesize and consolidate the critical findings derived from Assignment 1, 2 and 3, providing a cohesive understanding of regional development and inequality within the specified countries.
 
 ### Significance
 
-Highlight the importance and relevance of the research undertaken.
+*Highlight the importance and relevance of the research undertaken.*
 
 ## II. Literature Review
 
 ### Previous Work
 
-Summarize key literature related to regional development and inequality.
+*Summarize key literature related to regional development and inequality.*
 
 ### Research Gap
 
-Identify the research gap your assignments aim to address.
+*Identify the research gap your assignments aim to address.*
 
 ## III. Data and Methodology
 
 ### Data Sources
 
-Briefly describe the primary data sources used in the previous assignments, noting any limitations.
+*Briefly describe the primary data sources used in the previous assignments, noting any limitations.*
 
 ### Methodological Approach
 
-Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.
+*Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.*
 
 ## IV. Empirical Findings
 
 ### Cross-sectional Estimates
 
-Summarize essential results obtained from the cross-sectional analysis in Assignment 2.
+*Summarize essential results obtained from the cross-sectional analysis in Assignment 2.*
 
 ### Alternative Functional Forms and Panel Estimates
 
-Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.
+*Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.*
 
 ## V. Discussion
 
 ### Key Insights
 
-Synthesize and discuss the central insights emerging from the empirical findings.
+*Synthesize and discuss the central insights emerging from the empirical findings.*
 
 ### Policy Implications
 
-Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.
+*Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.*
 
 ## VI. Limitations and Future Research
 
 ### Research Limitations
 
-Acknowledge any constraints or limitations encountered during your analysis.
+*Acknowledge any constraints or limitations encountered during your analysis.*
 
 ## VII. Conclusion
 
 ### Summary
 
-Provide a succinct summary of the main findings and their significance.
+*Provide a succinct summary of the main findings and their significance.*
 
 ### Final Reflections
 
-Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.
+*Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.*
 
 ## VIII. References
