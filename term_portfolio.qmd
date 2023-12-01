@@ -36,27 +36,46 @@ library(plm)
 
 ### Background
 
-*Provide a brief background on the topics of regional development and inequality.*
+Regional development is a crucial facet of economic progress, and it can be seen as a general effort to enhance well-being and living standards in regions, and improve their contribution to national performance and more inclusive, resilient societies.
+Regional development focuses on fostering economic and social growth in specific geographic areas, aiming to reduce regional inequality.
+
+Disparities exist worldwide between countries - but also within countries across regions.
+Regional inequality relates to the uneven distribution of resources, opportunities, and development across different regions.
+
+Both regional development and regional inequality are interconnected.
+Efforts to address regional inequality often involve policies and initiatives to promote balanced growth and address disparities among regions.
+In today's context, these policies are more important than ever.
+
+This paper delves into the intricate dynamics of regional development and inequality within the distinct context of the Czech Republic, Turkey, Finland, and the United Kingdom.
+Analysing these countries provides a nuanced understanding of how political factors shape regional inequality, offering insights into potential policy interventions aimed at fostering more balanced and inclusive development pathways.
 
 ### Objectives
 
-*Outline the main objectives and research questions addressed in Assignments 1, 2, and 3.*
-
 Throughout the semester in our econometrics course, we completed three distinct assignments, each contributing to a comprehensive understanding of regional development and inequality within the Czech Republic, Turkey, Finland and the United Kingdom.
 
-The primary objective of the first assignment was to acquire, process, and analyze sub-national GDP and population data.
+The primary objective of the first assignment was to acquire, process, and analyse sub-national GDP and population data.
 This involved calculating GDP per capita and the population-weighted GDP Gini coefficient, followed by an exploration of regional inequality through descriptive statistics and visualizations.
+Moving on to our second assignment, our objective shifted towards examining the relationship between regional development and inequality for the year 2010, utilizing cross-sectional estimation techniques.
+We employed simple linear regression to explore the initial relationship and enriched our analysis by incorporating potential determinants through multiple linear regression.In the third assignment, we delved into exploring alternative function forms, specifically logarithmic and quadratic, and implemented panel estimates to scutinize the relationship between regional development and inequality.
 
-The second assignment focused on examining the relationship between regional development and inequality specifically for the year 2010, utilizing cross-sectional estimation techniques.
-We used simple linear regression to explore the initial relationship and then enhanced our analysis by incorporating potential determinants of regional inequality through a multiple linear regression.
-
-In the third assignment, we delved into exploring alternative function forms, namely logarithmic and quadratic, and implemented panel estimates to analyze the relationship between regional development and inequality.
-
-This academic paper aims to synthesize and consolidate the critical findings derived from Assignment 1, 2 and 3, providing a cohesive understanding of regional development and inequality within the specified countries.
+Synthesizing the critical findings from Assignments 1, 2, and 3, our paper aims to provide a cohesive understanding of regional development and inequality within the specified countries, shedding light on the complexities of this multifaceted issue.
 
 ### Significance
 
-*Highlight the importance and relevance of the research undertaken.*
+The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom ...
+
+In an era marked by increasing interconnectedness, understanding the intricate dynamics of economic progress at regional levels becomes imperative.Regional development not only shapes the well-being and living standards of specific geographic areas but also plays a pivotal role in bolstering national performance and fostering inclusive, resilient societies.
+The issue of regional inequality emerges as a pressing concern.
+The uneven distribution of resources, opportunities, and development underscores the need for nuanced analyses that can inform targeted policies and initiatives.
+The issue of regional inequality emerges as a pressing concern.
+The uneven distribution of resources, opportunities, and development underscores the need for nuanced analyses that can inform targeted policies and initiatives.
+
+The interconnected nature of regional development and regional inequality amplifies the importance of this research.
+Efforts to address regional inequality demand comprehensive strategies aimed at promoting balanced growth and mitigating disparities among regions.
+In the current global context, where the impacts of regional disparities are more pronounced than ever, policies addressing these issues assume heightened relevance.
+This research contributes to the broader discourse on regional development and inequality.
+By delving into the specific political factors shaping regional inequality in the selected countries, the paper offers valuable insights that can guide policy interventions.
+In essence, this research not only expands our understanding of regional dynamics but also equips with the knowledge needed to forge more balanced and inclusive development pathways, thereby fostering a more equitable global future.
 
 ## II. Literature Review
 
