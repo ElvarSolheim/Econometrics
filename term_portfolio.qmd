@@ -7,7 +7,7 @@ bibliography: MSB104.bib
 
 Western Norway University of Applied Sciences\
 MSB104 Econometrics\
-Group 5: Hanna Sundal Bjerkreim & Elvar Solheim
+Hanna Sundal Bjerkreim & Elvar Solheim
 
 ```{r}
 #| label: setup
@@ -82,8 +82,8 @@ According to @lessmann2017, when certain regions experience higher levels of eco
 However, in general are the empirical studies on regional inequality limited to a specific country sample with a general bias towards medium and high income economies.
 The challenge is obtaining data from the less developed regions in the world.
 The poorest regions appear as blank spots on the map.
-@lessmann2017 fill this research gap by predicting regional incomes using satelilite nighttime light data for the countries with no reliable statistical data available.
-The higher nighttime light intensity, the higher level of economic activity.The data on the very poorest countries allowed @lessmann2017 to estimate the upward sloping part of the Kuznets curve in regional inequalities.
+@lessmann2017 fill this research gap by predicting regional incomes using satellite night-time light data for the countries with no reliable statistical data available.
+The higher night-time light intensity, the higher level of economic activity.The data on the very poorest countries allowed @lessmann2017 to estimate the upward sloping part of the Kuznets curve in regional inequalities.
 They found that the relationship between regional development and regional inequality follow a pattern similar to a N-shape.
 By examining changes in inequality over time, @lessmann2017 found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
 However, they found that some poor and lower-middle-income countries, along with some rich economies, show divergence.
@@ -100,11 +100,52 @@ In this paper we aim to cover this gap in the literature, by exploring the relat
 
 ### Data Sources
 
-*Briefly describe the primary data sources used in the previous assignments, noting any limitations.*
+In the assignments, the primary data sources used were Eurostat and the Office for National Statistics (ONS).
+Eurostat provided sub-regional data on GDP and population for the EU countries (Czech Republic, Turkey and Finland).
+For the United Kingdom, which is not a part of the EU, ONS supplied sub-regional GDP and population data.
+The datasets we downloaded from Eurostat included regions at a NUTS3 level.
+Following Brexit, the ONS developed a domestic statistical classification framework separate from NUTS, refferd to as International Territorial Levels (ITLs).
+This system algins with the NUTS classification, enabling comparability.
+The dataset downloaded from ONS included regions at a ITL3 level, which corresponds to the NUTS3 level.
+Some manipulations of the raw data was necessary to obtain comparable value.
+The datasets from Eurostat and ONS were merged to one main dataset containing GDP and population data at a NUTS3-level for the years 2000 to 2020.
+The main dataset is based on 4 countries and 294 NUTS3 regions.
+Later we generated another dataset for the NUTS2 regions.
+
+In exploring potential determinants of regional inequality in Turkey, data for the year 2010 in NUTS 2 regions was examined.
+Eurostat was again the source for additional data on potential determinants such as unemployment, infrastructure, and life expectancy.
+
+Limitations may arise from variations in data collection methods between Eurostat and ONS, as well as potential differences in classification systems between the EU and the UK.
 
 ### Methodological Approach
 
 *Summarize the methodologies applied in Assignments 1, 2, and 3, highlighting the rationale behind choosing each method.*
+
+#### Regional development measure
+
+GDP per capita
+
+$y_{i} = \frac{GDP_{i}}{Population_{i}}$
+
+#### Regional inequality measure
+
+Gini coefficient
+
+$GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$
+
+#### Cross-sectional estimates
+
+Simple linear regression model
+
+$\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010}$
+
+Multiple linear regression model
+
+$\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2010} +\hat{\beta}_3 X_{2010} + \hat{\beta}_4 X_{2010}$
+
+#### Alternative functional forms 
+
+#### Panel estimates
 
 ## IV. Empirical Findings
 
