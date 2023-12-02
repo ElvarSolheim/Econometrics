@@ -143,7 +143,7 @@ Multiple linear regression model
 
 $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2010} +\hat{\beta}_3 X_{2010} + \hat{\beta}_4 X_{2010}$
 
-#### Alternative functional forms 
+#### Alternative functional forms
 
 #### Panel estimates
 
