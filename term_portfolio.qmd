@@ -36,18 +36,19 @@ library(plm)
 
 ### Background
 
-Regional development is a crucial facet of economic progress, and it can be seen as a general effort to enhance well-being and living standards in regions, and improve their contribution to national performance and more inclusive, resilient societies.
-Regional development focuses on fostering economic and social growth in specific geographic areas, aiming to reduce regional inequality.
+Regional development plays a crucial role in driving economic growth, representing a collective effort to enhance well-being and living standards in regions, and improve their contribution to national performance, fostering more inclusive and resilient societies [@oecd].
+As regions navigate the intricate dynamics of growth, decline, and adaptation, diverse economic, social, and environmental outcomes emerge [@pike2016].
+These variations give rise to the concept of regional inequality - a phenomenon rooted in the uneven distribution of resources, opportunities, and development across different regions.
+Regional inequality is a fundamental challenge for human society, a central focus of academic research, and a major concern of governments [@wei2015].
+There has been a long-lasting debate about the scope, dimensions, trajectory, mechanisms, and consequences of regional inequality, along with the policies that address disparity [@wei2015].
+Regional inequality is a hotly debated topic and we should care about it because it is essential for both the economy and social welfare in general.
+The potential consequences of regional inequality are many.
+@lessmann2017 highlights a correlation between regional inequality and personal income inequality, ethnic inequality, and political stability.
+Addressing regional imbalances within countries is crucial, as they may independently contribute to economic outcomes and exacerbate issues like income inequality, ethnic tensions, and segregation.
 
-Disparities exist worldwide between countries - but also within countries across regions.
-Regional inequality relates to the uneven distribution of resources, opportunities, and development across different regions.
-
-Both regional development and regional inequality are interconnected.
-Efforts to address regional inequality often involve policies and initiatives to promote balanced growth and address disparities among regions.
-In today's context, these policies are more important than ever.
-
-This paper delves into the intricate dynamics of regional development and inequality within the distinct context of the Czech Republic, Turkey, Finland, and the United Kingdom.
-Analysing these countries provides a nuanced understanding of how political factors shape regional inequality, offering insights into potential policy interventions aimed at fostering more balanced and inclusive development pathways.
+This paper delves into the intricate dynamics of regional development and inequality within a subset of European countries.
+The selected subset comprises the Czech Republic, Turkey, Finland and the United Kingdom.
+Analysing these countries provides a nuanced understanding of regional development and inequality, offering insights into potential policy interventions aimed at fostering more balanced and inclusive development pathways.
 
 ### Objectives
 
@@ -56,36 +57,44 @@ Throughout the semester in our econometrics course, we completed three distinct 
 The primary objective of the first assignment was to acquire, process, and analyse sub-national GDP and population data.
 This involved calculating GDP per capita and the population-weighted GDP Gini coefficient, followed by an exploration of regional inequality through descriptive statistics and visualizations.
 Moving on to our second assignment, our objective shifted towards examining the relationship between regional development and inequality for the year 2010, utilizing cross-sectional estimation techniques.
-We employed simple linear regression to explore the initial relationship and enriched our analysis by incorporating potential determinants through multiple linear regression.In the third assignment, we delved into exploring alternative function forms, specifically logarithmic and quadratic, and implemented panel estimates to scutinize the relationship between regional development and inequality.
+We employed simple linear regression to explore the initial relationship and enriched our analysis by incorporating potential determinants through multiple linear regression.In the third assignment, we delved into exploring alternative function forms, specifically logarithmic and quadratic, and implemented panel estimates to scrutinize the relationship between regional development and inequality.
 
-Synthesizing the critical findings from Assignments 1, 2, and 3, our paper aims to provide a cohesive understanding of regional development and inequality within the specified countries, shedding light on the complexities of this multifaceted issue.
+Synthesizing the critical findings from Assignments 1, 2, and 3, this paper aims to provide a cohesive understanding of regional development and inequality within the specified countries, shedding light on the complexities of this issue.
 
 ### Significance
 
-The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom ...
+The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom reveals important insights into the dynamics of economic growth and disparities at regional levels.
 
-In an era marked by increasing interconnectedness, understanding the intricate dynamics of economic progress at regional levels becomes imperative.Regional development not only shapes the well-being and living standards of specific geographic areas but also plays a pivotal role in bolstering national performance and fostering inclusive, resilient societies.
-The issue of regional inequality emerges as a pressing concern.
-The uneven distribution of resources, opportunities, and development underscores the need for nuanced analyses that can inform targeted policies and initiatives.
-The issue of regional inequality emerges as a pressing concern.
-The uneven distribution of resources, opportunities, and development underscores the need for nuanced analyses that can inform targeted policies and initiatives.
+In a time characterized by increasing interconnectedness, understanding the intricacies of regional development is imperative.Regional development not only shapes the well-being and living standards of regions but also plays a crucial role in bolstering national performance.
 
-The interconnected nature of regional development and regional inequality amplifies the importance of this research.
-Efforts to address regional inequality demand comprehensive strategies aimed at promoting balanced growth and mitigating disparities among regions.
-In the current global context, where the impacts of regional disparities are more pronounced than ever, policies addressing these issues assume heightened relevance.
-This research contributes to the broader discourse on regional development and inequality.
-By delving into the specific political factors shaping regional inequality in the selected countries, the paper offers valuable insights that can guide policy interventions.
-In essence, this research not only expands our understanding of regional dynamics but also equips with the knowledge needed to forge more balanced and inclusive development pathways, thereby fostering a more equitable global future.
+This research delves into the complexities of regional development and inequality in the selected countries, providing valuable insights that can guide policy interventions.
+The pressing concern of regional inequality highlights the necessity for a nuanced analysis to inform targeted policies and initiatives.
+The uneven distribution of resources, opportunities, and development underscores the importance of addressing these issues, especially as the impacts of regional inequality are more pronounced than ever.
+
+Policies promoting balanced growth and mitigating disparities among regions take on heightened relevance in the current global context.
+This research not only expands the understanding of regional dynamics but also equips with the knowledge needed for more balanced and inclusive development pathways, fostering a more equitable global future.
 
 ## II. Literature Review
 
 ### Previous Work
 
-*Summarize key literature related to regional development and inequality.*
+According to @lessmann2017, when certain regions experience higher levels of economic development and prosperity compared to others, it can have far-reaching consequences.
+However, in general are the empirical studies on regional inequality limited to a specific country sample with a general bias towards medium and high income economies.
+The challenge is obtaining data from the less developed regions in the world.
+The poorest regions appear as blank spots on the map.
+@lessmann2017 fill this research gap by predicting regional incomes using satelilite nighttime light data for the countries with no reliable statistical data available.
+The higher nighttime light intensity, the higher level of economic activity.The data on the very poorest countries allowed @lessmann2017 to estimate the upward sloping part of the Kuznets curve in regional inequalities.
+They found that the relationship between regional development and regional inequality follow a pattern similar to a N-shape.
+By examining changes in inequality over time, @lessmann2017 found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
+However, they found that some poor and lower-middle-income countries, along with some rich economies, show divergence.
+This shows that very poor countries exhibit increasing inequalities, while most middle- and high-income countries show decreasing or stabilizing inequalities.
+Interestingly, regional inequalities increase again in the richest countries, forming the right side of the N-shaped pattern [@lessmann2017].
 
 ### Research Gap
 
 *Identify the research gap your assignments aim to address.*
+
+In this paper we aim to cover this gap in the literature, by exploring the relationship between ...
 
 ## III. Data and Methodology
 
