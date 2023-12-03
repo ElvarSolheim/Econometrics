@@ -36,54 +36,74 @@ library(plm)
 
 ### Background
 
-Regional development plays a crucial role in driving economic growth, representing a collective effort to enhance well-being and living standards in regions, and improve their contribution to national performance, fostering more inclusive and resilient societies [@oecd].
-As regions navigate the intricate dynamics of growth, decline, and adaptation, diverse economic, social, and environmental outcomes emerge [@pike2016].
+Regional development, a cruical component of economic growth, represents a collective effort to enhance well-being and living standards in specific geographic areas, playing a vital role in contributing to national performance and fostering resilient and inclusive societies [@oecd].
+As regions navigate the intricate dynamics of growth, decline, and adaptation, a multitude of economic, social, and environmental outcomes emerges [@pike2016].
 These variations give rise to the concept of regional inequality - a phenomenon rooted in the uneven distribution of resources, opportunities, and development across different regions.
-Regional inequality is a fundamental challenge for human society, a central focus of academic research, and a major concern of governments [@wei2015].
+Regional inequality posting a fundamental challenge for human society, a central focus of academic research, and a major concern of governments [@wei2015].
 There has been a long-lasting debate about the scope, dimensions, trajectory, mechanisms, and consequences of regional inequality, along with the policies that address disparity [@wei2015].
-Regional inequality is a hotly debated topic and we should care about it because it is essential for both the economy and social welfare in general.
-The potential consequences of regional inequality are many.
+We should care about regional inequality because it is essential for both the economy and social welfare in general.
+The potential consequences of regional inequality are many, and when certain regions experience higher levels of economic development and prosperity compared to others, it can have far-reaching consequences.
 @lessmann2017 highlights a correlation between regional inequality and personal income inequality, ethnic inequality, and political stability.
-Addressing regional imbalances within countries is crucial, as they may independently contribute to economic outcomes and exacerbate issues like income inequality, ethnic tensions, and segregation.
+These consequences underline the importance of addressing regional imbalances within countries, as they may independently contribute to economic outcomes and exacerbate issues such as income inequality, ethnic tensions, and segregation.
 
-This paper delves into the intricate dynamics of regional development and inequality within a subset of European countries.
-The selected subset comprises the Czech Republic, Turkey, Finland and the United Kingdom.
+Given this context, this paper delves into the intricate dynamics of regional development and inequality within a subset of European countries.
+The subset comprises the Czech Republic, Turkey, Finland and the United Kingdom.
 Analysing these countries provides a nuanced understanding of regional development and inequality, offering insights into potential policy interventions aimed at fostering more balanced and inclusive development pathways.
 
 ### Objectives
 
 Throughout the semester in our econometrics course, we completed three distinct assignments, each contributing to a comprehensive understanding of regional development and inequality within the Czech Republic, Turkey, Finland and the United Kingdom.
 
-The primary objective of the first assignment was to acquire, process, and analyse sub-national GDP and population data.
-This involved calculating GDP per capita and the population-weighted GDP Gini coefficient, followed by an exploration of regional inequality through descriptive statistics and visualizations.
-Moving on to our second assignment, our objective shifted towards examining the relationship between regional development and inequality for the year 2010, utilizing cross-sectional estimation techniques.
-We employed simple linear regression to explore the initial relationship and enriched our analysis by incorporating potential determinants through multiple linear regression.In the third assignment, we delved into exploring alternative function forms, specifically logarithmic and quadratic, and implemented panel estimates to scrutinize the relationship between regional development and inequality.
+The primary objective of the first assignment was to acquire, process, and analyse sub-national GDP and population data, aiming to answer questions about regional economic disparities.
+This involved calculating GDP per capita and the population-weighted GDP Gini coefficient, and exploring regional inequality through descriptive statistics and visualizations.
 
-Synthesizing the critical findings from Assignments 1, 2, and 3, this paper aims to provide a cohesive understanding of regional development and inequality within the specified countries, shedding light on the complexities of this issue.
+In the second assignment, the objective shifted towards investigating the relationship between regional development and inequality for the year 2010.
+We delved into questions regarding the nature of this relationship, utilizing cross-sectional estimation techniques.
+Starting with simple linear regression, we explored the initial relationship and expanded our analysis by introducing potential determinants through multiple linear regression.
+
+In the third assignment, our aim was to explore alternative function forms, specifically logarithmic and quadratic, as well as implementing panel estimates to scrutinize the relationship between regional development and inequality.
+We compared the alternative models and the panel estimates with the cross-sectional estimates obtained earlier.
+
+Synthesizing the critical findings from Assignments 1, 2, and 3, this paper aims to provide a cohesive understanding of regional development and inequality within the specified countries.
+By shedding light on the complexities of this issue and answering these specific research questions, we aim to offer valuable insights that can help policy-making and practice in the realm of regional development and inequality.
 
 ### Significance
 
-The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom reveals important insights into the dynamics of economic growth and disparities at regional levels.
+The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom reveals important insights into the dynamics of economic growth and diparities at regional levels.
 
-In a time characterized by increasing interconnectedness, understanding the intricacies of regional development is imperative.Regional development not only shapes the well-being and living standards of regions but also plays a crucial role in bolstering national performance.
+In a time characterized by increasing interconnectedness, understanding the intricacies of regional development is imperative.
+Regional development not only shapes the well-being and living standards of regions but also plays a crucial role in bolstering national performance.
+The findings from this research not only contribute to the specific knowledge of the Czech Republic, Tureky, Finland and the United Kingdom, but also provides information for understanding regional disparities globally.
+By identifying patterns of regional development and inequality within these specific countries, this study offers a valuable understanding that can be applied to similar challenges faced by nations globally.
 
-This research delves into the complexities of regional development and inequality in the selected countries, providing valuable insights that can guide policy interventions.
-The pressing concern of regional inequality highlights the necessity for a nuanced analysis to inform targeted policies and initiatives.
+Furthermore, this research provides valuable insights that can guide policy-makers, economists, and social scientists.
 The uneven distribution of resources, opportunities, and development underscores the importance of addressing these issues, especially as the impacts of regional inequality are more pronounced than ever.
-
+The pressing concern of regional inequality highlights the necessity for a nuanced analysis to inform targeted policies and initiatives.
 Policies promoting balanced growth and mitigating disparities among regions take on heightened relevance in the current global context.
+
 This research not only expands the understanding of regional dynamics but also equips with the knowledge needed for more balanced and inclusive development pathways, fostering a more equitable global future.
 
 ## II. Literature Review
 
 ### Previous Work
 
-According to @lessmann2017, when certain regions experience higher levels of economic development and prosperity compared to others, it can have far-reaching consequences.
-However, in general are the empirical studies on regional inequality limited to a specific country sample with a general bias towards medium and high income economies.
+The Kuznets curve hypothesis has been one of the most debated issues in development economics.
+Orignally, @kuznets1955 introduced this curve to illustrate the relationship between per capita income and income inequality.
+The hypothesis says that income inequality should follow an inverted U-shape along the development process, where it first increases, then peaks, and then decreases.
+This hypothesis may also apply to regional inequality.
+The idea is that the development in extremely poor economies, typically starts in one part of the country, leading to these regions become richer than the rest.
+Consequently, regional inequality rise at low levels of development.
+A higher level of development, the less developed regions catch up, fostering a convergence process.
+There is empirical evidence for the inverted U-shape in regional inequality, for example @barrios2009 study of the dynamics of regional inequalities.
+@lessmann2017 also find strong support for the inverted-U, as well as evidence that regional inequality is increase again at very high levels of development.
+
+In general are the empirical studies on regional inequality is limited to a specific country sample with a general bias towards medium and high income economies.
+This is a issue when investigating the upward sloping part of the Kuznets curve.
 The challenge is obtaining data from the less developed regions in the world.
 The poorest regions appear as blank spots on the map.
 @lessmann2017 fill this research gap by predicting regional incomes using satellite night-time light data for the countries with no reliable statistical data available.
-The higher night-time light intensity, the higher level of economic activity.The data on the very poorest countries allowed @lessmann2017 to estimate the upward sloping part of the Kuznets curve in regional inequalities.
+The higher night-time light intensity, the higher level of economic activity.
+The data on the very poorest countries allowed @lessmann2017 to estimate the upward sloping part of the Kuznets curve in regional inequalities.
 They found that the relationship between regional development and regional inequality follow a pattern similar to a N-shape.
 By examining changes in inequality over time, @lessmann2017 found that the majority of all countries experience sigma convergence, which means that regional inequality decreases over time.
 However, they found that some poor and lower-middle-income countries, along with some rich economies, show divergence.
