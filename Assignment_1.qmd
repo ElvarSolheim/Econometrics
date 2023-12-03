@@ -996,7 +996,7 @@ lm_log_EU <- lm(gini_n2 ~ log(gdp_per_capita_n2 * 100), data = subset_nuts2_2010
 huxreg(
   list("Model 1 - EU" = lm_log_EU),
   statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  coefs = c("log GDP per capita" = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
   stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
   )
 ```
@@ -1029,31 +1029,31 @@ The logaritmic model for the EU countries is visualizsed in figure X, with the l
 ```{r}
 #| echo: false
 # Quadratic model for the UK
-lm_quad_UK <- lm(gini_n2 ~ I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
+lm_quad_UK <- lm(gini_n2 ~ gdp_per_capita_n2 + I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
 
 huxreg(
   list("Model 1 - UK" = lm_quad_UK),
   statistics = c(N = "nobs", R2 = "r.squared"),
-  coefs = c(GDP_per_capita = "I((gdp_per_capita_n2 * 100)^2)", Constant = "(Intercept)"),
+  coefs = c("GDP per capita ^2" = "I((gdp_per_capita_n2 * 100)^2)", Constant = "(Intercept)"),
   stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
   )
 ```
 
 Table X displays the regression table for the quadratic model for the UK.
-The quadratic model have a positive GDP per capita coefficient of 0.002.
-This positive value suggest an inverted U-curve in the relationship between GDP per capita and the Gini coefficient in the UK, with a turning point where the impact of GDP per capita on regional inequality start to diminish instead of increase.
-This relationship is highly significant at a 1% significance level.
-The quadratic model have a constant of 0.073 which also is significant at a 1% significance level, with a standard error of 0.010.
-The R-squared value of 0.570 indicates that the model explains about 57% of the variance in the Gini coefficient.
+The quadratic model have a negative GDP per capita coefficient of 0.001.
+This negative value suggest an inverted U-curve in the relationship between GDP per capita and the Gini coefficient in the UK, with a turning point where the impact of GDP per capita on regional inequality start to diminish instead of increase.
+This relationship is not significant.
+The quadratic model have a constant of - 0.015, with a standard error of 0.049.
+The R-squared value of 0.604 indicates that the model explains about 60.4% of the variance in the Gini coefficient.
 
 ```{r}
 #| echo: false
 # Plot for the UK
 plot_UK_quad <- subset_nuts2_2010 %>%
-  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
+  filter(id_nuts0 == "UK") %>%
   ggplot(aes(x = I((gdp_per_capita_n2 * 100)^2), y = gini_n2, color = id_nuts2)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  geom_smooth(method = "lm", formula = y ~ x + I(x^2), se = FALSE, linetype = "dashed", color = "black") +
   labs(title = "Quadratic Regression Model for UK",
        x = "GDP per Capita^2",
        y = "GDP Gini Coefficient",
@@ -1073,11 +1073,13 @@ The linear model have a R-squared value of 0.131.
 The logarihmic model have a slightly better fit compared to the linear model.
 
 **The quadratic model vs. the linear model for the UK**\
-The quadratic model and the linear model shows a positive relationship between regional development and inequality.
-The linear model suggests a stronger positve relationship between GDP per capita and the Gini coefficient in the UK compared to the quadratic model.
-The quadratic model introduces a non-linear term, but the linear model still has a bettet fit based on the R-squared value.
-The R-squared value in the quadratic model is 0.570 and in the linear model it is 0.602.
-The quadratic model captures a potential curvature in the relationship, but the linear model provide a better overall fit for the UK based on the higher R-squared value.\
+The linear model for the UK suggests that GDP per capita has a positive coefficient of 0.032, meaning that as GDP per capita increases, there is corresponding increase in the Gini coefficient.
+
+The quadratic model introduces a negative coefficient for GDP per capita at -0.001.
+This implies that while an increase in GDP per capita intially leads to an increase in the dependent variable, there may be disminising retur at higher levels of GDP per capita.
+The fit of the models is quite similar, with a R-squared value in the linear model of 0.602, and 0.604 for the quadratic model.
+The coeffients in the quadratic model provide insights into the curvature of the relationship between GDP per capita and the dependent variable.
+The negative oefficient for the squared term suggests a downward turn in the relationship at higher GDP per capita levels, which may indicate diminishing marginal returns.\
 
 ## Part C: Heteroskedasticity Testing and Causality Discussion
 
