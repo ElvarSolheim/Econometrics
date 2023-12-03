@@ -112,9 +112,13 @@ Interestingly, regional inequalities increase again in the richest countries, fo
 
 ### Research Gap
 
-*Identify the research gap your assignments aim to address.*
+The literature review highlighted the significance of the Kuznets curve in development economics and brought attention to a research gap in the litterature.
+Empirical studies on regional inequality seems to often be limited to specific country sample with a general bias towards medium and high-income economies.
+This limitation poses a challenge when exploring the ascending part of the Kuznets curve, as obtaining data from less developed regions are difficult.
 
-In this paper we aim to cover this gap in the literature, by exploring the relationship between ...
+In this paper we aim to help cover this gap in the literature, by exploring the relationship between regional development and inequality within a subset of European countries, providing insights into the dynamics of regional inequality in a diverse set of countries, which include both medium to high and lower-income regions.
+The inclusion of this particular set of countries gives our research a distinctive character, offering a unique combination for comparisons.
+The study allowing a nuanced exploration of regional development and inequality within the specific context of the Czech Republic, Turkey, Finland, and the United Kingdom.
 
 ## III. Data and Methodology
 
