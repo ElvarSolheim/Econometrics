@@ -832,16 +832,16 @@ ML_regressionmodel <- TR_nuts2_2010
 
 # Multiple linear regression model
 
-model <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + I(unemployment * 100) + I(infrastructure * 100) + I(life_expectancy * 100), data = ML_regressionmodel)
+mlr <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + I(unemployment * 100) + I(infrastructure * 100) + I(life_expectancy * 100), data = ML_regressionmodel)
 
 # R-squared (R²) value
-r_squared <- summary(model)$r.squared
+r_squared <- summary(mlr)$r.squared
 
 # Number of observations (nobs)
-num_observations <- summary(model)$nobs
+num_observations <- summary(mlr)$nobs
 
 # View the summary of the regression
-summary(model)
+summary(mlr)
 ```
 
 ### Model Interpretation
