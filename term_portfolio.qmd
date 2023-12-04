@@ -32,9 +32,9 @@ library(lmtest)
 library(plm)
 ```
 
-## I. Introduction
+# I. Introduction
 
-### Background
+## Background
 
 Regional development, a cruical component of economic growth, represents a collective effort to enhance well-being and living standards in specific geographic areas, playing a vital role in contributing to national performance and fostering resilient and inclusive societies [@oecd].
 As regions navigate the intricate dynamics of growth, decline, and adaptation, a multitude of economic, social, and environmental outcomes emerges [@pike2016].
@@ -50,7 +50,7 @@ Given this context, this paper delves into the intricate dynamics of regional de
 The subset comprises the Czech Republic, Turkey, Finland and the United Kingdom.
 Analysing these countries provides a nuanced understanding of regional development and inequality, offering insights into potential policy interventions aimed at fostering more balanced and inclusive development pathways.
 
-### Objectives
+## Objectives
 
 Throughout the semester in our econometrics course, we completed three distinct assignments, each contributing to a comprehensive understanding of regional development and inequality within the Czech Republic, Turkey, Finland and the United Kingdom.
 
@@ -67,7 +67,7 @@ We compared the alternative models and the panel estimates with the cross-sectio
 Synthesizing the critical findings from Assignments 1, 2, and 3, this paper aims to provide a cohesive understanding of regional development and inequality within the specified countries.
 By shedding light on the complexities of this issue and answering these specific research questions, we aim to offer valuable insights that can help policy-making and practice in the realm of regional development and inequality.
 
-### Significance
+## Significance
 
 The exploration of regional development and inequality within the context of the Czech Republic, Turkey, Finland and the United Kingdom reveals important insights into the dynamics of economic growth and diparities at regional levels.
 
@@ -83,9 +83,9 @@ Policies promoting balanced growth and mitigating disparities among regions take
 
 This research not only expands the understanding of regional dynamics but also equips with the knowledge needed for more balanced and inclusive development pathways, fostering a more equitable global future.
 
-## II. Literature Review
+# II. Literature Review
 
-### Previous Work
+## Previous Work
 
 The Kuznets curve has been one of the most debated hyphotesis in development economics.
 Orignally, @kuznets1955 introduced this curve to illustrate the relationship between per capita income and income inequality.
@@ -110,7 +110,7 @@ However, they found that some poor and lower-middle-income countries, along with
 This shows that very poor countries exhibit increasing inequalities, while most middle- and high-income countries show decreasing or stabilizing inequalities.
 Interestingly, regional inequalities increase again in the richest countries, forming the right side of the N-shaped pattern [@lessmann2017].
 
-### Research Gap
+## Research Gap
 
 The literature review highlighted the significance of the Kuznets curve in development economics and brought attention to a research gap in the litterature.
 Empirical studies on regional inequality seems to often be limited to specific country sample with a general bias towards medium and high-income economies.
@@ -120,9 +120,9 @@ In this paper we aim to help cover this gap in the literature, by exploring the 
 The inclusion of this particular set of countries gives our research a distinctive character, offering a unique combination for comparisons.
 The study allowing a nuanced exploration of regional development and inequality within the specific context of the Czech Republic, Turkey, Finland, and the United Kingdom.
 
-## III. Data and Methodology
+# III. Data and Methodology
 
-### Data Sources
+## Data Sources
 
 In the assignments, the primary data sources used were Eurostat and the Office for National Statistics (ONS).
 Eurostat provided sub-regional data on GDP and population for the EU countries (Czech Republic, Turkey and Finland).
@@ -135,6 +135,7 @@ Some manipulations of the raw data was necessary to obtain comparable value.
 The datasets from Eurostat and ONS were merged to one main dataset containing GDP and population data at a NUTS3-level for the years 2000 to 2020.
 The main dataset is based on 4 countries and 294 NUTS3 regions.
 Later we generated another dataset for the NUTS2 regions.
+The dataset includes GDP measured at current market prices in millions of euros for Czech Republic, Turkey, and Finland.
 
 Later in the analysis we included three potential determinants of regional inequality alongside regional development, for the NUTS2 regions in Turkey for the year 2010.
 Eurostat was the source for the additional data on unemployment, infrastructure, and life expectancy.
@@ -142,32 +143,43 @@ Eurostat was the source for the additional data on unemployment, infrastructure,
 Limitations may arise from variations in data collection methods between Eurostat and ONS, as well as potential differences in classification systems between the EU and the United Kingdom.
 The shift from the NUTS to the ITL classification system for the United Kingdom after Brexit, introduces a potential limitation.
 While efforts are made to align the two classification systems, differences or uncertainties may still exist.
-Even with efforts to align ITLs with NUTS, there might be subtle differences that could affect the comparability of data between the United Kindom and the other EU countries.
-\
+Even with efforts to align ITLs with NUTS, there might be subtle differences that could affect the comparability of data between the United Kindom and the other EU countries.\
 The difference in currency units in the GDP data between the EU countries (million euros) and the United Kingdom (million pounds) introduces a source of complexity.
 This should have been taken care of in the data manipulation, which was not done.
 
-### Methodological Approach
+## Methodological Approach
 
-#### Regional development measure
+We initiated our analysis by computing GDP per capita, serving as a measure for Regional development, and the population-weighted GDP Gini coefficient as a measure of regional inequality.
+Subsequently, we conducted cross-sectional estimates, including a simple linear regression model and a multiple linear regression model.
+Further, we explored alternative forms, incorporating a logarithmic model and a quadratic model.
+Lastly, we extended our analysis to panel estimates.
+
+### Regional development measure
 
 We used GDP per capita as a measure of regional development.
-GDP per capita gives an average representation of the economic well-being of the individuals in the regions, indicating the amount of economic output generated, by each person.
+GDP per capita gives an average representation of the economic well-being of the individuals, indicating the amount of economic output generated, by each person.
 A higher GDP per capita indicates greater economic prosperity.
 GDP per capita is good measure for assessing regional development, because it provides an indicator of the overall living standard in each region.
 Additionally, GDP per capita is widely used and easily comparable across regions and countries.
 We computed the GDP per capita for each sub-region using the formula: $y_{i} = \frac{GDP_{i}}{Population_{i}}$.
 
-#### Regional inequality measure
+For the United Kingdom, GDP is measured at current market prices in millions of pounds.
+The population variable represents the total annual population within each sub-region.
+Consequently, the GDP per capita variable expresses GDP in millions of euros/pounds per capita in each sub-region.
+In the regression models the GDP per capita is multiplied with 100.
+The scaling helps make the numbers more manageable and interpretable in the context of the regression analysis.
+
+### Regional inequality measure
 
 Measuring regional inequality is challenging because it is difficult to compare regions of different sizes.
 To deal with this issue, we use a population-weighted Gini coefficient that accounts for regions of different sizes.
 This measure offers a way to assess the degree of regional inequality, allowing for comparison across regions and countries.
-The population-weighted Gini coefficient takes into account the entire distribution of GDP.
-It is chosen for measuring regional inequality, because it gives a nuanced view of regional inequality considering both GDP disparities and the population size in each region.
+The population-weighted is chosen for measuring regional inequality, because it gives a nuanced view of regional inequality considering both GDP disparities and the population size in each region.
 The population-weighted GDP Gini coefficient for each sub-region was computed by using the formula: $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$.
 
-#### Cross-sectional estimates
+### Cross-sectional estimates
+
+#### Simple Linear Regression
 
 To see how regional development affects regional inequality we estimated a simple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
 For the estimation we used a subset including only observations on NUTS 2 regions from the year 2010.
@@ -176,48 +188,71 @@ The first model included data from all our countries, the second model focused o
 We dedicate a separate model to the United Kingdom, since the country accounted for almost half of the observations in our dataset.
 Below is the equation for our simple linear regression model: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010}$.
 
-We estimated a multiple linear regression model incorporating unemployment, infrastructure and life expectancy alongside regional development, as potential determinants of regional inequality for.
-NUTS 2 regions in Turkey for the year 2010.
-With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ), unemployment, life expectancy and infrastructure as the independent variables $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} +\hat{\beta}_2 X_{2010} +\hat{\beta}_3 X_{2010} + \hat{\beta}_4 X_{2010}$.
+Regression table
 
-#### Alternative functional forms
+#### **Multiple Linear Regression**
 
-#### Panel estimates
+We estimated a multiple linear regression model incorporating unemployment, infrastructure and life expectancy alongside regional development, as potential determinants of regional inequality.
+We estimated this for the NUTS 2 regions in Turkey for the year 2010.
+While the United Kingdom has the overall highest number of observations in our sample, sourcing data on various determinants was challenging.
+Consequently, we opted to delve deeper into Turkey, the country with the second-highest number of observations.
+With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ), unemployment (${Unemployment}_{2010}$), life expectancy (${Life Expectancy}_{2010}$) and infrastructure (${Infrastructure}_{2010}$) as the independent variables we estimated this multiple linear model:$\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} + \hat{\beta}_2 \text{Unemployment}_{2010} + \hat{\beta}_3 \text{Life Expectancy}_{2010} + \hat{\beta}_4 \text{Infrastructure}_{2010}$.
 
-## IV. Empirical Findings
+Regression table
 
-### Cross-sectional Estimates
+### Alternative functional forms
+
+We explored functional forms for the EU countries and the United Kingdom.
+Since the number of observations for each of the EU-countries are small, we will stick to a model with all the EU countries together.
+We will estimate a logarithmic model for the EU countries, and a quadratic model for the United Kingdom.
+
+The logarithmic form suits models where diminishing returns or asymptotic behaviour is expected.
+In our simple linear regression model for the EU countries we have a negative relationship where higher levels of regional development are associated with lower levels of inequality.
+We therefore chose a logarithmic model for the EU countries.
+The logarithmic model is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1  log(y_{2010})$.
+
+The quadratic form is used in situations where there is a curvature relationship between variables.
+We think a quadratic from is suitable for the UK, because we expect an inverted U-shape, like the Kuznest curve.
+Th quadratic model is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} + \hat{\beta}_2 y_{2010}^2$.
+
+Regression table
+
+### Panel estimates
+
+# IV. Empirical Findings
+
+## Cross-sectional Estimates
 
 *Summarize essential results obtained from the cross-sectional analysis in Assignment 2.*
 
-### Alternative Functional Forms and Panel Estimates
+## Alternative Functional Forms and Panel Estimates
 
 *Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.*
 
-## V. Discussion
+# V. Discussion
 
-### Key Insights
+## Key Insights
 
 *Synthesize and discuss the central insights emerging from the empirical findings.*
 
-### Policy Implications
+## Policy Implications
 
 *Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.*
 
-## VI. Limitations and Future Research
+# VI. Limitations and Future Research
 
-### Research Limitations
+## Research Limitations
 
 *Acknowledge any constraints or limitations encountered during your analysis.*
 
-## VII. Conclusion
+# VII. Conclusion
 
-### Summary
+## Summary
 
 *Provide a succinct summary of the main findings and their significance.*
 
-### Final Reflections
+## Final Reflections
 
 *Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.*
 
-## VIII. References
+# VIII. References
