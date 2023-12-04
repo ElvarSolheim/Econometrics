@@ -147,6 +147,102 @@ Even with efforts to align ITLs with NUTS, there might be subtle differences tha
 The difference in currency units in the GDP data between the EU countries (million euros) and the United Kingdom (million pounds) introduces a source of complexity.
 This should have been taken care of in the data manipulation, which was not done.
 
+```{r}
+#| echo: false
+#| output: false
+# GDP data for Czech Republic, Turkey and Finland
+gdp_data <- read_csv("nama_10r_3gdp__custom_7667248_linear.csv") |>
+  filter(unit == "MIO_EUR") |>
+  select(year = TIME_PERIOD, geo, gdp = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+#| output: false
+# Population data for Czech Republic, Turkey and Finland
+population_data <- read_csv("demo_r_pjanaggr3__custom_7667383_linear.csv") |>
+  select(year = TIME_PERIOD, geo, pop = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+# GDP data for UK
+gdp_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 5", skip = 1)
+```
+
+```{r}
+#| echo: false
+# Population data for UK
+population_UK <- read_excel("regionalgrossdomesticproductgdpallitlregions.xlsx", 
+    sheet = "Table 6", skip = 1)
+```
+
+```{r}
+#| echo: false
+# Reforming gdp_UK
+gdp_UK <- gdp_UK %>%
+  gather(year, gdp, -ITL, -`ITL code`, -`Region name`) %>%
+  filter(ITL == "ITL3") %>%
+  mutate(geo = `ITL code`) %>%
+  select(year, geo, gdp) %>%
+  arrange(geo)
+```
+
+```{r}
+#| echo: false
+# Reforming population_UK
+population_UK <- population_UK %>%
+  gather(year, pop, -ITL, -`ITL code`, -`Region name`) %>%
+  filter(ITL == "ITL3") %>%
+  mutate(geo = `ITL code`) %>%
+  select(year, geo, pop) %>%
+  arrange(geo)
+```
+
+```{r}
+#| echo: false
+# Merging gdp dataset with population dataset for the EU countries
+merged_data <- gdp_data |>
+  left_join(population_data, join_by(year,geo))
+```
+
+```{r}
+#| echo: false
+# Merging gdp dataset with population dataset for the UK
+merged_UK <- gdp_UK |>
+  left_join(population_UK, join_by(year,geo))
+merged_UK$geo <- gsub("TL", "UK", merged_UK$geo)
+```
+
+```{r}
+#| echo: false
+# Converting the "year" variable into a character
+merged_data$year <- as.character(merged_data$year)
+merged_UK$year <- as.character(merged_UK$year)
+```
+
+```{r}
+#| echo: false
+#| output: false
+# Merging EU dataset with UK dataset
+main_data <- full_join(merged_data, merged_UK)
+```
+
+```{r}
+#| echo: false
+# We only want data from year 2000 to 2020
+main_data <- main_data %>%
+  subset(main_data$year >= 2000 & main_data$year <= 2020) %>%
+  select(year, geo, pop, gdp)
+```
+
+```{r}
+#| echo: false
+# Clean up
+rm(gdp_data, population_data, gdp_UK, population_UK, merged_data, merged_UK)
+```
+
 ## Methodological Approach
 
 We initiated our analysis by computing GDP per capita, serving as a measure for Regional development, and the population-weighted GDP Gini coefficient as a measure of regional inequality.
@@ -163,6 +259,13 @@ GDP per capita is good measure for assessing regional development, because it pr
 Additionally, GDP per capita is widely used and easily comparable across regions and countries.
 We computed the GDP per capita for each sub-region using the formula: $y_{i} = \frac{GDP_{i}}{Population_{i}}$.
 
+```{r}
+#| echo: false
+# Adding GDP per capita in the main_data
+main_data <- main_data %>%
+  mutate(gdp_per_capita = gdp / pop)
+```
+
 For the United Kingdom, GDP is measured at current market prices in millions of pounds.
 The population variable represents the total annual population within each sub-region.
 Consequently, the GDP per capita variable expresses GDP in millions of euros/pounds per capita in each sub-region.
@@ -177,9 +280,58 @@ This measure offers a way to assess the degree of regional inequality, allowing 
 The population-weighted is chosen for measuring regional inequality, because it gives a nuanced view of regional inequality considering both GDP disparities and the population size in each region.
 The population-weighted GDP Gini coefficient for each sub-region was computed by using the formula: $GINW_j=\frac{1}{2\overline y j} \sum_{i}^{n_j} \sum_{l}^{n_j} \frac{p_i}{P_j} \frac{p_l}{P_j} |y_i - y_l|$.
 
+```{r}
+#| echo: false
+# Creating a NUTS 0, NUTS 2 and NUTS 3 level
+main_data_nuts2 <- main_data |>
+  mutate(id_nuts3 = geo,
+         id_nuts2 = substr(geo, 1,4),
+         id_nuts0 = substr(geo, 1, 2)
+         )
+```
+
+```{r}
+#| echo: false
+main_data_nuts2 <- main_data_nuts2 |>
+  # Removing NA`s 
+  filter(pop != "NA") |>
+  filter(pop != 0) |>
+  filter(gdp_per_capita != "NA") |>
+  group_by(id_nuts2, year) |>
+  # Adding Gini coefficient, population, GDP and GDP per capita for the NUTS 2 regions
+  mutate(gini_n2 = gini.wtd(gdp_per_capita, weights = pop), 
+         pop_n2 = sum(pop),
+         gdp_n2 = mean(gdp),
+         gdp_per_capita_n2 = mean(gdp_per_capita)
+         ) |>
+  ungroup()
+```
+
+```{r}
+#| echo: false
+# Selecting only the NUTS 2 variables
+main_data_nuts2 <- main_data_nuts2 %>%
+   select(year, -geo, -gdp, -pop, -gdp_per_capita, -id_nuts3, id_nuts0, id_nuts2, pop_n2, gdp_n2, gdp_per_capita_n2, gini_n2)
+```
+
+```{r}
+#| echo: false
+# Selecting only the first row of each group 
+main_data_nuts2 <- main_data_nuts2 |>
+ group_by(id_nuts2, year) |>
+  slice(1) 
+```
+
 ### Cross-sectional estimates
 
-#### Simple Linear Regression
+```{r}
+#| echo: false
+# Subset including nuts2 regions in 2010
+subset_nuts2_2010 <- main_data_nuts2 |>
+  filter(grepl("2010", year))
+```
+
+***Simple Linear Regression***
 
 To see how regional development affects regional inequality we estimated a simple linear regression model with the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ) as the independent variable.
 For the estimation we used a subset including only observations on NUTS 2 regions from the year 2010.
@@ -188,9 +340,58 @@ The first model included data from all our countries, the second model focused o
 We dedicate a separate model to the United Kingdom, since the country accounted for almost half of the observations in our dataset.
 Below is the equation for our simple linear regression model: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010}$.
 
-Regression table
+```{r}
+#| echo: false
+#| label: tbl-slr
+#| tbl-cap: "Simple Linear Regression" 
+# Estimate for all the countries
+lm1 <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) , data = subset_nuts2_2010)
 
-#### **Multiple Linear Regression**
+# Estimate for the UK
+lm2 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 == "UK") %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+
+# Estimate for the EU countries
+lm3 <- subset_nuts2_2010 %>% 
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>% 
+  lm(gini_n2 ~ I(gdp_per_capita_n2 * 100), data = .)
+
+# Generate regression table
+huxreg(
+  list("All Countries" = lm1, "UK" = lm2, "EU" = lm3),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c("GDPpc" = "I(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+  )
+```
+
+The results from the simple linear regression are reported in @tbl-slr. The coefficient for GDP per capita represents the estimated change in the GDP Gini coefficient (regional inequality) for a one unit change in GDP per capita (regional development).
+The regression table reveals a positive relationship between regional development and regional inequality in the first model for all the countries and in the second model for the United Kingdom.
+In the model for all countries, a one-unit increase in GDP per capita corresponds to an average rise of 0.026 in the Gini coefficient.
+This coefficient is significant at a 1% significance level.
+The second model, focused on the United Kingdom, strengthens this association, indicating a slightly higher increase of 0.032 in the Gini coefficient with a rise in GDP per capita.
+This Gini coefficient is also highly significant at a 1% significance level.
+However, in the third model for the EU countries, the relationship between regional development and regional inequality is negative.
+Here, a one-unit increase in GDP per capita is linked to a 0.012 decrease in the Gini coefficient, suggesting that higher regional development in these countries is paradoxically associated with lower regional inequality.
+This relationship is significant at a 5% significance level.
+All three models show relatively small standard errors, suggesting reasonable reliability in estimating the coefficients.
+In the model for all the countries, the standard error for the GDP per capita coefficient is 0.003.
+The standard error is 0.004 for the UK model and 0.005 for the EU model.
+
+The constant term represents the estimated value of the GDP Gini coefficient when GDP per capita is zero.
+In the context of regional development, this might not have a meaningful interpretation, since there always will be some development in the regions.
+
+We examine the goodness of fit by looking at the R-squared.
+The R-squared values indicate the proportion of variation in the Gini coefficient that can be explained by the GDP per capita in each model.
+The closer R-squared is to 1, the better the model is at explaining the variability.
+The first model have a R-squared of 0.418, indicating that about 41.8% of the variability in the population-weighted Gini coefficient can be explained by the variation in GDP per capita.
+In the second model, a higher R-squared of 0.602 suggest that the GDP per capita variable in this model does a better job of explaining the variability in regional inequality.
+The third model has the lowest R-squared among the three models.
+In the third model, the R-squared is 0.131, indicating that only 13.1% of the variability is explained.
+This model seems to be less effective in capturing the relationship between regional development and regional inequality compared to the other models.
+
+***Multiple Linear Regression***
 
 We estimated a multiple linear regression model incorporating unemployment, infrastructure and life expectancy alongside regional development, as potential determinants of regional inequality.
 We estimated this for the NUTS 2 regions in Turkey for the year 2010.
@@ -198,26 +399,160 @@ While the United Kingdom has the overall highest number of observations in our s
 Consequently, we opted to delve deeper into Turkey, the country with the second-highest number of observations.
 With the population-weighted GDP Gini coefficient ($GINIW_j$) as the dependent variable and the GDP per capita ($y_j$ ), unemployment (${Unemployment}_{2010}$), life expectancy (${Life Expectancy}_{2010}$) and infrastructure (${Infrastructure}_{2010}$) as the independent variables we estimated this multiple linear model:$\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} + \hat{\beta}_2 \text{Unemployment}_{2010} + \hat{\beta}_3 \text{Life Expectancy}_{2010} + \hat{\beta}_4 \text{Infrastructure}_{2010}$.
 
-Regression table
+```{r}
+#| echo: false
+#| output: false
+# Data aquisition: Unemployment (per thousand persons) for Turkey
+unemployment <- read_csv("lfst_r_lfu3pers__custom_8264488_linear.csv") |>
+  select(id_nuts2 = geo, year = TIME_PERIOD, unemployment = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+#| output: false
+# Data aquisition: Road, rail and inland waterways (km pr thousand square) for Turkey
+infrastructure <- read_csv("tran_r_net__custom_8264840_linear.csv") |>
+  select(id_nuts2 = geo, year = TIME_PERIOD, infrastructure = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+#| output: false
+# Data aquisition: Life expenctancy (years) for Turkey
+life_expectancy <- read_csv("demo_r_mlifexp__custom_8282936_linear.csv") |>
+  select(id_nuts2 = geo, year = TIME_PERIOD, life_expectancy = OBS_VALUE)
+```
+
+```{r}
+#| echo: false
+# Join unemployment, infrastructure and life expenctancy datasets
+determinants_1 <- unemployment |>
+  left_join(infrastructure, join_by(year, id_nuts2))
+
+determinants_2 <- determinants_1 |>
+  left_join(life_expectancy, join_by(year, id_nuts2)) |>
+  select(year, id_nuts2, unemployment, infrastructure, life_expectancy)
+```
+
+```{r}
+#| echo: false
+# Converting the "year" variable into a character
+subset_nuts2_2010$year <- as.character(subset_nuts2_2010$year)
+determinants_2$year <- as.character(determinants_2$year)
+
+# Join dataset with determinants with subset_nuts2_2010
+TR_nuts2_2010 <- subset_nuts2_2010 |>
+  filter(id_nuts0 == "TR", year == "2010") |>
+  left_join(determinants_2, join_by(year, id_nuts2))
+```
+
+```{r}
+#| echo: false
+# Clean up
+rm(unemployment, infrastructure, life_expectancy, determinants_1, determinants_2)
+```
+
+```{r}
+#| echo: false
+#| label: tbl-mlr
+#| tbl-cap: "Multiple Linear Regression"
+
+# Estimate
+mlr <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + unemployment + infrastructure + life_expectancy, data = TR_nuts2_2010)
+ 
+# Regression table
+huxreg(
+  list(Turkey = mlr),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c(GDPpc = "I(gdp_per_capita_n2 * 100)", Unemployment = "unemployment", Infrastructure = "infrastructure", LifeExpectancy = "life_expectancy", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+  )
+
+```
+
+The results from the multiple linear regression are reported in @tbl-mlr. The coefficients provide insights into the direction and strength of the relationship.
+The coefficient for GDP per capita is positive, suggesting that a one-unit increase in GDP per capita is associated with a 0.003 increase in the Gini coefficient.
+The coefficient for unemployment is -0.000, suggesting an extremely small negative effect or no effect at all.
+The coefficient for infrastructure is negative at -0.001.
+This is a small effect, suggesting that a one-unit increase in infrastructure is associated with a decrease of 0.001 in regional inequality.
+The coefficient for life expectancy shows a negative relationship.
+A one-unit increase in life expectancy is associated with a decrese of 0.003 in regional inequality.
+None of the coefficients in the @tbl-mlr are statistically significant.
+The R2 value of 0.150 suggests that approximately 15% of the variability in the dependent variable is accounted for by the independent variables included in the regression.
+The remaining 85% of the variation is not explained by the variables included in the model.
 
 ### Alternative functional forms
 
 We explored functional forms for the EU countries and the United Kingdom.
-Since the number of observations for each of the EU-countries are small, we will stick to a model with all the EU countries together.
-We will estimate a logarithmic model for the EU countries, and a quadratic model for the United Kingdom.
+Since the number of observations for each of the EU-countries are small, we decided to stick to a model with all the EU countries together.
+We estimated a logarithmic model for the EU countries, and a quadratic model for the United Kingdom.
+
+***Logarithmic regression model***
 
 The logarithmic form suits models where diminishing returns or asymptotic behaviour is expected.
-In our simple linear regression model for the EU countries we have a negative relationship where higher levels of regional development are associated with lower levels of inequality.
+In our simple linear regression model for the EU countries (see @tbl-slr) we have a negative relationship where higher levels of regional development are associated with lower levels of inequality.
 We therefore chose a logarithmic model for the EU countries.
-The logarithmic model is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1  log(y_{2010})$.
+The logarithmic model used is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1  log(y_{2010})$.
+This is a level log model.
+
+```{r}
+#| echo: false
+#| label: tbl-log
+#| tbl-cap: Logarithmic regression model
+# Logarithmic model for EU countries
+lm_log_EU <- lm(gini_n2 ~ log(gdp_per_capita_n2 * 100), data = subset_nuts2_2010 %>% filter(id_nuts0 %in% c("CZ", "FI", "TR")))
+
+huxreg(
+  list("EU" = lm_log_EU),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c("log(GDPpc)" = "log(gdp_per_capita_n2 * 100)", Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+  )
+```
+
+The results from the logarithmic regression model are reported in @tbl-log. Since it is a level-log model, a one-percent increase in $y_{2010}$ leads to a $\hat{\beta}_1$ ÷ 100-unit increase in $\hat{GINIW_{2010}}$.
+The coefficient for the log(GDPpc) is -0.020.
+This negative relationships indicates an inverse relationship.
+As the GDP per capita increases by 1%, the Gini coefficient is expected to decrease by 0.020%.
+This relationship is statistically significant at a 5% level.
+The constant term has a coefficient of 0.038 and is statistically significant at a 1% level.
+For log(GDPpc), the standard error is 0.008, and for the constant, it is 0.005.
+The R-squared value is 0.164, suggesting that the model explains about 16.4% of the variance in EU.
+
+***Quadratic regression model***
 
 The quadratic form is used in situations where there is a curvature relationship between variables.
-We think a quadratic from is suitable for the UK, because we expect an inverted U-shape, like the Kuznest curve.
-Th quadratic model is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} + \hat{\beta}_2 y_{2010}^2$.
+We thought that a quadratic from was suitable for the UK, because we expected an inverted U-shape, like the Kuznest curve.
+The equation for the quadratic model is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 y_{2010} + \hat{\beta}_2 y_{2010}^2$.
 
-Regression table
+```{r}
+#| echo: false
+#| label: tbl-quad
+#| tbl-cap: Quadratic regression model
+# Quadratic model for the UK
+lm_quad_UK <- lm(gini_n2 ~ gdp_per_capita_n2 + I((gdp_per_capita_n2 * 100)^2), data = subset_nuts2_2010 %>% filter(id_nuts0 == "UK"))
+
+huxreg(
+  list("UK" = lm_quad_UK),
+  statistics = c(N = "nobs", R2 = "r.squared"),
+  coefs = c("GDPpc" = "gdp_per_capita_n2", "GDPpc^2" = "I((gdp_per_capita_n2 * 100)^2)",
+            Constant = "(Intercept)"),
+  stars = c(`***` = 0.01, `**` = 0.05, `*` = 0.10)
+  )
+```
+
+The results from the quadratic regression model is reported in @tbl-quad.
+The positive coefficient for GDP per capita (GDPpc) suggests a initial positive relationship, while the negative coefficient for the GDP per capita squared (GDPpc\^2) introduces a quadratic term, indicating a curvature in the relationship.
+The coefficient for the GDP per capita is 4.425, indicating that as GDP per capita increases by one unit, the Gini coefficient is expected to increase by 4.425 units.
+This relationship is significant at a 10% level.
+The GDP per capita squared (GDPpc\^2) is -0.001, suggesting a quadratic relationship.
+As GDP per capita increases, the Gini coefficient initally rises, but at a certain point the Gini coefficient will become negative and start to decrease.
+This gives a inverted U-shape, like the Kuznets curve.
+The model has a good fit with an R-squared value of 0.604, suggesting that around 60.4% of the variation in the Gini coefficient is explained by the model.
 
 ### Panel estimates
+
+***Summarize the methodologies applied in the panel estimation in assignment 3, highlighting the rationale behind choosing the method.***
 
 # IV. Empirical Findings
 
@@ -225,9 +560,135 @@ Regression table
 
 *Summarize essential results obtained from the cross-sectional analysis in Assignment 2.*
 
+### Simple Linear Regression
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-slm-all
+#| fig-cap: "Simple Linear Regression for All Countries"
+# Plot for all countries
+plot_all <- subset_nuts2_2010 %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Regression Model for All Countries",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 region")
+
+plot_all
+```
+
+@fig-slm-all visualize the relationship between regional development and regional inequality for NUTS 2 regions in the year 2010 for all the countries.
+The figure have GDP per capita on the x-axis and Gini coefficient on the y-axis.
+The black line represent the estimated relationship.
+The figure shows a positive relationship between regional development and regional inequality.
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-slm-UK
+#| fig-cap: "Simple Linear Regression for the United Kingdom"
+# Plot for the UK
+plot_UK <- subset_nuts2_2010 %>%
+  filter(id_nuts0 == "UK") %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Regression Model for the UK",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions") 
+
+plot_UK
+```
+
+@fig-slm-UK illustrates the connection between regional development and inequality within NUTS 2 regions for the UK in the year 2010.
+Plotted with GDP per capita on the x-axis and the Gini coefficient on the y-axis, the black line signifies the estimated relationship between these two variables.
+The line confirms a positive relationship.
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-slm-EU
+#| fig-cap: "Simple Linear Regression for the EU Countries"
+# Plot for the EU countries
+plot_EU <- subset_nuts2_2010 %>%
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
+  ggplot(aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Regression Model for EU Countries",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions")
+
+plot_EU
+```
+
+@fig-slm-EU visualize the relationship between regional development and regional inequality for NUTS 2 regions in the year 2010 for the EU countries.
+With GDP per capita on the x-axis and Gini coefficient on the y-axis, the black line serves the estimated relationship between these two.
+We can see from the figure that the relationship is negative.
+
+### Multiple Linear Regression 
+
+```{r}
+# Vi trenger plot for multiple linear regression model
+
+#| echo: false
+#| message: false
+#| label: fig-mlr
+#| fig-cap: "Multiple Linear Regression for Turkey"
+```
+
 ## Alternative Functional Forms and Panel Estimates
 
 *Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.*
+
+### Logarithm Regression Model
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-log-EU
+#| fig-cap: "Logarithm Regression Model for the EU countries"
+# Plot for the EU countries
+plot_EU_log <- subset_nuts2_2010 %>%
+  filter(id_nuts0 %in% c("CZ", "FI", "TR")) %>%
+  ggplot(aes(x = (log(gdp_per_capita_n2 * 100)), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Logarithmic Regression Model for EU Countries",
+       x = "Log(GDP per Capita)",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions")
+plot_EU_log
+```
+
+The logaritmic model for the EU countries is visualizsed in @fig-log-EU, with the logarithm of GDP per capita on the x-axis and the GDP Gini coefficient on the y-axis.
+
+### Quadratic Regression Model
+
+```{r}
+#| echo: false
+#| message: false
+#| label: fig-quad-UK
+#| fig-cap: "Quadratic Model for the United Kingdom"
+# Plot for the UK
+plot_UK_quad <- subset_nuts2_2010 %>%
+  filter(id_nuts0 == "UK") %>%
+  ggplot(aes(x = I((gdp_per_capita_n2 * 100)^2), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x + I(x^2), se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Quadratic Regression Model for UK",
+       x = "GDP per Capita^2",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions")
+plot_UK_quad
+```
+
+The quadratic model is visualized in @fig-quad-UK , with the square of GDP per capita on the x-axis, and the GDP Gini coefficient on the y-axis.
 
 # V. Discussion
 
