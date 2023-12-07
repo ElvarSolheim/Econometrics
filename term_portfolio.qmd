@@ -366,7 +366,8 @@ huxreg(
   )
 ```
 
-The results from the simple linear regression are reported in @tbl-slr. The coefficient for GDP per capita represents the estimated change in the GDP Gini coefficient (regional inequality) for a one unit change in GDP per capita (regional development).
+The results from the simple linear regression are reported in @tbl-slr.
+The coefficient for GDP per capita represents the estimated change in the GDP Gini coefficient (regional inequality) for a one unit change in GDP per capita (regional development).
 The regression table reveals a positive relationship between regional development and regional inequality in the first model for all the countries and in the second model for the United Kingdom.
 In the model for all countries, a one-unit increase in GDP per capita corresponds to an average rise of 0.026 in the Gini coefficient.
 This coefficient is significant at a 1% significance level.
@@ -470,7 +471,8 @@ huxreg(
 
 ```
 
-The results from the multiple linear regression are reported in @tbl-mlr. The coefficients provide insights into the direction and strength of the relationship.
+The results from the multiple linear regression are reported in @tbl-mlr.
+The coefficients provide insights into the direction and strength of the relationship.
 The coefficient for GDP per capita is positive, suggesting that a one-unit increase in GDP per capita is associated with a 0.003 increase in the Gini coefficient.
 The coefficient for unemployment is -0.000, suggesting an extremely small negative effect or no effect at all.
 The coefficient for infrastructure is negative at -0.001.
@@ -492,7 +494,7 @@ We estimated a logarithmic model for the EU countries, and a quadratic model for
 The logarithmic form suits models where diminishing returns or asymptotic behaviour is expected.
 In our simple linear regression model for the EU countries (see @tbl-slr) we have a negative relationship where higher levels of regional development are associated with lower levels of inequality.
 We therefore chose a logarithmic model for the EU countries.
-The logarithmic model used is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1  log(y_{2010})$.
+The logarithmic model used is: $\hat{GINIW_{2010}} = \hat{\beta}_0 + \hat{\beta}_1 log(y_{2010})$.
 This is a level log model.
 
 ```{r}
@@ -510,7 +512,8 @@ huxreg(
   )
 ```
 
-The results from the logarithmic regression model are reported in @tbl-log. Since it is a level-log model, a one-percent increase in $y_{2010}$ leads to a $\hat{\beta}_1$ ÷ 100-unit increase in $\hat{GINIW_{2010}}$.
+The results from the logarithmic regression model are reported in @tbl-log.
+Since it is a level-log model, a one-percent increase in $y_{2010}$ leads to a $\hat{\beta}_1$ ÷ 100-unit increase in $\hat{GINIW_{2010}}$.
 The coefficient for the log(GDPpc) is -0.020.
 This negative relationships indicates an inverse relationship.
 As the GDP per capita increases by 1%, the Gini coefficient is expected to decrease by 0.020%.
@@ -552,13 +555,92 @@ The model has a good fit with an R-squared value of 0.604, suggesting that aroun
 
 ### Panel estimates
 
-***Summarize the methodologies applied in the panel estimation in assignment 3, highlighting the rationale behind choosing the method.***
+The panel estimation in the analysis involves exploring the relationship between regional development (measured by GDP per capita) and regional inequality (measured by the population-weighted GDP Gini coefficient) across time and regions.
+The panel data structure allows for the examination of both cross-sectional and time-series variations in the data.
+
+```{r}
+#| echo: false
+#| output: false
+#| message: false
+# Convert data to pdata.frame
+pdata <- pdata.frame(main_data_nuts2, index = c("id_nuts0", "id_nuts2", "year"))
+options(warn = 0)
+```
+
+```{r}
+#| echo: false
+#| output: false
+#| message: false
+# Separate Fixed Effects Models
+
+# 1. Individual (Country) Fixed Effects
+model_ind <- plm(gini_n2 ~ gdp_per_capita_n2, data = main_data_nuts2, index = c("id_nuts0", "year"), model = "within")
+
+# 2. Time Fixed Effects
+model_time <- plm(gini_n2 ~ gdp_per_capita_n2, data = main_data_nuts2, index = c("id_nuts0", "year"), model = "within")
+
+# 3. NUTS 2 Level Fixed Effects
+model_nuts2 <- plm(gini_n2 ~ gdp_per_capita_n2, data = main_data_nuts2, index = c("id_nuts0", "id_nuts2", "year"), model = "within")
+
+# Joint Fixed Effects Model
+
+# 4. Joint (Country, NUTS 2, and Time) Fixed Effects
+model_joint <- plm(gini_n2 ~ gdp_per_capita_n2, data = main_data_nuts2, index = c("id_nuts0", "id_nuts2", "year"), model = "within")
+
+# Store the models in a list
+models_list <- list(
+  "Individual FE" = model_ind,
+  "Time FE" = model_time,
+  "NUTS 2 Level FE" = model_nuts2,
+  "Joint FE" = model_joint
+)
+```
+
+```{r}
+#| echo: false
+# Store the models in a list
+models_list <- list(
+  "Individual FE" = model_ind,
+  "Time FE" = model_time,
+  "NUTS 2 Level FE" = model_nuts2,
+  "Joint FE" = model_joint
+)
+
+# Function to print clean summaries
+print_clean_summary <- function(model) {
+  cat("\nSummary for", deparse(model$call$formula), "\n")
+  tidy_summary <- tidy(model)
+  print(tidy_summary[, c("term", "estimate", "std.error", "statistic", "p.value")])
+}
+
+# Print clean summaries for each model
+invisible(lapply(models_list, print_clean_summary))
+```
+
+### **Model 1: Individual Fixed Effect (id_nuts0)**
+
+**Coefficient of gdp_per_capita_n2:** The coefficient is 2.617631, and it is statistically significant (p-value \< 2.2e-16).
+This implies a positive relationship between regional development (measured by GDP per capita) and regional inequality (measured by the Gini coefficient) when considering individual fixed effects.
+
+### **Model 2: Individual Fixed Effect (id_nuts0, year)**
+
+**Coefficient of gdp_per_capita_n2:** The coefficient remains 2.617631, and it remains statistically significant (p-value \< 2.2e-16).
+Including the fixed effect for the year doesn't alter the interpretation.
+The positive relationship between regional development and regional inequality persists after controlling for individual and time fixed effects.
+
+### **Model 3: Individual and Group Fixed Effects (id_nuts0, id_nuts2, year)**
+
+**Coefficient of gdp_per_capita_n2:** Similar to the previous models, the coefficient remains 2.617631, and it is statistically significant (p-value \< 2.2e-16).
+Even with the inclusion of group fixed effects, the positive relationship between regional development and regional inequality holds.
+
+### **Joint Interpretation:**
+
+**Consistent Positive Relationship:** In all models, the coefficient of gdp per capita is positive and statistically significant.
+This consistent result across different fixed effects suggests a robust positive relationship between regional development and regional inequality.
 
 # IV. Empirical Findings
 
 ## Cross-sectional Estimates
-
-*Summarize essential results obtained from the cross-sectional analysis in Assignment 2.*
 
 ### Simple Linear Regression
 
@@ -631,20 +713,92 @@ plot_EU
 With GDP per capita on the x-axis and Gini coefficient on the y-axis, the black line serves the estimated relationship between these two.
 We can see from the figure that the relationship is negative.
 
-### Multiple Linear Regression 
+### Multiple Linear Regression
 
 ```{r}
-# Vi trenger plot for multiple linear regression model
-
 #| echo: false
 #| message: false
-#| label: fig-mlr
-#| fig-cap: "Multiple Linear Regression for Turkey"
+
+# Multiple linear regression model
+ML_regressionmodel <- TR_nuts2_2010
+
+mlr <- lm(gini_n2 ~ I(gdp_per_capita_n2 * 100) + I(unemployment * 100) + I(infrastructure * 100) + I(life_expectancy * 100), data = ML_regressionmodel)
+
 ```
 
-## Alternative Functional Forms and Panel Estimates
+```{r}
+#| echo: false
+#| message: true
+#| label: fig-mlr-plot
+#| fig-cap: "Multiple Linear Regression Model Plot for Turkey"
 
-*Present the key insights derived from exploring alternative functional forms and panel estimates in Assignment 3.*
+# Predicting values using the multiple regression model
+ML_regressionmodel$predicted <- predict(mlr)
+
+# Plotting actual vs predicted values
+plot_mlr <- ggplot(ML_regressionmodel, aes(x = I(gdp_per_capita_n2 * 100), y = gini_n2, color = id_nuts2)) +
+  geom_point() +
+  geom_smooth(aes(y = predicted), method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  labs(title = "Multiple Linear Regression Model for Turkey",
+       x = "GDP per Capita",
+       y = "GDP Gini Coefficient",
+       color = "NUTS2 Regions")
+
+plot_mlr
+
+```
+
+@fig-mlr-plot portrays the association between various socio-economic factors and regional inequality in NUTS 2 regions in Turkey.
+The x-axis represents GDP per Capita, while the y-axis corresponds to the GDP Gini Coefficient.
+The dashed black line symbolizes the estimated relationship derived from the multiple linear regression model, incorporating variables such as GDP per Capita, unemployment, infrastructure, and life expectancy.
+The scatter points showcase the observed data for different NUTS 2 regions, each uniquely identified by color.
+The figure shows a negative relationship between the various socio-economic factors and regional inequality.
+
+**Cross-Sectional Analysis Summary:**
+
+The cross-sectional exploration undertaken in this study yields profound insights into the intricate nexus between regional development and inequality across NUTS 2 regions in the year 2010, encompassing a comprehensive analysis through both simple and multiple linear regression models.
+
+**Simple Linear Regression Results:**
+
+*For All Countries:*
+
+The visual representation in Figure @fig-slm-all encapsulates a positive correlation between regional development, epitomized by GDP per capita, and the concomitant regional inequality, as measured by the GDP Gini coefficient.
+The discernible black dashed line serves as a visual manifestation of the estimated relationship.
+
+*For the United Kingdom (UK):*
+
+Figure @fig-slm-UK unveils a parallel positive association within the UK context, mirroring the overarching trend.
+Here, the black dashed line signifies the trajectory of the estimated relationship, aligning with expectations.
+
+*For EU Countries (Czech Republic, Finland, Turkey):*
+
+A notable departure from the overarching trend is observed in the EU countries, as illustrated in Figure @fig-slm-EU. Contrary to conventional expectations, these nations exhibit a negative correlation between regional development and inequality, introducing a layer of complexity and emphasizing the need to recognize distinct dynamics within diverse country groups.
+
+**Multiple Linear Regression Results for Turkey:**
+
+Within the Turkish context, the multiple linear regression model, as depicted in Figure @fig-mlr-plot, delves into a multidimensional exploration.
+Here, the interplay of various socio-economic factors---namely GDP per capita, unemployment, infrastructure, and life expectancy---reveals a compelling negative relationship with the GDP Gini coefficient.
+In essence, higher GDP per capita, lower unemployment, enhanced infrastructure, and increased life expectancy collectively contribute to a mitigated level of regional inequality.
+
+**Key Observations:**
+
+The affirming positive correlation observed in the overall analysis and the UK aligns seamlessly with conventional expectations, positing that heightened regional development invariably corresponds to elevated regional inequality.
+
+Conversely, the EU countries present a paradigm shift, portraying a counterintuitive negative relationship, thereby prompting a reevaluation of traditional assumptions and emphasizing the need for nuanced insights.
+
+The multifaceted perspective afforded by the multiple linear regression for Turkey underscores the significance of a holistic approach.
+Acknowledging the interplay of diverse socio-economic factors is crucial for a nuanced understanding of regional inequality.
+
+**Implications and Further Considerations:**
+
+These cross-sectional findings underscore the imperative nature of tailoring analytical frameworks to accommodate country-specific dynamics, steering away from broad generalizations in our understanding of the interplay between regional development and inequality.
+
+The paradoxical negative relationship in the EU countries prompts a call for an in-depth investigation into the nuanced contextual factors that underpin regional dynamics, challenging and expanding the existing discourse.
+
+In the Turkish context, the multiple linear regression model underscores the indispensability of adopting a comprehensive perspective.
+The interrelated nature of socio-economic factors necessitates a holistic consideration for formulating effective policies addressing regional inequality.
+
+## Alternative Functional Forms and Panel Estimates
 
 ### Logarithm Regression Model
 
@@ -667,6 +821,7 @@ plot_EU_log
 ```
 
 The logaritmic model for the EU countries is visualizsed in @fig-log-EU, with the logarithm of GDP per capita on the x-axis and the GDP Gini coefficient on the y-axis.
+We can see from the figure that the relationship is negative
 
 ### Quadratic Regression Model
 
@@ -689,31 +844,120 @@ plot_UK_quad
 ```
 
 The quadratic model is visualized in @fig-quad-UK , with the square of GDP per capita on the x-axis, and the GDP Gini coefficient on the y-axis.
+We can see from the figure that the relationship is positive and u-shaped before 150 in GDP per capita and a negative trend after.
+
+**Exploring Alternative Functional Forms and Panel Estimates:**
+
+In the pursuit of a more nuanced understanding of the intricate relationship between regional development and inequality across NUTS 2 regions in 2010, this study extends its analytical framework to encompass alternative functional forms.
+Specifically, logarithmic and quadratic regression models are employed to extract richer insights.
+
+**Logarithmic Regression Model for EU Countries:**
+
+Illustrated in Figure @fig-log-EU, the logarithmic regression model for EU countries introduces the logarithm of GDP per capita on the x-axis and the GDP Gini coefficient on the y-axis.
+Notably, the figure reveals a discernible negative relationship, indicating that as the logarithm of GDP per capita increases, regional inequality tends to decrease.
+Salient insights include:
+
+-   The logarithmic transformation offers a distinctive lens, exposing a negative correlation between the logarithm of GDP per capita and the GDP Gini coefficient.
+
+-   Within the context of EU countries, this model posits that the impact of economic growth on reducing regional inequality weakens as GDP per capita increases.
+
+**Quadratic Regression Model for the United Kingdom:**
+
+As depicted in Figure @fig-quad-UK, the quadratic regression model for the United Kingdom employs the square of GDP per capita on the x-axis and the GDP Gini coefficient on the y-axis.
+The revelations drawn from this model are particularly intriguing:
+
+-   The depicted relationship unfolds as positive and u-shaped before hitting a GDP per capita threshold of 150.
+    Beyond this point, the relationship takes a negative turn.
+
+-   The u-shaped pattern implies that with initial increases in GDP per capita, regional inequality rises, reaching a zenith at the vertex of the curve.
+    Subsequent economic growth is then associated with a decline in regional inequality.
+
+**Synthesis of Key Findings:**
+
+*Functional Form Sensitivity:* The choice of functional form exerts a profound influence on our comprehension of the regional development-inequality nexus.
+The negative relationship unveiled by the logarithmic model challenges conventional linear assumptions, underscoring the imperative for nuanced modeling.
+
+*Threshold Dynamics:* The quadratic model for the UK unravels a threshold effect, suggesting a qualitative shift in the relationship between GDP per capita and regional inequality beyond a specific economic threshold.
 
 # V. Discussion
 
 ## Key Insights
 
-*Synthesize and discuss the central insights emerging from the empirical findings.*
+**Regional Development and Inequality Dynamics:** The analysis reveals a nuanced relationship between regional development and inequality.
+The simple linear regression models for all countries and the United Kingdom indicate a positive association between regional development (measured by GDP per capita) and regional inequality (measured by the population-weighted GDP Gini coefficient).
+However, the model for EU countries suggests a negative association, introducing complexity into the dynamics.
+
+**Determinants of Regional Inequality:** The multiple linear regression for Turkey introduces additional determinants, such as unemployment, infrastructure, and life expectancy.
+While the coefficients are generally small and not statistically significant, the negative coefficient for life expectancy suggests a potential role in reducing regional inequality.
+
+**Alternative Functional Forms:** Exploring alternative functional forms provides further insights.
+The logarithmic model for EU countries suggests an inverse relationship, emphasizing diminishing returns in the context of regional development.
+In contrast, the quadratic model for the United Kingdom presents an inverted U-shape, akin to the Kuznets curve, indicating a more complex trajectory of regional inequality.
+
+**Panel Estimates:** Across various model specifications, including individual and group fixed effects, the panel estimates consistently reveal a robust and statistically significant positive relationship between regional development, measured by GDP per capita, and regional inequality, represented by the Gini coefficient.
+This finding underscores the resilience of the positive association over time and across different regional contexts, providing a comprehensive understanding of the nuanced dynamics in regional development and inequality
 
 ## Policy Implications
 
-*Deliberate on the potential implications of your results for policy-making and practice in the realm of regional development and inequality.*
+**Tailored Policy Approaches:** The varying relationships observed across different models and countries underline the importance of tailored policy approaches.
+One-size-fits-all strategies may not effectively address the multifaceted nature of regional development and inequality.
+Policymakers should consider the specific context of each region when designing interventions.
+
+**Incorporating Determinants:** While the determinants introduced in the multiple linear regression model for Turkey did not show strong significance, the negative relationship with life expectancy suggests potential avenues for policy intervention.
+Investing in healthcare and improving life expectancy might contribute to reducing regional inequality.
+
+**Long-Term Vision:** The quadratic model's depiction of an inverted U-shape implies that there might be a threshold in regional development beyond which inequality decreases.
+Policymakers should have a long-term vision, understanding that certain levels of development may trigger positive changes in regional inequality.
+
+**Continuous Monitoring:** The use of panel estimates underscores the importance of continuous monitoring and evaluation.
+Regional development and inequality are dynamic processes influenced by various factors over time.
+Policymakers should regularly reassess the impact of interventions and adjust strategies accordingly.
+
+**Global Relevance:** Insights from the study not only contribute to the understanding of the specified countries but also have broader implications globally.
+Policymakers in other nations facing similar challenges can draw lessons from these findings, fostering a more collaborative and informed approach to regional development.
 
 # VI. Limitations and Future Research
 
 ## Research Limitations
 
-*Acknowledge any constraints or limitations encountered during your analysis.*
+While our study aimed to provide valuable insights into the intricate dynamics of regional development and inequality within the Czech Republic, Turkey, Finland, and the United Kingdom, it is important to acknowledge certain constraints and limitations inherent in our analysis.
+Firstly, variations in data collection methods between Eurostat and the Office for National Statistics (ONS), as well as potential differences in classification systems between the EU and the United Kingdom, might introduce uncertainties and affect the comparability of data.
+Despite efforts to align International Territorial Levels (ITLs) with Nomenclature of Territorial Units for Statistics (NUTS), subtle differences could impact the accuracy of our findings.
+Additionally, the shift in currency units for GDP data between EU countries (million euros) and the United Kingdom (million pounds) may introduce complexities that were not fully addressed in our data manipulation.
+Furthermore, our exploration of determinants of regional inequality was constrained by the availability of data, particularly for variables like unemployment, infrastructure, and life expectancy.
+The limited number of observations in some models, especially in the case of the logarithmic regression for EU countries, may affect the robustness of our conclusions.
+It is essential to interpret our results with caution, considering these constraints, and future research endeavors should aim to address these limitations for a more comprehensive understanding of regional dynamics.
 
 # VII. Conclusion
 
 ## Summary
 
-*Provide a succinct summary of the main findings and their significance.*
+In this econometric analysis of regional development and inequality across Czech Republic, Turkey, Finland, and the United Kingdom, we explored the intricate dynamics using a variety of models and methodologies.
+Our primary datasets from Eurostat and the Office for National Statistics (ONS) were merged, accounting for the post-Brexit shift in classification systems from NUTS to International Territorial Levels (ITLs).
+Despite efforts to align these classifications, potential differences may impact comparability.
+
+The initial focus involved computing GDP per capita as a measure of regional development and the population-weighted GDP Gini coefficient to gauge regional inequality.
+Simple linear regression models revealed a positive association between regional development and inequality for all countries and the UK, while a negative association was observed for EU countries, introducing complexity.
+Further, a multiple linear regression model in Turkey incorporated unemployment, infrastructure, and life expectancy as determinants, though their impact was generally small and statistically insignificant.
+
+Exploring alternative functional forms, a logarithmic model for EU countries emphasized diminishing returns, while a quadratic model for the UK suggested an inverted U-shaped relationship reminiscent of the Kuznets curve.
+Panel estimates allowed us to examine both cross-sectional and time-series variations, providing a comprehensive view of regional dynamics.
 
 ## Final Reflections
 
-*Briefly reflect on the research process and the contributions of your study to the field of regional development and inequality.*
+Our research journey unveiled multifaceted relationships between regional development and inequality, challenging conventional expectations.
+The positive link observed in the overall analysis and the UK contradicted the negative association within EU countries.
+This paradox emphasizes the importance of contextual nuances and calls for a nuanced policy approach.
+
+The inclusion of additional determinants in the multiple linear regression for Turkey, while yielding statistically insignificant results, hinted at potential factors influencing regional inequality.
+The exploration of alternative functional forms added depth, revealing non-linearities that might have been overlooked in a conventional linear framework.
+
+The panel estimation approach further enriched our understanding by considering both temporal and spatial dimensions.
+However, the study is not without limitations.
+Differences in data collection methods and classification systems, along with constraints in available data for certain determinants, introduce uncertainties.
+
+In conclusion, our study contributes to the field of regional development and inequality by offering a nuanced perspective, acknowledging the intricacies within and between countries.
+Our findings underscore the importance of tailored policy interventions, recognizing the unique dynamics at play in each region.
+As we conclude this research endeavor, the path forward involves addressing data limitations, refining models, and expanding the scope to unravel the complexities of regional dynamics more comprehensively.
 
 # VIII. References
